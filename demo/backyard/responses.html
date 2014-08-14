@@ -21,7 +21,7 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <!--<li><a href="./index.html">ダッシュボード</a></li>-->
-                        <li class="active dropdown">
+                        <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">問題内容 <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="./index.html">問題内容一覧</a></li>
@@ -29,7 +29,7 @@
                                 <li><a href="./questions_create.html">問題内容の新規作成</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        <li class="active dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">応答内容 <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="./responses.html">応答内容一覧</a></li>
@@ -75,7 +75,7 @@
   
         <div class="container wrapper">
             <div class="page-header">
-                <h1 id="pageid">問題内容一覧</h1>
+                <h1 id="pageid">応答内容一覧</h1>
             </div>
             
             <form class="form-inline search-form" role="form">
@@ -84,8 +84,8 @@
                     <input type="number" class="form-control input-sm" id="searchform-id" placeholder="ID(#)">
                 </div>
                 <div class="form-group">
-                    <label class="sr-only" for="searchform-name">問題内容</label>
-                    <input type="password" class="form-control input-sm" id="searchform-name" placeholder="問題内容">
+                    <label class="sr-only" for="searchform-name">内容</label>
+                    <input type="content" class="form-control input-sm" id="searchform-name" placeholder="内容">
                 </div>
                 <!--<div class="form-group checkbox">
                     <label>
@@ -117,7 +117,8 @@
                     <tr>
                         <th>#</th>
                         <th>状態</th>
-                        <th>問題内容</th>
+                        <th>種類</th>
+                        <th>応答内容</th>
                         <th>登録者</th>
                         <th>更新者</th>
                         <th>登録日時</th>
@@ -128,197 +129,57 @@
                 <tbody>
                     <tr>
                         <td>1</td>
-                        <td class="success">公開中</td>
-                        <td>Vim を保存しないで強制的に閉じるときは？</td>
+                        <td>公開中</td>
+                        <td class="info">正答</td>
+                        <td>( ´∀｀)bｸﾞｯ!</td>
                         <td>tetsukamp</td>
                         <td>aganoyot</td>
                         <td>2014-09-07 12:12</td>
                         <td>2014-09-07 14:12</td>
                         <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="./questions_update.html" class="btn btn-default btn-xs">編集</a>
+                            <a href="./responses_update.html" class="btn btn-default btn-xs">編集</a>
                             <a href="#" class="btn btn-danger btn-xs">削除</a>
                         </td>
                     </tr>
                     <tr>
                         <td>2</td>
-                        <td class="success">公開中</td>
-                        <td>Vim で画面を縦に分割するには？</td>
+                        <td>公開中</td>
+                        <td class="danger">誤答</td>
+                        <td>(´ﾟдﾟ｀)ｴｰ､ﾅｲﾜｰ</td>
                         <td>masahiiiro</td>
                         <td>aganoyot</td>
                         <td>2014-09-07 12:12</td>
                         <td>2014-09-07 14:12</td>
                         <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="./questions_update.html" class="btn btn-default btn-xs">編集</a>
+                            <a href="./responses_update.html" class="btn btn-default btn-xs">編集</a>
                             <a href="#" class="btn btn-danger btn-xs">削除</a>
                         </td>
                     </tr>
                     <tr>
                         <td>3</td>
-                        <td class="success">公開中</td>
-                        <td>Vim のチュートリアルを開くには？</td>
+                        <td>公開中</td>
+                        <td class="danger">誤答</td>
+                        <td>きんもーっ☆</td>
                         <td>tetsukamp</td>
                         <td>aganoyot</td>
                         <td>2014-09-07 12:12</td>
                         <td>2014-09-07 14:12</td>
                         <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="./questions_update.html" class="btn btn-default btn-xs">編集</a>
+                            <a href="./responses_update.html" class="btn btn-default btn-xs">編集</a>
                             <a href="#" class="btn btn-danger btn-xs">削除</a>
                         </td>
                     </tr>
                     <tr>
                         <td>4</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim で画面を縦に分割するには？</td>
+                        <td>非公開</td>
+                        <td class="danger">誤答</td>
+                        <td>( ﾟдﾟ)､ﾍﾟｯﾍﾟｯ</td>
                         <td>masahiiiro</td>
                         <td>aganoyot</td>
                         <td>2014-09-07 12:12</td>
                         <td>2014-09-07 14:12</td>
                         <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="./questions_update.html" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim を保存しないで強制的に閉じるときは？</td>
-                        <td>tetsukamp</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="./questions_update.html" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim で画面を縦に分割するには？</td>
-                        <td>masahiiiro</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="#" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim を保存しないで強制的に閉じるときは？</td>
-                        <td>tetsukamp</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="#" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim で画面を縦に分割するには？</td>
-                        <td>masahiiiro</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="#" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>9</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim を保存しないで強制的に閉じるときは？</td>
-                        <td>tetsukamp</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="#" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim で画面を縦に分割するには？</td>
-                        <td>masahiiiro</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="#" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>11</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim を保存しないで強制的に閉じるときは？</td>
-                        <td>tetsukamp</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="#" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>12</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim で画面を縦に分割するには？</td>
-                        <td>masahiiiro</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="#" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>13</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim を保存しないで強制的に閉じるときは？</td>
-                        <td>tetsukamp</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="#" class="btn btn-default btn-xs">編集</a>
-                            <a href="#" class="btn btn-danger btn-xs">削除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>14</td>
-                        <td class="warning">非公開</td>
-                        <td>Vim で画面を縦に分割するには？</td>
-                        <td>masahiiiro</td>
-                        <td>aganoyot</td>
-                        <td>2014-09-07 12:12</td>
-                        <td>2014-09-07 14:12</td>
-                        <td>
-                            <a href="#" class="btn btn-default btn-xs">解答一覧</a>
-                            <a href="#" class="btn btn-default btn-xs">編集</a>
+                            <a href="./responses_update.html" class="btn btn-default btn-xs">編集</a>
                             <a href="#" class="btn btn-danger btn-xs">削除</a>
                         </td>
                     </tr>
