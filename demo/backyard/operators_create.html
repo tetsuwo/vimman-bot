@@ -21,7 +21,7 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <!--<li><a href="./index.html">ダッシュボード</a></li>-->
-                        <li class="active dropdown">
+                        <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">問題内容 <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="./index.html">問題内容一覧</a></li>
@@ -51,7 +51,7 @@
                                 <li><a href="./tweets.html">ツイート一覧</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        <li class="active dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">オペレーター <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="./operators.html">オペレーター一覧</a></li>
@@ -79,50 +79,38 @@
                 <h1 id="pageid">オペレーターの新規作成</h1>
             </div>
             
-            <form class="form-horizontal" role="form" action="./index.html" method="post">
+            <form class="form-horizontal" role="form" action="./operators.html" method="post">
                 <div class="form-group">
                     <label class="col-lg-2 control-label">
-                        応答内容の状態
+                        状態
                     </label>
                     <div class="col-lg-10">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-                                未公開（作りかけのとき用）
+                                <input type="radio" name="status" id="optionsRadios1" value="option1" checked>
+                                通常
                             </label>
                         </div>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                                公開
+                                <input type="radio" name="status" id="optionsRadios2" value="option2">
+                                停止
                             </label>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">
-                        応答内容の種類
-                    </label>
+                    <label for="content" class="col-lg-2 control-label">ユーザー名</label>
                     <div class="col-lg-10">
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-                                正答
-                            </label>
-                        </div>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                                誤答
-                            </label>
-                        </div>
+                        <input type="text" class="form-control" id="username" name="question[username]" placeholder="">
+                        <p class="help-block">ex) aganoyot</p>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="content" class="col-lg-2 control-label">応答内容</label>
+                    <label for="content" class="col-lg-2 control-label">パスワード</label>
                     <div class="col-lg-10">
-                        <textarea class="form-control" id="content" name="question[content]" placeholder="" rows="3">( ´∀｀)bｸﾞｯ!</textarea>
-                        <p class="help-block">ex) (´ﾟдﾟ｀)ｴｰ</p>
+                        <input type="password" class="form-control" id="password" name="question[password]" placeholder="">
+                        <p class="help-block">ex) hogehogehoge</p>
                     </div>
                 </div>
                 <div class="form-group">
