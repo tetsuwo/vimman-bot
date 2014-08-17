@@ -1,3 +1,3 @@
-Vue.component('informations', Vue.extend({
+Vue.component('informations', mergeComponent({
     template: getHTML('assets/js/app/components/informations/template.html')
 }));
