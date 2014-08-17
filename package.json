@@ -1,0 +1,30 @@
+{
+  "name": "vim_man_bot",
+  "version": "0.0.0",
+  "description": "Tweets Learning for Beginner's Vimmers",
+  "dependencies": {
+    "grunt": "^0.4.5"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/himejima/vim_man_bot.git"
+  },
+  "keywords": [
+    "Vim",
+    "Bot",
+    "Vimmer",
+    "Learning"
+  ],
+  "author": "OMOSAN",
+  "contributors": [
+    { "name": "himejima" },
+    { "name": "Tetsuwo OISHI", "url": "https://twitter.com/tetsukamp", "email": "tetsuwo.oishi@gmail.com" },
+    { "name": "masahiiiro" }
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/himejima/vim_man_bot/issues"
+  },
+  "homepage": "https://github.com/himejima/vim_man_bot"
+}
