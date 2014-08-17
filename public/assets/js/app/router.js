@@ -5,11 +5,11 @@
     var routes = {};
 
     routes['/'] = function() {
-        app.main.currentView = 'questions'
+        app.main.currentView = 'questions';
     };
 
     routes['/questions'] = function() {
-        app.main.currentView = 'questions'
+        app.main.currentView = 'questions';
     };
 
     routes['/questions/create'] = function() {

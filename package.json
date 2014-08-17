@@ -3,9 +3,21 @@
   "version": "0.0.0",
   "description": "Tweets Learning for Beginner's Vimmers",
   "dependencies": {
-    "grunt": "^0.4.5"
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-watch": "^0.6.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-watch": "^0.6.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/himejima/vim_man_bot.git"
@@ -18,9 +30,17 @@
   ],
   "author": "OMOSAN",
   "contributors": [
-    { "name": "himejima" },
-    { "name": "Tetsuwo OISHI", "url": "https://twitter.com/tetsukamp", "email": "tetsuwo.oishi@gmail.com" },
-    { "name": "masahiiiro" }
+    {
+      "name": "himejima"
+    },
+    {
+      "name": "Tetsuwo OISHI",
+      "url": "https://twitter.com/tetsukamp",
+      "email": "tetsuwo.oishi@gmail.com"
+    },
+    {
+      "name": "masahiiiro"
+    }
   ],
   "license": "ISC",
   "bugs": {
