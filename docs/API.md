@@ -1,12 +1,17 @@
 # API memo
 
+
 ## common
+
 - URL  http://api.himejima/{version}
 - データ形式でJSONを返却する
 
+
 ## resources
+
 - questions     # 問題
--- post /questions
+
+    POST /questions
 
     問題の新規作成
     status_code 201
@@ -27,29 +32,33 @@
         ]
     }
 
--- get  /questions
+----
+
+    GET  /questions
+
     問題一覧からレスポンス
     status_code 200
-OK(200)
-format
-{
-    "status_code": 200,
-    "result" : [
+
+    OK(200)
+    format
     {
-       id: 1,
-       content: "問題内容",
-       created_by: "登録者", #
-       updated_by: "更新者", #
-       created_at:"登録日時",
-       updated_at:"更新日時",
-       state: "状態" #
-    },
-    {
-       id: 2,
-       ...
+        "status_code": 200,
+        "result" : [
+        {
+           id: 1,
+           content: "問題内容",
+           created_by: "登録者", #
+           updated_by: "更新者", #
+           created_at:"登録日時",
+           updated_at:"更新日時",
+           state: "状態" #
+        },
+        {
+           id: 2,
+           ...
+        }
+        ]
     }
-    ]
-}
 
 -- get  /questions/<question_id>
     リクエストされた問題IDから検索する
