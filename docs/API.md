@@ -7,24 +7,25 @@
 ## resources
 - questions     # 問題
 -- post /questions
+
     問題の新規作成
     status_code 201
-// 追加したユーザー
-// headerのロケーション
-{
-    "status_code": 201,
-    "result": [
+    // 追加したユーザー
+    // headerのロケーション
     {
-        id: 1,
-        content: "追加した問題",
-        created_by: "登録者", #
-        updated_by: "更新者", #
-        created_at:"登録日時",
-        updated_at:"更新日時",
-        state: "追加した状態" #
+        "status_code": 201,
+        "result": [
+        {
+            id: 1,
+            content: "追加した問題",
+            created_by: "登録者", #
+            updated_by: "更新者", #
+            created_at:"登録日時",
+            updated_at:"更新日時",
+            state: "追加した状態" #
+        }
+        ]
     }
-    ]
-}
 
 -- get  /questions
     問題一覧からレスポンス
@@ -53,22 +54,22 @@ format
 -- get  /questions/<question_id>
     リクエストされた問題IDから検索する
     status_code 200
-OK(200)
-format
-{
-    "status_code": 200,
-    "result" : [
+    OK(200)
+    format
     {
-       id: 1,
-       content: "問題内容",
-       created_by: "登録者", #
-       updated_by: "更新者", #
-       created_at:"登録日時",
-       updated_at:"更新日時",
-       state": "状態" #
+        "status_code": 200,
+        "result" : [
+        {
+           id: 1,
+           content: "問題内容",
+           created_by: "登録者", #
+           updated_by: "更新者", #
+           created_at:"登録日時",
+           updated_at:"更新日時",
+           state": "状態" #
+        }
+        ]
     }
-    ]
-}
     
 
 -- put /questions/<question_id>
