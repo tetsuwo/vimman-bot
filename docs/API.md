@@ -1,19 +1,39 @@
 # API memo
 
 
-## common
+## 1. common
 
 - URL  http://api.himejima/{version}
 - データ形式でJSONを返却する
 
+### 1.2. Status Code
 
-## resources
+| Status Code                | Reason                              |
+|----------------------------|-------------------------------------|
+| 201                        | Created                             |
 
-- questions     # 問題
 
-    POST /questions
+## 2. resources
 
-    問題の新規作成
+### 2.1. /questions
+
+問題内容についてのデータを取り扱う.
+
+#### Create a question
+
+**POST** `/questions`
+
+問題の新規作成
+
+#### Parameters
+
+- state
+- content
+- created_by
+- updated_by
+
+#### Response
+
     status_code 201
     // 追加したユーザー
     // headerのロケーション
@@ -31,6 +51,7 @@
         }
         ]
     }
+
 
 ----
 
