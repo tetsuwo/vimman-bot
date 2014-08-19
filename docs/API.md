@@ -1,74 +1,105 @@
 # API memo
 
-## common
+
+## 1. common
+
 - URL  http://api.himejima/{version}
 - データ形式でJSONを返却する
 
-## resources
-- questions     # 問題
--- post /questions
-    問題の新規作成
-    status_code 201
-// 追加したユーザー
-// headerのロケーション
-{
-    "status_code": 201,
-    "result": [
-    {
-        id: 1,
-        content: "追加した問題",
-        created_by: "登録者", #
-        updated_by: "更新者", #
-        created_at:"登録日時",
-        updated_at:"更新日時",
-        state: "追加した状態" #
-    }
-    ]
-}
+### 1.2. Status Code
 
--- get  /questions
+| Status Code                | Reason                              |
+|----------------------------|-------------------------------------|
+| 201                        | Created                             |
+
+
+## 2. resources
+
+### 2.1. /questions
+
+問題内容についてのデータを取り扱う.
+
+#### Create a question
+
+**POST** `/questions`
+
+問題の新規作成
+
+#### Parameters
+
+- state
+- content
+- created_by
+- updated_by
+
+#### Response
+
+    status_code 201
+    // 追加したユーザー
+    // headerのロケーション
+    {
+        "status_code": 201,
+        "result": [
+        {
+            id: 1,
+            content: "追加した問題",
+            created_by: "登録者", #
+            updated_by: "更新者", #
+            created_at:"登録日時",
+            updated_at:"更新日時",
+            state: "追加した状態" #
+        }
+        ]
+    }
+
+
+----
+
+    GET  /questions
+
     問題一覧からレスポンス
     status_code 200
-OK(200)
-format
-{
-    "status_code": 200,
-    "result" : [
+
+    OK(200)
+    format
     {
-       id: 1,
-       content: "問題内容",
-       created_by: "登録者", #
-       updated_by: "更新者", #
-       created_at:"登録日時",
-       updated_at:"更新日時",
-       state: "状態" #
-    },
-    {
-       id: 2,
-       ...
+        "status_code": 200,
+        "result" : [
+        {
+           id: 1,
+           content: "問題内容",
+           created_by: "登録者", #
+           updated_by: "更新者", #
+           created_at:"登録日時",
+           updated_at:"更新日時",
+           state: "状態" #
+        },
+        {
+           id: 2,
+           ...
+        }
+        ]
     }
-    ]
-}
 
 -- get  /questions/<question_id>
     リクエストされた問題IDから検索する
     status_code 200
-OK(200)
-format
-{
-    "status_code": 200,
-    "result" : [
+    OK(200)
+    format
     {
-       id: 1,
-       content: "問題内容",
-       created_by: "登録者", #
-       updated_by: "更新者", #
-       created_at:"登録日時",
-       updated_at:"更新日時",
-       state": "状態" #
+        "status_code": 200,
+        "result" : [
+        {
+           id: 1,
+           content: "問題内容",
+           created_by: "登録者", #
+           updated_by: "更新者", #
+           created_at:"登録日時",
+           updated_at:"更新日時",
+           state": "状態" #
+        }
+        ]
     }
-    ]
-}
     
 
 -- put /questions/<question_id>
