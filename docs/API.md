@@ -341,9 +341,9 @@
             id: 1,
             username: "登録したユーザー名",
             password: "登録したパスワード",
+            state: "状態",
             created_at: "登録日時",
-            updated_at: "更新日時",
-            state: "状態"
+            updated_at: "更新日時"
         ]
     }
 
