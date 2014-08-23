@@ -12,30 +12,17 @@
         <label class="sr-only" for="searchform-name">問題内容</label>
         <input type="password" class="form-control input-sm" id="searchform-name" placeholder="問題内容">
     </div>
-    <!--<div class="form-group checkbox">
+    <!--
+    <div class="form-group checkbox">
         <label>
             <input type="checkbox"> 削除
         </label>
-        </div>-->
+    </div>
+    -->
     <button type="submit" class="btn btn-primary btn-sm">検索</button>
 </form>
 
-<div class="box row">
-    <div class="col-md-6">
-        <p>200件</p>
-    </div>
-    <div class="col-md-6">
-        <ul class="pull-right pagination pagination-sm">
-            <li><a href="#">&laquo;</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
-    </div>
-</div>
+<div v-component="pagination" v-with="result"></div>
 
 <table class="table table-striped">
     <thead>
@@ -51,221 +38,24 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>公開中</td>
-            <td>Vim を保存しないで強制的に閉じるときは？</td>
-            <td>tetsukamp</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
+        <tr v-repeat="result.list">
+            <td>{{ id }}</td>
+            <td>{{ state }}</td>
+            <td>{{ content }}</td>
+            <td>{{ created_by }}</td>
+            <td>{{ updated_by }}</td>
+            <td>{{ created_at | formatDate }}</td>
+            <td>{{ updated_at | formatDate }}</td>
             <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#/questions/1/update" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>公開中</td>
-            <td>Vim で画面を縦に分割するには？</td>
-            <td>masahiiiro</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#/questions/1/update" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>公開中</td>
-            <td>Vim のチュートリアルを開くには？</td>
-            <td>tetsukamp</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#/questions/1/update" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>非公開</td>
-            <td>Vim で画面を縦に分割するには？</td>
-            <td>masahiiiro</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#/questions/1/update" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>5</td>
-            <td>非公開</td>
-            <td>Vim を保存しないで強制的に閉じるときは？</td>
-            <td>tetsukamp</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#/questions/1/update" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>6</td>
-            <td>非公開</td>
-            <td>Vim で画面を縦に分割するには？</td>
-            <td>masahiiiro</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>非公開</td>
-            <td>Vim を保存しないで強制的に閉じるときは？</td>
-            <td>tetsukamp</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>8</td>
-            <td>非公開</td>
-            <td>Vim で画面を縦に分割するには？</td>
-            <td>masahiiiro</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>9</td>
-            <td>非公開</td>
-            <td>Vim を保存しないで強制的に閉じるときは？</td>
-            <td>tetsukamp</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>10</td>
-            <td>非公開</td>
-            <td>Vim で画面を縦に分割するには？</td>
-            <td>masahiiiro</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>11</td>
-            <td>非公開</td>
-            <td>Vim を保存しないで強制的に閉じるときは？</td>
-            <td>tetsukamp</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>12</td>
-            <td>非公開</td>
-            <td>Vim で画面を縦に分割するには？</td>
-            <td>masahiiiro</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>13</td>
-            <td>非公開</td>
-            <td>Vim を保存しないで強制的に閉じるときは？</td>
-            <td>tetsukamp</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
-            </td>
-        </tr>
-        <tr>
-            <td>14</td>
-            <td>非公開</td>
-            <td>Vim で画面を縦に分割するには？</td>
-            <td>masahiiiro</td>
-            <td>aganoyot</td>
-            <td>2014-09-07 12:12</td>
-            <td>2014-09-07 14:12</td>
-            <td>
-                <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#" class="btn btn-default btn-xs">編集</a>
-                <a href="#" class="btn btn-danger btn-xs">削除</a>
+                <a href="javascript:void(0)" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
+                <a href="#/questions/{{ id }}/update" class="btn btn-default btn-xs">編集</a>
+                <a href="javascript:void(0)" v-on="click: remove(id)" class="btn btn-danger btn-xs">削除</a>
             </td>
         </tr>
     </tbody>
 </table>
 
-<div class="box row">
-    <div class="col-md-6">
-        <p>200件</p>
-    </div>
-    <div class="col-md-6">
-        <ul class="pull-right pagination pagination-sm">
-            <li><a href="#">&laquo;</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
-    </div>
-</div>
+<div v-component="pagination" v-with="result"></div>
 
 <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
@@ -284,4 +74,8 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="nowloading">
+    <div class="nowloading-image"></div>
+</div>
 
