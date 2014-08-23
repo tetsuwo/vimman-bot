@@ -303,8 +303,25 @@ def delete_response(response_id):
     return jsonify(status_code=code)
 
 # /login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    code = 200
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] == app.config['USERNAME'] && request.form['password'] == app.config['PASSWORD']:
+            session['logged_in'] = True
+            return jsonify(status_code=code)
+        else:
+            error = 'wrong' 
+
+    return jsonify(status_code=code)
 
 # /logout
+@app.route('/logout')
+def logout():
+    code = 200
+    session.pop('logged_in', None)
+    return jsonify(status_code=code)
 
 if __name__ == '__main__':
     app.run()
