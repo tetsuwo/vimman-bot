@@ -195,8 +195,10 @@ def delete_answer(question_id, answer_id):
 @app.route('/informations', methods=['POST'])
 def add_information():
     code = 201
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     g.db.execute('insert into informations (content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
-            [request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], request.form['created_at'], request.form['updated_at']])
+            [request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr])
     g.db.commit()
 
     return jsonify(status_code=code)
@@ -221,8 +223,10 @@ def show_information(information_id):
 @app.route('/informations/<information_id>', methods=['PUT'])
 def edit_information(information_id):
     code = 201
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     cur = g.db.execute('update informations set content=?, state=?, updated_by=?, updated_at=? where id = ?',
-            [request.form['content'], request.form['state'], request.form['updated_by'], "ddd", information_id])
+            [request.form['content'], request.form['state'], request.form['updated_by'], tstr, information_id])
     g.db.commit()
 
     return jsonify(status_code=code)
