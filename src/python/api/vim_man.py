@@ -94,7 +94,7 @@ def delete_operation(operation_id):
 @app.route('/questions', methods=['GET'])
 def index_questions():
     code = 200
-    cur = g.db.execute('select id, content,state, created_by, updated_by, created_at, updated_at from questions')
+    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions')
     questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
     # app.logger.debug(questions)
     return jsonify(status_code=code, result=questions)
@@ -102,8 +102,10 @@ def index_questions():
 @app.route('/questions', methods=['POST'])
 def add_question():
     code = 201
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     g.db.execute('insert into questions (content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
-            [request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], request.form['created_at'], request.form['updated_at']])
+            [request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr])
     g.db.commit()
 
     return jsonify(status_code=code)
@@ -111,18 +113,20 @@ def add_question():
 @app.route('/questions/<question_id>', methods=['GET'])
 def show_question(question_id):
     code = 200
-    cur = g.db.execute('select id, content, created_by, updated_by, created_at, updated_at from questions where id = ?',
+    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions where id = ?',
             [question_id])
-    question = [dict(id=row[0], content=row[1], created_by=row[2], updated_by=row[3], created_at=row[4], updated_at=row[5]) for row in cur.fetchall()]
+    question = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
 
     return jsonify(status_code=code, result=question)
 
 @app.route('/questions/<question_id>', methods=['PUT'])
 def edit_question(question_id):
     code = 201
-    #app.logger.debug(request.form)
-    cur = g.db.execute('update questions set content=?, state=?, created_by=?, updated_by=? where id = ?',
-            [request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_at'], question_id])
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    app.logger.debug(request.form)
+    cur = g.db.execute('update questions set content=?, state=?, updated_by=?, updated_at=? where id = ?',
+            [request.form['content'], request.form['state'], request.form['updated_by'], tstr, question_id])
     g.db.commit()
 
     return jsonify(status_code=code)
