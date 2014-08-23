@@ -1,0 +1,12 @@
+<div class="box row">
+    <div class="col-md-6">
+        <p>{{ totalCount }}件</p>
+    </div>
+    <div class="col-md-6">
+        <ul class="pull-right pagination pagination-sm">
+            <li v-class="disabled: currentPage==1"><a href="#" v-on="click: prevPage($event)">&laquo;</a></li>
+            <li v-repeat="pages" v-class="active: currentPage==$value"><a href="#" v-on="click: page($value)">{{ $value }}</a></li>
+            <li v-class="disabled: currentPage==totalPage"><a href="#" v-on="click: nextPage($event)">&raquo;</a></li>
+        </ul>
+    </div>
+</div>

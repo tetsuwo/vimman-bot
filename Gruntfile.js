@@ -28,6 +28,7 @@ module.exports = function(grunt) {
           'public/assets/js/app/components/responses-create/index.js',
           'public/assets/js/app/components/responses-update/index.js',
           'public/assets/js/app/components/tweets/index.js',
+          'public/assets/js/app/components/pagination/index.js',
           'public/assets/js/app/app.js',
           'public/assets/js/app/main.js',
           'public/assets/js/app/nav.js',
