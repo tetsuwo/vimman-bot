@@ -39,6 +39,32 @@ def test():
 
 # /operations
 
+@app.route('/operations', methods=['POST'])
+def add_operation():
+    code = 201
+    pass
+
+@app.route('/operations', methods=['GET'])
+def index_operatinos():
+    code = 200
+    pass
+
+@app.route('/operations/<operation_id>', methods=['GET'])
+def show_operation(operation_id):
+    code = 200
+    pass
+
+@app.route('/operations/<operation_id>', methods=['PUT'])
+def edit_operation(operation_id):
+    code = 201
+    pass
+
+@app.route('/operations/<operation_id>', methods=['DELETE'])
+def delete_operation(operation_id):
+    code = 204
+    pass
+
+
 # /questions
 @app.route('/questions', methods=['GET'])
 def index_questions():
@@ -88,12 +114,89 @@ def delete_question(question_id):
 
 
 # /answers
+@app.route('/answers/<question_id>', methods=['POST'])
+def add_answer():
+    code = 201
+    pass
+
+@app.route('/answers/<question_id>', methods=['GET'])
+def index_answers():
+    code = 200
+    pass
+
+@app.route('/answers/<question_id>/<answer_id>', methods=['GET'])
+def show_answer(answer_id):
+    code = 200
+    pass
+
+@app.route('/answers/<question_id>/<answer_id>', methods=['PUT'])
+def edit_answer(answer_id):
+    code = 201
+    pass
+
+@app.route('/answers/<question_id>/<answer_id>', methods=['DELETE'])
+def delete_answer(answer_id):
+    code = 204
+    pass
+
 
 # /informations
+@app.route('/informations', methods=['POST'])
+def add_information():
+    code = 201
+    pass
+
+@app.route('/informations', methods=['GET'])
+def index_informations():
+    code = 200
+    pass
+
+@app.route('/informations/<information_id>', methods=['GET'])
+def show_information(information_id):
+    code = 200
+    pass
+
+@app.route('/informations/<information_id>', methods=['PUT'])
+def edit_information(information_id):
+    code = 201
+    pass
+
+@app.route('/informations/<information_id>', methods=['DELETE'])
+def delete_information(information_id):
+    code = 204
+    pass
 
 # /tweets
+@app.route('/tweets', methods=['GET'])
+def index_tweets():
+    code = 200
+    pass
 
 # /responses
+@app.route('/responses', methods=['POST'])
+def add_response():
+    code = 201
+    pass
+
+@app.route('/responses', methods=['GET'])
+def index_responses():
+    code = 200
+    pass
+
+@app.route('/responses/<response_id>', methods=['GET'])
+def show_response(response_id):
+    code = 200
+    pass
+
+@app.route('/responses/<response_id>', methods=['PUT'])
+def edit_response(response_id):
+    code = 201
+    pass
+
+@app.route('/responses/<response_id>', methods=['DELETE'])
+def delete_response(response_id):
+    code = 204
+    pass
 
 # /login
 
