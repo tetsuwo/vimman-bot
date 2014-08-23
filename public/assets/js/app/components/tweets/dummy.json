@@ -1,0 +1,36 @@
+{
+    "status_code": 201,
+    "result": [{
+        "id"         : 4,
+        "content"    : "追加した問題",
+        "created_by" : "登録者",
+        "updated_by" : "更新者",
+        "created_at" : "登録日時",
+        "updated_at" : "更新日時",
+        "state"      : "追加した状態"
+    }, {
+        "id"         : 3,
+        "content"    : "追加した問題",
+        "created_by" : "登録者",
+        "updated_by" : "更新者",
+        "created_at" : "登録日時",
+        "updated_at" : "更新日時",
+        "state"      : "追加した状態"
+    }, {
+        "id"         : 2,
+        "content"    : "追加した問題",
+        "created_by" : "登録者",
+        "updated_by" : "更新者",
+        "created_at" : "登録日時",
+        "updated_at" : "更新日時",
+        "state"      : "追加した状態"
+    }, {
+        "id"         : 1,
+        "content"    : "追加した問題",
+        "created_by" : "登録者",
+        "updated_by" : "更新者",
+        "created_at" : "登録日時",
+        "updated_at" : "更新日時",
+        "state"      : "追加した状態"
+    }]
+}

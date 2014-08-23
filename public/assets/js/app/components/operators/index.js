@@ -1,3 +1,1 @@
-Vue.component('operators', mergeComponent({
-    template: getHTML('assets/js/app/components/operators/template.html')
-}));
+Vue.component('operators', getPresetListComponent('operators'));

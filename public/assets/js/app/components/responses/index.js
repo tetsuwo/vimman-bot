@@ -1,3 +1,1 @@
-Vue.component('responses', mergeComponent({
-    template: getHTML('assets/js/app/components/responses/template.html')
-}));
+Vue.component('responses', getPresetListComponent('responses'));
