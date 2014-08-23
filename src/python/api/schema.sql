@@ -25,7 +25,7 @@ create table questions (
 );
 create table answers (
     id integer primary key autoincrement,
-    question_id integer
+    question_id integer,
     content text,
     state integer,
     created_by text,
