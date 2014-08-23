@@ -63,6 +63,29 @@ def add_question():
     app.logger.debug(request.form['updated_at'])
     return jsonify({0:3})
 
+@app.route('/questions/<question_id>', methods=['GET'])
+def show_question(question_id):
+    cur = g.db.execute('select id, content, created_by, updated_by, created_at, updated_at from questions where id = 1')
+    question = [dict(id=row[0], content=row[1], created_by=row[2], updated_by=row[3], created_at=row[4], updated_at=row[5]) for row in cur.fetchall()]
+    #response.result = jsonify(question)
+    #response.status_code = 200
+    return jsonify(result=question)
+
+@app.route('/questions/<question_id>', methods=['PUT'])
+def edit_question(question_id):
+    #app.logger.debug(request.form)
+    cur = g.db.execute('update questions set content="update_con", state=1 where id = 1')
+    g.db.commit()
+    return jsonify({"request_method": "put"})
+
+@app.route('/questions/<question_id>', methods=['DELETE'])
+def delete_question(question_id):
+    cur = g.db.execute('delete from questions where id = ?',
+    [question_id])
+    g.db.commit()
+    return jsonify({0:"deleteです"})
+
+
 # /answers
 
 # /informations
