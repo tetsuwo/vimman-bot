@@ -115,56 +115,93 @@ def delete_question(question_id):
 
 # /answers
 @app.route('/answers/<question_id>', methods=['POST'])
-def add_answer():
+def add_answer(question_id):
     code = 201
-    pass
+    g.db.execute('insert into answers (question_id, content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
+            [question_id, request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], request.form['created_at'], request.form['updated_at']])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 @app.route('/answers/<question_id>', methods=['GET'])
 def index_answers():
     code = 200
-    pass
+    cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from questions')
+    answers = [dict(id=row[0], question_id=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
+    # app.logger.debug(questions)
+    return jsonify(status_code=code, result=answers)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['GET'])
 def show_answer(answer_id):
     code = 200
-    pass
+    cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from questions where id = ?',
+            [answer_id])
+    question = [dict(id=row[0], question_id=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
+
+    return jsonify(status_code=code, result=question)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['PUT'])
 def edit_answer(answer_id):
     code = 201
-    pass
+    cur = g.db.execute('update answers set content=?, state=?, updated_by=?, updated_at=? where id = ?',
+            [request.form['content'], request.form['state'], request.form['updated_by'], "ddd", answer_id])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['DELETE'])
 def delete_answer(answer_id):
     code = 204
-    pass
+    cur = g.db.execute('delete from answers where question_id = ? and id = ?',
+    [question_id, answer_id])
+    g.db.commit()
 
+    return jsonify(status_code=code)
 
 # /informations
 @app.route('/informations', methods=['POST'])
 def add_information():
     code = 201
-    pass
+    g.db.execute('insert into informations (content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
+            [request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], request.form['created_at'], request.form['updated_at']])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 @app.route('/informations', methods=['GET'])
 def index_informations():
     code = 200
-    pass
+    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations')
+    informations = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
+    # app.logger.debug(questions)
+    return jsonify(status_code=code, result=informations)
 
 @app.route('/informations/<information_id>', methods=['GET'])
 def show_information(information_id):
     code = 200
-    pass
+    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations where id = ?',
+            [information_id])
+    information = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
+
+    return jsonify(status_code=code, result=information)
 
 @app.route('/informations/<information_id>', methods=['PUT'])
 def edit_information(information_id):
     code = 201
-    pass
+    cur = g.db.execute('update informations set content=?, state=?, updated_by=?, updated_at=? where id = ?',
+            [request.form['content'], request.form['state'], request.form['updated_by'], "ddd", information_id])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 @app.route('/informations/<information_id>', methods=['DELETE'])
 def delete_information(information_id):
     code = 204
-    pass
+    cur = g.db.execute('delete from informations where id = ?',
+    [information_id])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 # /tweets
 @app.route('/tweets', methods=['GET'])
@@ -179,27 +216,46 @@ def index_tweets():
 @app.route('/responses', methods=['POST'])
 def add_response():
     code = 201
-    pass
+    g.db.execute('insert into responses (type, content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
+            [request.form['type'], request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], request.form['created_at'], request.form['updated_at']])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 @app.route('/responses', methods=['GET'])
 def index_responses():
     code = 200
-    pass
+    cur = g.db.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses')
+    responses = [dict(id=row[0], type=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
+    # app.logger.debug(questions)
+    return jsonify(status_code=code, result=responses)
 
 @app.route('/responses/<response_id>', methods=['GET'])
 def show_response(response_id):
     code = 200
-    pass
+    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations where id = ?',
+            [response_id])
+    response = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
+
+    return jsonify(status_code=code, result=response)
 
 @app.route('/responses/<response_id>', methods=['PUT'])
 def edit_response(response_id):
     code = 201
-    pass
+    cur = g.db.execute('update responses set content=?, state=?, updated_by=?, updated_at=? where id = ?',
+            [request.form['content'], request.form['state'], request.form['updated_by'], "ddd", response_id])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 @app.route('/responses/<response_id>', methods=['DELETE'])
 def delete_response(response_id):
     code = 204
-    pass
+    cur = g.db.execute('delete from responses where id = ?',
+    [response_id])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 # /login
 
