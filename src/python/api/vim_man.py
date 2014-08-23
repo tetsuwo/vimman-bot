@@ -42,28 +42,47 @@ def test():
 @app.route('/operations', methods=['POST'])
 def add_operation():
     code = 201
-    pass
+    #g.db.execute('insert into questions (content, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?)',[])
+    g.db.execute('insert into operations (username, password, salt, state, created_at, updated_at) values (?,?,?,?,?,?)',
+            [request.form['username'], request.form['password'], request.form['salt'], request.form['state'], "", ""])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 @app.route('/operations', methods=['GET'])
 def index_operatinos():
     code = 200
-    pass
+    cur = g.db.execute('select id, username, password, state, created_at, updated_at from operations')
+    operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in cur.fetchall()]
+    # app.logger.debug(questions)
+    return jsonify(status_code=code, result=operations)
 
 @app.route('/operations/<operation_id>', methods=['GET'])
 def show_operation(operation_id):
     code = 200
-    pass
+    cur = g.db.execute('select id, username, password, state, created_at, updated_at from operations where id = ?',
+            [operation_id])
+    operation = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in cur.fetchall()]
+
+    return jsonify(status_code=code, result=operation)
 
 @app.route('/operations/<operation_id>', methods=['PUT'])
 def edit_operation(operation_id):
     code = 201
-    pass
+    cur = g.db.execute('update operations set username=?, password=?, state=?, created_at=?, updated_at=? where id = ?',
+            [request.form['username'], request.form['password'], '', '', operation_id])
+    g.db.commit()
+
+    return jsonify(status_code=code)
 
 @app.route('/operations/<operation_id>', methods=['DELETE'])
 def delete_operation(operation_id):
     code = 204
-    pass
+    cur = g.db.execute('delete from operations where id = ?',
+    [operation_id])
+    g.db.commit()
 
+    return jsonify(status_code=code)
 
 # /questions
 @app.route('/questions', methods=['GET'])
@@ -128,7 +147,7 @@ def index_answers():
     code = 200
     cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from questions')
     answers = [dict(id=row[0], question_id=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
-    # app.logger.debug(questions)
+
     return jsonify(status_code=code, result=answers)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['GET'])
