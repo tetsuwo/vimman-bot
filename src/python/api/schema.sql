@@ -47,6 +47,8 @@ create table tweets (
     type text,
     tweet_id integer,
     content text,
+    created_by text,
+    updated_by text,
     created_at text,
     updated_at text
 );

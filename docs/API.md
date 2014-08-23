@@ -11,6 +11,8 @@
 | Status Code                | Reason                              |
 |----------------------------|-------------------------------------|
 | 201                        | Created                             |
+| 200                        | OK                                  |
+| 204                        | NoConent                            |
 
 
 ## 2. resources
@@ -43,36 +45,40 @@
         {
             id: 1,
             content: "追加した問題",
+            state: "追加した状態", #
             created_by: "登録者", #
             updated_by: "更新者", #
             created_at:"登録日時",
-            updated_at:"更新日時",
-            state: "追加した状態" #
+            updated_at:"更新日時"
         }
         ]
     }
 
 
 ----
+#### Get questions
 
-    GET  /questions
+**GET** `/questions`
 
-    問題一覧からレスポンス
+問題の一覧取得
+
+#### Parameters
+- None
+
+#### Response
+
     status_code 200
-
-    OK(200)
-    format
     {
         "status_code": 200,
         "result" : [
         {
            id: 1,
            content: "問題内容",
+           state: "状態",
            created_by: "登録者", #
            updated_by: "更新者", #
            created_at:"登録日時",
-           updated_at:"更新日時",
-           state: "状態" #
+           updated_at:"更新日時"
         },
         {
            id: 2,
@@ -82,104 +88,142 @@
     }
 
 ---
+#### Get a question
 
-    GET  /questions/<question_id>
+**GET**  `/questions/<question_id>`
     
-    リクエストされた問題IDから検索する
+リクエストされた問題IDから検索する
+
+#### Parameters
+- question_id
+
+#### Response
+
     status_code 200
-    
-    OK(200)
-    format
     {
         "status_code": 200,
         "result" : [
         {
            id: 1,
            content: "問題内容",
+           state": "状態",
            created_by: "登録者", #
            updated_by: "更新者", #
            created_at:"登録日時",
-           updated_at:"更新日時",
-           state": "状態" #
+           updated_at:"更新日時"
         }
         ]
     }
     
 
 --- 
+#### UPDATE a question
 
-    PUT /questions/<question_id>
-    問題の更新
+**PUT** `/questions/<question_id>`
+
+問題の更新
+    
+#### Parameters
+- content
+- state
+- updated_at
+
+#### Response
+
     status_code 201
-
-    format
-    Created(201)
     {
         "status_code": 201,
         "result" : [
            id: 1,
            content: "問題内容が更新される",
+           state: "状態が更新される",
            created_by: "登録者", #
            updated_by: "更新者", #
            created_at:"登録日時",
-           updated_at:"更新日時",
-           state: "状態が更新される"
+           updated_at:"更新日時"
         ]
     }
 
 --- 
+#### DELETE a question
 
-    DELETE   /questions/<question_id>
-    問題の削除
+**DELETE**   `/questions/<question_id>`
+
+問題の削除
+
+#### Parameters
+- question_id
+
+#### Response
+
     status_code 204
-
-    NoConent(204)
-    format
     {
         "status_code": 204
     }
 
 ### 2.2. /answers
---- 
 
-    POST /answers/<question_id>
-    解答の新規作成
+答えについてのデータを取り扱う
+
+#### Create a answer
+
+**POST** `/answers/<question_id>`
+
+解答の新規作成
+
+#### Parameters
+
+- question_id
+- content
+- state
+- created_by
+- updated_by
+
+#### Response
+
     status_code 201
-
-    Created(201)
-    format
     {
         "status_code": 200,
         "result" : [
         {
             id: 1,
+            question_id: xxx,
             content: "登録した解答内容",
+            state: "登録した状態" #,
             created_by: "登録者", #
             updated_by: "更新者", #
             created_at:"登録日時",
-            updated_at:"更新日時",
-            state: "登録した状態" #
+            updated_at:"更新日時"
         }
         ]
     }
 
 ---
+#### Get answers by a question
 
-    GET  /answers/<question_id>
+**GET**  `/answers/<question_id>`
 
-    OK(200)
-    format
+問題ごとの解答の一覧を取得
+
+#### Parameters
+
+- question_id
+
+#### Response
+
+    status_code 200
     {
         "status_code": 200,
         "result" : [
         {
             id: 1,
+            question_id: xxx,
             content: "解答内容",
+            state: "状態",
             created_by: "登録者", #
             updated_by: "更新者", #
             created_at:"登録日時",
-            updated_at:"更新日時",
-            state: "状態" #
+            updated_at:"更新日時"
         },
         {
             ...
@@ -188,37 +232,60 @@
     }
 
 --- 
-    
-    GET  /answers/<question_id>/<answer_id>
+#### Get answers by a question
 
-    OK(200)
-    format
+**GET**  `/answers/<question_id>/<answer_id>`
+
+問題ごとの解答の取得
+
+#### Parameters
+
+- question_id
+- answer_id
+
+#### Response
+
+    status_code 200
     {
         "status_code": 200,
         "result" : [
         {
             id: 1,
+            question_id: xxx,
             content: "解答内容",
+            state: "状態",
             created_by: "登録者", #
             updated_by: "更新者", #
             created_at:"登録日時",
-            updated_at:"更新日時",
-            state: "状態" #
+            updated_at:"更新日時"
         }
         ]
     }
 
 --- 
-    
-    PUT /answers/<question_id>/<answer_id>
+#### UPDATE a answer by a question
 
-    Created(201)
-    format
+**PUT** /answers/<question_id>/<answer_id>
+
+問題ごとの解答の更新
+
+#### Parameters
+
+- question_id
+- answer_id
+- content
+- state
+- updated_by
+
+#### Response
+
+    status_code 201
     {
-        "status_code": 200,
+        "status_code": 201,
         "result" : [
         {
             id: 1,
+            question_id: xxx,
             content: "更新した解答内容",
             created_by: "登録者", #
             updated_by: "更新者", #
@@ -230,11 +297,20 @@
     }
 
 --- 
-    
-    DELETE /answers/<question_id>/<answer_id>
+#### Delete a answer by a question
 
-    NoConent(204)
-    format
+**DELETE** `/answers/<question_id>/<answer_id>`
+
+問題ごとの解答を削除する
+
+#### Parameters
+
+- question_id
+- answer_id
+
+#### Response
+
+    status_code 204
     {
         "status_code": 204
     }
@@ -244,12 +320,21 @@
 
 管理者についてのデータを取り扱う.
 
-    POST /operations
-    管理者の新規作成
-    status_code 201
+#### Create a operation
 
-    Created(201)
-    format
+**POST** /operations
+
+管理者の新規作成
+
+#### Parameters
+
+- username
+- password
+- state
+
+#### Response
+
+    status_code 201
     {
         "status_code": 201,
         "result": [
@@ -263,13 +348,19 @@
     }
 
 --- 
+#### Get operations
 
-    GET  /operations
-    管理者一覧からレスポンス
+**GET**  `/operations`
+
+管理者一覧からレスポンス
+
+#### Parameters
+
+- None
+
+#### Response
+
     status_code 200
-
-    OK(200)
-    format
     {
         "status_code": 200
         "result": [
@@ -287,12 +378,19 @@
     }
 
 --- 
+#### Get a operation
 
-    GET  /operations/<operation_id>
-    リクエストされた管理IDから検索する
+**GET**  `/operations/<operation_id>`
+
+リクエストされた管理IDから検索する
+
+#### Parameters
+
+- operation_id
+
+#### Response
+
     status_code 200
-
-    OK(200)
     {
         "status_code": 200
         "result": [
@@ -307,13 +405,23 @@
     }
 
 --- 
+#### UPDATE a operation
 
-    PUT /operations/<operation_id>
-    管理者の更新
+**PUT** `/operations/<operation_id>`
+
+管理者の更新
+
+#### Parameters
+
+- operation_id
+- username
+- password
+- state
+- updated_by
+
+#### Response
+
     status_code 201
-
-    Created(201)
-    format
     {
         "status_code": 201,
         "result": [
@@ -327,13 +435,19 @@
     }
 
 --- 
+#### Delete a operation
 
-    DELETE   /operations/<operation_id>
-    管理者の削除
+**DELETE**   `/operations/<operation_id>`
+
+管理者の削除
+
+#### Parameters
+
+- operation_id
+
+#### Response
+
     status_code 204
-
-    NoConent(204)
-    format
     {
         "status_code": 204
     }
@@ -342,12 +456,22 @@
 
 お知らせについてのデータを取り扱う
 
-    POST /informations
-    お知らせの新規作成
-    status_code 201
+#### Create a information
 
-    Created(201)
-    format
+**POST** `/informations`
+
+お知らせの新規作成
+
+#### Parameters
+
+- content
+- status
+- created_by
+- updated_by
+
+#### Response
+
+    status_code 201
     {
         "status_code": 201
         "result": [
@@ -365,13 +489,19 @@
 
 
 --- 
+#### Get informations
 
-    GET  /informations
-    お知らせからレスポンス
+**GET**  `/informations`
+
+お知らせからレスポンス
+
+#### Parameters
+
+- None
+
+#### Response
+
     status_code 200
-
-    OK(200)
-    format
     {
         "status_code": 200
         "result": [
@@ -391,13 +521,19 @@
     }
 
 --- 
+#### Get a information
 
-    GET  /informations/<information_id>
-    リクエストされたお知らせIDから検索する
+**GET**  `/informations/<information_id>`
+
+リクエストされたお知らせIDから検索する
+
+#### Parameters
+
+- information_id
+
+#### Response
+
     status_code 200
-
-    OK(200)
-    format
     {
         "status_code": 200
         "result": [
@@ -415,13 +551,22 @@
     
 
 --- 
-    
-    PUT /informations/<information_id>
-    お知らせの更新
-    status_code 201
+#### UPDATE a information
 
-    Created(201)
-    format
+**PUT** `/informations/<information_id>`
+
+お知らせの更新
+
+#### Parameters
+
+- question_id
+- content
+- status
+- updated_by
+
+#### Response
+
+    status_code 201
     {
         "status_code": 201
         "result": [
@@ -439,13 +584,19 @@
 
 
 --- 
+#### DELETE a information
 
-    DELETE   /informations/<information_id>
-    お知らせの削除
+**DELETE**   /informations/<information_id>
+
+お知らせの削除
+
+#### Parameters
+
+- information_id
+
+#### Response
+
     status_code 204
-
-    NoConent(204)
-    format
     {
         "status_code": 204
     }
@@ -454,12 +605,19 @@
 
 投稿ログについてのデータを取り扱う
 
-    GET  /tweets
-    投稿一覧からレスポンス
-    status_code 200
+#### Get tweets
 
-    OK(200)
-    format
+**GET**  /tweets
+
+投稿一覧からレスポンス
+
+#### Parameters
+
+- None
+
+#### Response
+
+    status_code 200
     {
         "status_code": 200,
         "result": [
@@ -475,12 +633,23 @@
 
 応答についてのデータを取り扱う
 
---- POST /responses
-    応答の新規作成
-    status_code 201
+#### Create a response
 
-    Created(201)
-    format
+**POST** /responses
+
+応答の新規作成
+
+#### Parameters
+
+- type
+- content
+- state
+- created_by
+- updated_by
+
+#### Response
+
+    status_code 201
     {
         "status_code": 201,
         "result": [
@@ -497,13 +666,19 @@
     }
 
 --- 
+#### Get responses
 
-    GET  /responses
-    応答からレスポンス
+**GET**  /responses
+
+応答からレスポンス
+
+#### Parameters
+
+- None
+
+#### Response
+
     status_code 200
-
-    OK(200)
-    format
     {
         "status_code": 200,
         "result": [
@@ -523,13 +698,19 @@
     }
 
 --- 
+#### Get a response
 
-    GET  /responses/<response_id>
-    リクエストされた応答IDから検索する
+**GET**  `/responses/<response_id>`
+
+リクエストされた応答IDから検索する
+
+#### Parameters
+
+- response_id
+
+#### Response
+
     status_code 200
-
-    OK(200)
-    format
     {
         "status_code": 200,
         "result": [
@@ -547,13 +728,23 @@
     
 
 --- 
+#### UPDATE a response
 
-    PUT /responses/<reponse_id>
-    応答の更新
+**PUT** /responses/<reponse_id>
+
+応答の更新
+
+#### Parameters
+
+- response_id
+- type
+- content
+- state
+- updated_by
+
+#### Response
+
     status_code 201
-
-    Created(201)
-    format
     {
         "status_code": 201,
         "result": [
@@ -570,13 +761,19 @@
     }
 
 --- 
+#### DELETE a response
 
-    DELETE   /responses/<reponse_id>
-    応答の削除
+**DELETE**   `/responses/<reponse_id>`
+
+応答の削除
+
+#### Parameters
+
+- response_id
+
+#### Response
+
     status_code 204
-
-    NoConent(204)
-    format
     {
         "status_code": 204
     }
