@@ -257,8 +257,10 @@ def index_tweets():
 @app.route('/responses', methods=['POST'])
 def add_response():
     code = 201
-    g.db.execute('insert into responses (type, content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
-            [request.form['type'], request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], request.form['created_at'], request.form['updated_at']])
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    g.db.execute('insert into responses (type, content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?,?)',
+            [request.form['type'], request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr])
     g.db.commit()
 
     return jsonify(status_code=code)
@@ -274,17 +276,19 @@ def index_responses():
 @app.route('/responses/<response_id>', methods=['GET'])
 def show_response(response_id):
     code = 200
-    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations where id = ?',
+    cur = g.db.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses where id = ?',
             [response_id])
-    response = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
+    response = [dict(id=row[0], type=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
 
     return jsonify(status_code=code, result=response)
 
 @app.route('/responses/<response_id>', methods=['PUT'])
 def edit_response(response_id):
     code = 201
-    cur = g.db.execute('update responses set content=?, state=?, updated_by=?, updated_at=? where id = ?',
-            [request.form['content'], request.form['state'], request.form['updated_by'], "ddd", response_id])
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    cur = g.db.execute('update responses set type=?, content=?, state=?, updated_by=?, updated_at=? where id = ?',
+            [request.form['type'], request.form['content'], request.form['state'], request.form['updated_by'], tstr, response_id])
     g.db.commit()
 
     return jsonify(status_code=code)
