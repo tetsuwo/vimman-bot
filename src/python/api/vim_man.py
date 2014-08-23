@@ -145,40 +145,45 @@ def delete_question(question_id):
 @app.route('/answers/<question_id>', methods=['POST'])
 def add_answer(question_id):
     code = 201
-    g.db.execute('insert into answers (question_id, content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
-            [question_id, request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], request.form['created_at'], request.form['updated_at']])
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    g.db.execute('insert into answers (question_id, content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?,?)',
+            [question_id, request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr])
     g.db.commit()
 
     return jsonify(status_code=code)
 
 @app.route('/answers/<question_id>', methods=['GET'])
-def index_answers():
+def index_answers(question_id):
     code = 200
-    cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from questions')
+    cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from answers where question_id = ?',
+            question_id)
     answers = [dict(id=row[0], question_id=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
 
     return jsonify(status_code=code, result=answers)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['GET'])
-def show_answer(answer_id):
+def show_answer(question_id, answer_id):
     code = 200
-    cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from questions where id = ?',
+    cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from answers where id = ?',
             [answer_id])
     question = [dict(id=row[0], question_id=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
 
     return jsonify(status_code=code, result=question)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['PUT'])
-def edit_answer(answer_id):
+def edit_answer(question_id, answer_id):
     code = 201
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     cur = g.db.execute('update answers set content=?, state=?, updated_by=?, updated_at=? where id = ?',
-            [request.form['content'], request.form['state'], request.form['updated_by'], "ddd", answer_id])
+            [request.form['content'], request.form['state'], request.form['updated_by'], tstr, answer_id])
     g.db.commit()
 
     return jsonify(status_code=code)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['DELETE'])
-def delete_answer(answer_id):
+def delete_answer(question_id, answer_id):
     code = 204
     cur = g.db.execute('delete from answers where question_id = ? and id = ?',
     [question_id, answer_id])
