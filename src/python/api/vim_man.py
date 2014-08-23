@@ -243,8 +243,12 @@ def delete_information(information_id):
 # /tweets
 @app.route('/tweets', methods=['GET'])
 def index_tweets():
+    # create dummy data
+    #g.db.execute('insert into tweets (tweet_id, type, content, created_by, updated_by, created_at, updated_at) values (1,"ok","rers","himejima","update_himejima","2013/11/11 11:11:32", "2014/12/11 10:50:22")')
+    #g.db.commit()
+
     code = 200
-    cur = g.db.execute('select id, tweet_id, type, created_by, updated_by, created_at, updated_at from tweets')
+    cur = g.db.execute('select id, tweet_id, type, content, created_by, updated_by, created_at, updated_at from tweets')
     tweets = [dict(id=row[0], tweet_id=row[1], type=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
     # app.logger.debug(questions)
     return jsonify(status_code=code, result=tweets)
