@@ -465,7 +465,7 @@
 #### Parameters
 
 - content
-- status
+- state
 - created_by
 - updated_by
 
@@ -482,7 +482,7 @@
                "updated_by": "更新者", #
                "created_at":"登録日時",
                "updated_at":"更新日時"
-               "status": "登録した状態"
+               "state": "登録した状態"
         }
         ]
     }
@@ -512,7 +512,7 @@
                "updated_by": "更新者", #
                "created_at":"登録日時",
                "updated_at":"更新日時"
-               "status": "状態"
+               "state": "状態"
         },
         {
             ...
@@ -544,7 +544,7 @@
                "updated_by": "更新者", #
                "created_at":"登録日時",
                "updated_at":"更新日時"
-               "status": "状態"
+               "state": "状態"
         }
         ]
     }
@@ -561,7 +561,7 @@
 
 - question_id
 - content
-- status
+- state
 - updated_by
 
 #### Response
@@ -577,7 +577,7 @@
                "updated_by": "更新者", #
                "created_at":"登録日時",
                "updated_at":"更新日時"
-               "status": "更新した状態"
+               "state": "更新した状態"
         }
         ]
     }
