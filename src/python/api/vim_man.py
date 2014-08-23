@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 from flask import Flask, jsonify, Response, request, session, g, redirect, url_for, abort, render_template, flash
+from datetime import datetime as dt
 
 DATABASE = 'vim_man.db'
 DEBUG = True
@@ -42,9 +43,11 @@ def test():
 @app.route('/operations', methods=['POST'])
 def add_operation():
     code = 201
-    #g.db.execute('insert into questions (content, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?)',[])
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    # TODO saltのセット方法
     g.db.execute('insert into operations (username, password, salt, state, created_at, updated_at) values (?,?,?,?,?,?)',
-            [request.form['username'], request.form['password'], request.form['salt'], request.form['state'], "", ""])
+            [request.form['username'], request.form['password'], "salt1", request.form['state'], tstr, tstr])
     g.db.commit()
 
     return jsonify(status_code=code)
@@ -52,6 +55,7 @@ def add_operation():
 @app.route('/operations', methods=['GET'])
 def index_operatinos():
     code = 200
+    # TODO passwordを外す
     cur = g.db.execute('select id, username, password, state, created_at, updated_at from operations')
     operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in cur.fetchall()]
     # app.logger.debug(questions)
@@ -69,8 +73,10 @@ def show_operation(operation_id):
 @app.route('/operations/<operation_id>', methods=['PUT'])
 def edit_operation(operation_id):
     code = 201
-    cur = g.db.execute('update operations set username=?, password=?, state=?, created_at=?, updated_at=? where id = ?',
-            [request.form['username'], request.form['password'], '', '', operation_id])
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    cur = g.db.execute('update operations set username=?, password=?, state=?, updated_at=? where id = ?',
+            [request.form['username'], request.form['password'], request.form['state'], tstr, operation_id])
     g.db.commit()
 
     return jsonify(status_code=code)
@@ -96,7 +102,6 @@ def index_questions():
 @app.route('/questions', methods=['POST'])
 def add_question():
     code = 201
-    #g.db.execute('insert into questions (content, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?)',[])
     g.db.execute('insert into questions (content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
             [request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], request.form['created_at'], request.form['updated_at']])
     g.db.commit()
