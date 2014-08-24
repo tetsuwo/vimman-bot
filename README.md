@@ -17,7 +17,7 @@
 1. Execute to command of below.
 2. Access to `localhost:8080`.
 
-    $ npm install --save-dev gulp gulp-connect
+    $ npm install
     $ ./node_modules/gulp/bin/gulp.js
 
 

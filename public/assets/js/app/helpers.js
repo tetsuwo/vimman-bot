@@ -119,7 +119,8 @@ function getPresetListComponent(componentName) {
                             that.notFound();
                         });
 
-                        window.location.href = window.location.href + '?' + queryString;
+                        var urlhash = window.location.href.replace(/\?.*/, '');
+                        window.location.href = urlhash + '?' + queryString;
                 }, 800);
             },
             loading: function(flag) {
