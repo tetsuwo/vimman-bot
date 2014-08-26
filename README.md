@@ -20,7 +20,15 @@
     $ npm install
     $ ./node_modules/gulp/bin/gulp.js
 
+## Execute Python Flask
 
+1. Execute to command of below.
+2. Access to `localhost:5000`. ex) `localhost:5000/questions`
+
+   $ cd /vim_man_bot_project/src/python/api
+   
+   $ python vim_man.py
+   
 ## TODO
 
 ### 管理画面作成
