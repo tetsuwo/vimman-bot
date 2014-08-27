@@ -25,6 +25,12 @@
 1. Execute to command of below.
 2. Access to `localhost:5000`. ex) `localhost:5000/questions`
 
+   $ cd /vim_man_bot_project
+   
+   $ pip install mypackage
+   
+   $ pip install -r requirements.txt ※今はFlaskのみ
+   
    $ cd /vim_man_bot_project/src/python/api
    
    $ python vim_man.py
