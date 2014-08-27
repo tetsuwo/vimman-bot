@@ -17,6 +17,7 @@ gulp.task('connect', function () {
 
 gulp.task('concat', function () {
   gulp.src([
+      'public/assets/js/app/utils.js',
       'public/assets/js/app/helpers.js',
       'public/assets/js/app/components/questions/index.js',
       'public/assets/js/app/components/questions-create/index.js',
