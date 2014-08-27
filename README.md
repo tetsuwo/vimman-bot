@@ -12,23 +12,27 @@
 - vimを広めたい。使えるといろいろ便利。
 
 
-## Developing for Frontend
+## Development
 
-1. Execute to command of below.
-2. Access to `localhost:8080`.
+### Development of Frontend
+
+#### 1. Execute to command of below.
 
     $ npm install
     $ ./node_modules/gulp/bin/gulp.js
 
-## Execute Python Flask
+#### 2. Access to `localhost:8080` your browser.
 
-1. Execute to command of below.
-2. Access to `localhost:5000`. ex) `localhost:5000/questions`
+### Development of API
+
+#### 1. Execute to command of below.
 
    $ cd /vim_man_bot_project/src/python/api
-   
    $ python vim_man.py
-   
+
+#### 2. Access to `localhost:5000`. ex) `localhost:5000/questions`
+
+
 ## TODO
 
 ### 管理画面作成
