@@ -34,8 +34,6 @@ gulp.task('concat', function () {
       'public/assets/js/app/components/tweets/index.js',
       'public/assets/js/app/components/pagination/index.js',
       'public/assets/js/app/app.js',
-      'public/assets/js/app/main.js',
-      'public/assets/js/app/nav.js',
       'public/assets/js/app/router.js'
     ])
     .pipe(concat('project.min.js'))
