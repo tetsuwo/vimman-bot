@@ -20,22 +20,7 @@
     <button type="submit" class="btn btn-primary btn-sm">検索</button>
 </form>
 
-<div class="box row">
-    <div class="col-md-6">
-        <p>200件</p>
-    </div>
-    <div class="col-md-6">
-        <ul class="pull-right pagination pagination-sm">
-            <li><a href="#">&laquo;</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
-    </div>
-</div>
+<div v-component="pagination" v-with="result"></div>
 
 <table class="table table-striped">
     <thead>
@@ -47,47 +32,14 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>3</td>
-            <td>@aganoyot ( ´∀｀)bｸﾞｯ!</td>
-            <td>
-                <a href="https://twitter.com/vimmer_/status/495239100962598913">https://twitter.com/vimmer_/status/495239100962598913</a>
-            </td>
-            <td>2014-09-07 14:12</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>@masahiiiro ( ´∀｀)bｸﾞｯ!</td>
-            <td>
-                <a href="https://twitter.com/vimmer_/status/495239100962598913">https://twitter.com/vimmer_/status/495239100962598913</a>
-            </td>
-            <td>2014-09-07 14:12</td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>@tetsukamp ( ・３・) BOO!!!</td>
-            <td>
-                <a href="https://twitter.com/vimmer_/status/495239100962598913">https://twitter.com/vimmer_/status/495239100962598913</a>
-            </td>
-            <td>2014-09-07 14:12</td>
+        <tr v-repeat="result.list">
+            <td>{{ id }}</td>
+            <td>{{ content }}</td>
+            <td><a href="{{ url }}">{{ url }}</a></td>
+            <td>{{ created_at | formatDate }}</td>
         </tr>
     </tbody>
 </table>
 
-<div class="box row">
-    <div class="col-md-6">
-        <p>200件</p>
-    </div>
-    <div class="col-md-6">
-        <ul class="pull-right pagination pagination-sm">
-            <li><a href="#">&laquo;</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
-    </div>
-</div>
+<div v-component="pagination" v-with="result"></div>
 

@@ -1,3 +1,3 @@
 Vue.component('operators-create', mergeComponent({
-    template: getHTML('assets/js/app/components/operators-create/template.html')
+    template: Utils.getHTML('assets/js/app/components/operators-create/template.html')
 }));

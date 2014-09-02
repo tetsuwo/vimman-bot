@@ -1,23 +1,3 @@
-/**
- * Get HTML from URL
- *
- * @param  {String} url
- * @return {String} html
- */
-function getHTML(url) {
-    var html = '';
-
-    $.ajax({
-        dataType : 'html',
-        url      : url,
-        async    : false,
-        success  : function(response, status) {
-            html = response;
-        }
-    });
-
-    return html;
-}
 
 /**
  * Get Preset Object for Component
@@ -47,32 +27,6 @@ function getPresetComponent() {
     };
 }
 
-function buildQueryString(param, prefix) {
-    var query = [];
-
-    for(var p in param) {
-        var k = prefix ? prefix + '[' + p + ']' : p, v = param[p];
-        query.push(
-            typeof v == 'object' ?
-                buildQueryString(v, k) :
-                encodeURIComponent(k) + '=' + encodeURIComponent(v)
-        );
-    }
-
-    return query.join('&');
-}
-
-function getPages(startIndex, total, limit) {
-    var pages = [];
-    var per = total / limit;
-
-    for (var i = startIndex; i <= per; i++) {
-        pages.push(i);
-    }
-
-    return pages;
-}
-
 /**
  * Get Preset Object for List Component
  *
@@ -81,11 +35,11 @@ function getPages(startIndex, total, limit) {
 function getPresetListComponent(componentName) {
     return {
 
-        template: getHTML('assets/js/app/components/' + componentName + '/template.html'),
+        template: Utils.getHTML('assets/js/app/components/' + componentName + '/template.html'),
 
         created: function () {
             console.log(componentName, 'component.created');
-            this.fetch();
+            this.fetch(this.$parent.conditions.page);
         },
 
         beforeDestroy: function() {
@@ -96,13 +50,14 @@ function getPresetListComponent(componentName) {
         },
 
         methods: {
-            fetch: function() {
+            fetch: function(conditions) {
+                console.log('fetch', conditions);
                 this.loading(true);
 
                 var that        = this;
                 var requestUri  = 'assets/js/app/components/' + componentName + '/dummy.json';
-                var queryString = buildQueryString(this.$parent.conditions);
-                var page        = this.$parent.conditions.page;
+                var queryString = Utils.buildQueryString(conditions);
+                var page        = conditions.page;
                 console.log('queryString', queryString);
 
                 window.setTimeout(function() {
@@ -119,26 +74,34 @@ function getPresetListComponent(componentName) {
                             that.notFound();
                         });
 
-                        window.location.href = window.location.href + '?' + queryString;
+                        var pushStateUrl = window.location.href.replace(/\?.*/, '');
+                        pushStateUrl += conditions ? '?' + queryString : '';
+                        window.location.href = pushStateUrl;
                 }, 800);
             },
+
             loading: function(flag) {
+                console.log('loading', flag);
                 this.$parent.isLoading = flag;
             },
+
             found: function(data, page) {
-                console.log('found', data, page);
+                console.log('found', data, 'page', page);
                 this.$parent.result.list        = data.result;
                 this.$parent.result.currentPage = page;
-                this.$parent.result.pages       = getPages(page, data.total_count, 10);
+                this.$parent.result.pages       = Utils.getPages(page, data.total_count, 10);
                 this.$parent.result.totalCount  = data.total_count;
                 this.$parent.result.totalPage   = Math.ceil(data.total_count / 10);
                 this.loading(false);
             },
+
             notFound: function() {
+                console.log('notFound');
                 this.$parent.result.list        = [];
                 this.$parent.result.currentPage = 1;
                 this.$parent.result.pages       = [];
                 this.$parent.result.totalCount  = 0;
+                this.$parent.result.totalPage   = 0;
                 this.$parent.result.currentPage = 1;
                 this.loading(false);
             },
