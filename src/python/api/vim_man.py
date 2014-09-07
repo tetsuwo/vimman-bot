@@ -2,6 +2,7 @@
 import sqlite3
 from flask import Flask, jsonify, Response, request, session, g, redirect, url_for, abort, render_template, flash
 from datetime import datetime as dt
+from flaskext.mysql import MySQL
 
 DATABASE = 'vim_man.db'
 DEBUG = True
@@ -9,12 +10,23 @@ SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
+MYSQL_DATABASE_HOST = 'localhost'
+MYSQL_DATABASE_PORT = 33061
+MYSQL_DATABASE_USER = root
+MYSQL_DATABASE_PASSWORD = root
+MYSQL_DATABASE_DB = myapp
+MYSQL_DATABASE_CHARSET = 'utf-8'
+
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 
+mysql = MySQL()
+mysql.init_app(app)
+
 def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
+    #return sqlite3.connect(app.config['DATABASE'])
+    return mysql.get_db()
 
 from contextlib import closing
 def init_db():
@@ -303,8 +315,25 @@ def delete_response(response_id):
     return jsonify(status_code=code)
 
 # /login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    code = 200
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] == app.config['USERNAME'] && request.form['password'] == app.config['PASSWORD']:
+            session['logged_in'] = True
+            return jsonify(status_code=code)
+        else:
+            error = 'wrong' 
+
+    return jsonify(status_code=code)
 
 # /logout
+@app.route('/logout')
+def logout():
+    code = 200
+    session.pop('logged_in', None)
+    return jsonify(status_code=code)
 
 if __name__ == '__main__':
     app.run()

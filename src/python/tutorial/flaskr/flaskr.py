@@ -15,6 +15,11 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
+users = {
+  1: {'id':1, 'name':'foo'},
+  2: {'id':2, 'name':'bar'}
+}
+
 def connect_db():
   return sqlite3.connect(app.config['DATABASE'])
 
@@ -43,11 +48,20 @@ def add_entry():
                  [request.form['title'], request.form['text']])
     g.db.commit()
     flash('New entry was successfully posted')
-    print request.data
 
-    #content_body_dict = json.loads(request.data)
-    #print content_body_dict
+    app.logger.debug(users.values())
+    #content_body_dict = json.loads(request.form)
+    #content_body_dict['id'] = 1000
+    #response = jsonify(content_body_dict)
+    app.logger.debug(request.data)
+    app.logger.debug(request.form.values())
+    app.logger.debug(jsonify(users.values()))
+    #app.logger.debug(json.dumps({'tets':'dddd'}))
+
     return redirect(url_for('show_entries'))
+@app.route('/test')
+def test():
+  return jsonify(result=users.values())
 
 @app.route('/')
 def show_entries():
