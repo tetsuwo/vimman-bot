@@ -3,7 +3,8 @@
     "total_count": 13,
     "result": [{
         "id"         : 4,
-        "content"    : "レスポンス4",
+        "type"       : "正解",
+        "content"    : "( ´∀｀)bｸﾞｯ!",
         "created_by" : "aganoyot",
         "updated_by" : "tetsukamp",
         "created_at" : "2014-08-27 01:12:23",
@@ -11,7 +12,8 @@
         "state"      : "公開中"
     }, {
         "id"         : 3,
-        "content"    : "レスポンス3",
+        "type"       : "誤解",
+        "content"    : "・３・）ﾌﾞｰﾌﾞｰ",
         "created_by" : "masahiiiro",
         "updated_by" : "aganoyot",
         "created_at" : "2014-08-27 01:12:23",
@@ -19,6 +21,7 @@
         "state"      : "公開中"
     }, {
         "id"         : 2,
+        "type"       : "誤解",
         "content"    : "レスポンス2",
         "created_by" : "tetsukamp",
         "updated_by" : "masahiiiro",
@@ -27,6 +30,7 @@
         "state"      : "公開中"
     }, {
         "id"         : 1,
+        "type"       : "誤解",
         "content"    : "レスポンス1",
         "created_by" : "登録者",
         "updated_by" : "更新者",
