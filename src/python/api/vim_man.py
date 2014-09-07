@@ -10,19 +10,19 @@ SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
-MYSQL_DATABASE_HOST = 'localhost'
-MYSQL_DATABASE_PORT = 33061
-MYSQL_DATABASE_USER = root
-MYSQL_DATABASE_PASSWORD = root
-MYSQL_DATABASE_DB = myapp
-MYSQL_DATABASE_CHARSET = 'utf-8'
+# MYSQL_DATABASE_HOST = 'localhost'
+# MYSQL_DATABASE_PORT = 33061
+# MYSQL_DATABASE_USER = root
+# MYSQL_DATABASE_PASSWORD = root
+# MYSQL_DATABASE_DB = myapp
+# MYSQL_DATABASE_CHARSET = 'utf-8'
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 
-mysql = MySQL()
-mysql.init_app(app)
+# mysql = MySQL()
+# mysql.init_app(app)
 
 def connect_db():
     #return sqlite3.connect(app.config['DATABASE'])
@@ -320,7 +320,7 @@ def login():
     code = 200
     error = None
     if request.method == 'POST':
-        if request.form['username'] == app.config['USERNAME'] && request.form['password'] == app.config['PASSWORD']:
+        if request.form['username'] == app.config['USERNAME'] and request.form['password'] == app.config['PASSWORD']:
             session['logged_in'] = True
             return jsonify(status_code=code)
         else:
