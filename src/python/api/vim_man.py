@@ -2,7 +2,7 @@
 import sqlite3
 from flask import Flask, jsonify, Response, request, session, g, redirect, url_for, abort, render_template, flash
 from datetime import datetime as dt
-from flaskext.mysql import MySQL
+# from flaskext.mysql import MySQL
 
 DATABASE = 'vim_man.db'
 DEBUG = True
@@ -25,8 +25,8 @@ app.config.from_envvar('FLASKR_SETTING', silent=True)
 # mysql.init_app(app)
 
 def connect_db():
-    #return sqlite3.connect(app.config['DATABASE'])
-    return mysql.get_db()
+    return sqlite3.connect(app.config['DATABASE'])
+    # return mysql.get_db()
 
 from contextlib import closing
 def init_db():
