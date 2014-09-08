@@ -44,10 +44,27 @@
         parseQueryString: function (queryString) {
             var param = {};
 
-            var query = queryString.split('&');
-            for (var q in query) {
-                var st = q.split('\+');
+            var queries = queryString.split('&');
+            for (var q in queries) {
+                var st = queries[q].split('=');
+                console.log(q, st);
                 if (st[0] && st[1]) {
+                    param[st[0]] = st[1];
+                }
+            }
+
+            return param;
+        },
+
+        _parseQueryString: function (queries, result) {
+            var param = {};
+
+            for (var q in queries) {
+                var st = queries[q].split('=');
+                console.log(q, st);
+                if (st[0].match(/(.+)\[(.+)\]/)) {
+                    console.log('_parseQueryString', RegExp.$1, RegExp.$2);
+                } else {
                     param[st[0]] = st[1];
                 }
             }
@@ -60,6 +77,24 @@
             var per = total / limit;
 
             for (var i = startIndex; i <= per; i++) {
+                pages.push(i);
+            }
+
+            return pages;
+        },
+
+        calcPagination: function (page, max, limit, delta) {
+            var total = Math.ceil(max / limit);
+            var alpha = 0;
+            if (page <= delta) {
+                alpha = delta - (page + 1);
+            }
+            var calc = page + delta + alpha;
+            var pages = [];
+            for (var i = page - delta; (i <= calc) && (i <= total); i++) {
+                if (i < 1) {
+                    continue;
+                }
                 pages.push(i);
             }
 

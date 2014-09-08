@@ -6,18 +6,26 @@
 <form class="form-inline search-form" role="form">
     <div class="form-group">
         <label class="sr-only" for="searchform-id">ID</label>
-        <input type="number" class="form-control input-sm" id="searchform-id" placeholder="ID(#)">
+        <input type="number" 
+               class="form-control input-sm" 
+               id="searchform-id" 
+               name="search[id]" 
+               placeholder="ID(#)">
     </div>
     <div class="form-group">
-        <label class="sr-only" for="searchform-name">内容</label>
-        <input type="content" class="form-control input-sm" id="searchform-name" placeholder="内容">
+        <label class="sr-only" for="searchform-content">内容</label>
+        <input type="text" 
+               class="form-control input-sm" 
+               id="searchform-name" 
+               name="search[content]" 
+               placeholder="内容">
     </div>
     <!--<div class="form-group checkbox">
         <label>
             <input type="checkbox"> 削除
         </label>
         </div>-->
-    <button type="submit" class="btn btn-primary btn-sm">検索</button>
+    <button type="button" v-on="click: search($event)" class="btn btn-primary btn-sm">検索</button>
 </form>
 
 <div v-component="pagination" v-with="result"></div>
@@ -40,6 +48,7 @@
         <tr v-repeat="result.list">
             <td>{{ id }}</td>
             <td>{{ state }}</td>
+            <td>{{ type }}</td>
             <td>{{ content }}</td>
             <td>{{ created_by }}</td>
             <td>{{ updated_by }}</td>

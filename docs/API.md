@@ -70,6 +70,7 @@
     status_code 200
     {
         "status_code": 200,
+        "total_count": 100,
         "result" : [
         {
            id: 1,
@@ -214,6 +215,7 @@
     status_code 200
     {
         "status_code": 200,
+        "total_count": 100,
         "result" : [
         {
             id: 1,
@@ -363,6 +365,7 @@
     status_code 200
     {
         "status_code": 200
+        "total_count": 100,
         "result": [
         {
             id: 1,
@@ -504,6 +507,7 @@
     status_code 200
     {
         "status_code": 200
+        "total_count": 100,
         "result": [
         {
                "id": 1,
@@ -620,6 +624,7 @@
     status_code 200
     {
         "status_code": 200,
+        "total_count": 100,
         "result": [
             id: 1,
             type: "投稿の種類",
@@ -681,6 +686,7 @@
     status_code 200
     {
         "status_code": 200,
+        "total_count": 100,
         "result": [
             id: 1,
             type: ng, # 
@@ -777,3 +783,5 @@
     {
         "status_code": 204
     }
+
+

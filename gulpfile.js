@@ -16,7 +16,7 @@ gulp.task('connect', function () {
 });
 
 gulp.task('concat', function () {
-  gulp.src([
+  var targets = gulp.src([
       'public/assets/js/app/utils.js',
       'public/assets/js/app/helpers.js',
       'public/assets/js/app/components/questions/index.js',
@@ -35,7 +35,14 @@ gulp.task('concat', function () {
       'public/assets/js/app/components/pagination/index.js',
       'public/assets/js/app/app.js',
       'public/assets/js/app/router.js'
-    ])
+    ]);
+
+  targets
+    .pipe(concat('project.js'))
+    .pipe(jshint())
+    .pipe(gulp.dest('public/assets/js'));
+
+  targets
     .pipe(concat('project.min.js'))
     .pipe(jshint())
     .pipe(uglify())
