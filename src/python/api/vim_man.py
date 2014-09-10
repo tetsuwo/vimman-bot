@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-import sqlite3
+
 from flask import Flask, jsonify, Response, request, session, g, redirect, url_for, abort, render_template, flash
 from datetime import datetime as dt
+from helpers.crossdomain import *
+from helpers.database import *
 
+# for Settings
 DATABASE = 'vim_man.db'
 DEBUG = True
 SECRET_KEY = 'development key'
@@ -13,19 +16,9 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
-
-from contextlib import closing
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
 @app.before_request
 def before_request():
-    g.db = connect_db()
+    g.db = connect_db(database=DATABASE)
 
 @app.teardown_request
 def teardown_request(exception):
@@ -34,13 +27,15 @@ def teardown_request(exception):
         db.close()
 
 @app.route('/')
+@crossdomain(origin='*')
 def test():
     res = {1: 2}
     return jsonify(res)
 
 # /operations
 
-@app.route('/operations', methods=['POST'])
+@app.route('/operations', methods=['POST', 'OPTIONS'])
+@crossdomain(origin='*')
 def add_operation():
     code = 201
     tdatetime = dt.now()
@@ -53,6 +48,7 @@ def add_operation():
     return jsonify(status_code=code)
 
 @app.route('/operations', methods=['GET'])
+@crossdomain(origin='*')
 def index_operatinos():
     code = 200
     # TODO passwordを外す
@@ -62,6 +58,7 @@ def index_operatinos():
     return jsonify(status_code=code, result=operations)
 
 @app.route('/operations/<operation_id>', methods=['GET'])
+@crossdomain(origin='*')
 def show_operation(operation_id):
     code = 200
     cur = g.db.execute('select id, username, password, state, created_at, updated_at from operations where id = ?',
@@ -71,6 +68,7 @@ def show_operation(operation_id):
     return jsonify(status_code=code, result=operation)
 
 @app.route('/operations/<operation_id>', methods=['PUT'])
+@crossdomain(origin='*')
 def edit_operation(operation_id):
     code = 201
     tdatetime = dt.now()
@@ -82,6 +80,7 @@ def edit_operation(operation_id):
     return jsonify(status_code=code)
 
 @app.route('/operations/<operation_id>', methods=['DELETE'])
+@crossdomain(origin='*')
 def delete_operation(operation_id):
     code = 204
     cur = g.db.execute('delete from operations where id = ?',
@@ -92,6 +91,7 @@ def delete_operation(operation_id):
 
 # /questions
 @app.route('/questions', methods=['GET'])
+@crossdomain(origin='*')
 def index_questions():
     code = 200
     cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions')
@@ -100,6 +100,7 @@ def index_questions():
     return jsonify(status_code=code, result=questions)
 
 @app.route('/questions', methods=['POST'])
+@crossdomain(origin='*')
 def add_question():
     code = 201
     tdatetime = dt.now()
@@ -111,6 +112,7 @@ def add_question():
     return jsonify(status_code=code)
 
 @app.route('/questions/<question_id>', methods=['GET'])
+@crossdomain(origin='*')
 def show_question(question_id):
     code = 200
     cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions where id = ?',
@@ -120,6 +122,7 @@ def show_question(question_id):
     return jsonify(status_code=code, result=question)
 
 @app.route('/questions/<question_id>', methods=['PUT'])
+@crossdomain(origin='*')
 def edit_question(question_id):
     code = 201
     tdatetime = dt.now()
@@ -132,6 +135,7 @@ def edit_question(question_id):
     return jsonify(status_code=code)
 
 @app.route('/questions/<question_id>', methods=['DELETE'])
+@crossdomain(origin='*')
 def delete_question(question_id):
     code = 204
     cur = g.db.execute('delete from questions where id = ?',
@@ -143,6 +147,7 @@ def delete_question(question_id):
 
 # /answers
 @app.route('/answers/<question_id>', methods=['POST'])
+@crossdomain(origin='*')
 def add_answer(question_id):
     code = 201
     tdatetime = dt.now()
@@ -154,6 +159,7 @@ def add_answer(question_id):
     return jsonify(status_code=code)
 
 @app.route('/answers/<question_id>', methods=['GET'])
+@crossdomain(origin='*')
 def index_answers(question_id):
     code = 200
     cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from answers where question_id = ?',
@@ -163,6 +169,7 @@ def index_answers(question_id):
     return jsonify(status_code=code, result=answers)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['GET'])
+@crossdomain(origin='*')
 def show_answer(question_id, answer_id):
     code = 200
     cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from answers where id = ?',
@@ -172,6 +179,7 @@ def show_answer(question_id, answer_id):
     return jsonify(status_code=code, result=question)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['PUT'])
+@crossdomain(origin='*')
 def edit_answer(question_id, answer_id):
     code = 201
     tdatetime = dt.now()
@@ -183,6 +191,7 @@ def edit_answer(question_id, answer_id):
     return jsonify(status_code=code)
 
 @app.route('/answers/<question_id>/<answer_id>', methods=['DELETE'])
+@crossdomain(origin='*')
 def delete_answer(question_id, answer_id):
     code = 204
     cur = g.db.execute('delete from answers where question_id = ? and id = ?',
@@ -193,6 +202,7 @@ def delete_answer(question_id, answer_id):
 
 # /informations
 @app.route('/informations', methods=['POST'])
+@crossdomain(origin='*')
 def add_information():
     code = 201
     tdatetime = dt.now()
@@ -204,6 +214,7 @@ def add_information():
     return jsonify(status_code=code)
 
 @app.route('/informations', methods=['GET'])
+@crossdomain(origin='*')
 def index_informations():
     code = 200
     cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations')
@@ -212,6 +223,7 @@ def index_informations():
     return jsonify(status_code=code, result=informations)
 
 @app.route('/informations/<information_id>', methods=['GET'])
+@crossdomain(origin='*')
 def show_information(information_id):
     code = 200
     cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations where id = ?',
@@ -221,6 +233,7 @@ def show_information(information_id):
     return jsonify(status_code=code, result=information)
 
 @app.route('/informations/<information_id>', methods=['PUT'])
+@crossdomain(origin='*')
 def edit_information(information_id):
     code = 201
     tdatetime = dt.now()
@@ -232,6 +245,7 @@ def edit_information(information_id):
     return jsonify(status_code=code)
 
 @app.route('/informations/<information_id>', methods=['DELETE'])
+@crossdomain(origin='*')
 def delete_information(information_id):
     code = 204
     cur = g.db.execute('delete from informations where id = ?',
@@ -242,6 +256,7 @@ def delete_information(information_id):
 
 # /tweets
 @app.route('/tweets', methods=['GET'])
+@crossdomain(origin='*')
 def index_tweets():
     # create dummy data
     #g.db.execute('insert into tweets (tweet_id, type, content, created_by, updated_by, created_at, updated_at) values (1,"ok","rers","himejima","update_himejima","2013/11/11 11:11:32", "2014/12/11 10:50:22")')
@@ -255,6 +270,7 @@ def index_tweets():
 
 # /responses
 @app.route('/responses', methods=['POST'])
+@crossdomain(origin='*')
 def add_response():
     code = 201
     tdatetime = dt.now()
@@ -266,6 +282,7 @@ def add_response():
     return jsonify(status_code=code)
 
 @app.route('/responses', methods=['GET'])
+@crossdomain(origin='*')
 def index_responses():
     code = 200
     cur = g.db.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses')
@@ -274,6 +291,7 @@ def index_responses():
     return jsonify(status_code=code, result=responses)
 
 @app.route('/responses/<response_id>', methods=['GET'])
+@crossdomain(origin='*')
 def show_response(response_id):
     code = 200
     cur = g.db.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses where id = ?',
@@ -283,6 +301,7 @@ def show_response(response_id):
     return jsonify(status_code=code, result=response)
 
 @app.route('/responses/<response_id>', methods=['PUT'])
+@crossdomain(origin='*')
 def edit_response(response_id):
     code = 201
     tdatetime = dt.now()
@@ -294,6 +313,7 @@ def edit_response(response_id):
     return jsonify(status_code=code)
 
 @app.route('/responses/<response_id>', methods=['DELETE'])
+@crossdomain(origin='*')
 def delete_response(response_id):
     code = 204
     cur = g.db.execute('delete from responses where id = ?',
@@ -304,6 +324,7 @@ def delete_response(response_id):
 
 # /login
 @app.route('/login', methods=['GET', 'POST'])
+@crossdomain(origin='*')
 def login():
     code = 200
     error = None
@@ -312,12 +333,13 @@ def login():
             session['logged_in'] = True
             return jsonify(status_code=code)
         else:
-            error = 'wrong' 
+            error = 'wrong'
 
     return jsonify(status_code=code)
 
 # /logout
 @app.route('/logout')
+@crossdomain(origin='*')
 def logout():
     code = 200
     session.pop('logged_in', None)
