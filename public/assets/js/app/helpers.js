@@ -63,7 +63,8 @@ function getPresetListComponent(componentName) {
                 this.loading(true);
 
                 var that        = this;
-                var requestUri  = 'assets/js/app/components/' + componentName + '/dummy.json';
+                //var requestUri  = 'assets/js/app/components/' + componentName + '/dummy.json';
+                var requestUri  = 'http://localhost:5000/' + componentName;
                 var queryString = Utils.buildQueryString(conditions);
                 var page        = conditions.page;
                 //console.log('queryString', queryString);
