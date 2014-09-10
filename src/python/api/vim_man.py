@@ -2,7 +2,6 @@
 import sqlite3
 from flask import Flask, jsonify, Response, request, session, g, redirect, url_for, abort, render_template, flash
 from datetime import datetime as dt
-# from flaskext.mysql import MySQL
 
 DATABASE = 'vim_man.db'
 DEBUG = True
@@ -10,23 +9,12 @@ SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
-# MYSQL_DATABASE_HOST = 'localhost'
-# MYSQL_DATABASE_PORT = 33061
-# MYSQL_DATABASE_USER = root
-# MYSQL_DATABASE_PASSWORD = root
-# MYSQL_DATABASE_DB = myapp
-# MYSQL_DATABASE_CHARSET = 'utf-8'
-
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 
-# mysql = MySQL()
-# mysql.init_app(app)
-
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
-    # return mysql.get_db()
 
 from contextlib import closing
 def init_db():
