@@ -202,7 +202,7 @@
 ---
 #### Get answers by a question
 
-**GET**  `/answers/<question_id>`
+**GET**  `/questions/<question_id>/answers`
 
 問題ごとの解答の一覧を取得
 
@@ -234,15 +234,14 @@
     }
 
 --- 
-#### Get answers by a question
+#### Get an answer
 
-**GET**  `/answers/<question_id>/<answer_id>`
+**GET**  `/answers/<answer_id>`
 
 問題ごとの解答の取得
 
 #### Parameters
 
-- question_id
 - answer_id
 
 #### Response
@@ -265,9 +264,9 @@
     }
 
 --- 
-#### UPDATE a answer by a question
+#### UPDATE an answer
 
-**PUT** /answers/<question_id>/<answer_id>
+**PUT** /answers/<answer_id>
 
 問題ごとの解答の更新
 
@@ -299,15 +298,14 @@
     }
 
 --- 
-#### Delete a answer by a question
+#### Delete an answer by a question
 
-**DELETE** `/answers/<question_id>/<answer_id>`
+**DELETE** `/answers/<answer_id>`
 
 問題ごとの解答を削除する
 
 #### Parameters
 
-- question_id
 - answer_id
 
 #### Response
