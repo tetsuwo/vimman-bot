@@ -1,3 +1,3 @@
-Vue.component('responses-create', Vue.extend({
-    template: getHTML('assets/js/app/components/responses-create/template.html')
+Vue.component('responses-create', mergeComponent({
+    template: Utils.getHTML('assets/js/app/components/responses-create/template.html')
 }));

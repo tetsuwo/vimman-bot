@@ -1,3 +1,3 @@
-Vue.component('questions-create', Vue.extend({
-    template: getHTML('assets/js/app/components/questions-create/template.html')
+Vue.component('questions-create', mergeComponent({
+    template: Utils.getHTML('assets/js/app/components/questions-create/template.html')
 }));

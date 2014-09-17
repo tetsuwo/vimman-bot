@@ -7,21 +7,20 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <title>Backyard - Vim man bot</title>
-        <link href="vendor/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="assets/css/style.css" rel="stylesheet">
-        <!--<link href="vendor/assets/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">-->
+        <!--<link href="vendor/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">-->
     </head>
-    <body>
+    <body id="app">
         <!-- FIXED NAVBAR {{{ -->
-        <div class="navbar navbar-inverse navbar-fixed-top system-navbar" id="nav">
+        <div class="navbar navbar-inverse navbar-fixed-top system-navbar">
             <div class="container">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#/">Vim man bot</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <!--<li><a href="./index.html">ダッシュボード</a></li>-->
-                        <li class="active dropdown">
+                        <li class="dropdown" v-class="active:currentView=='questions'">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">問題内容 <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#/">問題内容一覧</a></li>
@@ -29,7 +28,7 @@
                                 <li><a href="#/questions/create">問題内容の新規作成</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        <li class="dropdown" v-class="active:currentView=='responses'">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">応答内容 <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#/responses">応答内容一覧</a></li>
@@ -37,7 +36,7 @@
                                 <li><a href="#/responses/create">応答内容の新規作成</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        <li class="dropdown" v-class="active:currentView=='informations'">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">お知らせ <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#/informations">お知らせ一覧</a></li>
@@ -45,13 +44,13 @@
                                 <li><a href="#/informations/create">お知らせの新規登録</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        <li class="dropdown" v-class="active:currentView=='tweets'">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">ツイート <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#/tweets">ツイート一覧</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        <li class="dropdown" v-class="active:currentView=='operators'">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">オペレーター <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#/operators">オペレーター一覧</a></li>
@@ -73,24 +72,24 @@
         </div>
         <!-- }}} -->
 
-        <div class="container wrapper" id="main">
-            <div v-view="currentView"></div>
+        <div class="container wrapper" v-class="loading: isLoading">
+            <div v-view="currentView" v-with="result"></div>
         </div>
         <!-- /container -->
 
         <div id="footer">
             <div class="container">
-                <p class="text-muted">&copy; OMOSAN</p>
+                <p class="text-muted">&copy; <a href="https://github.com/OMOSAN" target="_blank">OMOSAN</a></p>
             </div>
         </div>
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        <script src="vendor/assets/jquery/jquery-2.1.1.min.js"></script>
-        <script src="vendor/assets/vue/vue.min.js"></script>
-        <script src="vendor/assets/director/director.min.js"></script>
-        <script src="vendor/assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="vendor/jquery/jquery-2.1.1.min.js"></script>
+        <script src="vendor/vuejs/vue.min.js"></script>
+        <script src="vendor/flatiron/director.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
         <script src="assets/js/project.js"></script>
     </body>
     <!-- vim:foldmethod=marker:foldlevel=0 -->

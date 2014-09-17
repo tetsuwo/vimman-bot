@@ -1,3 +1,3 @@
-Vue.component('questions-update', Vue.extend({
-    template: getHTML('assets/js/app/components/questions-update/template.html')
+Vue.component('questions-update', mergeComponent({
+    template: Utils.getHTML('assets/js/app/components/questions-update/template.html')
 }));
