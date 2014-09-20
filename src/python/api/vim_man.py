@@ -51,9 +51,9 @@ def add_operation():
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     # TODO saltのセット方法
-    g.db.execute('insert into operations (username, password, salt, state, created_at, updated_at) values (?,?,?,?,?,?)',
-            [request.form['username'], request.form['password'], "salt1", request.form['state'], tstr, tstr])
-    g.db.commit()
+    g.cursor.execute('insert into operations (username, password, salt, state, created_at, updated_at) values (%s,%s,%s,%s,%s,%s)',
+            ([request.form['username'], request.form['password'], "salt1", request.form['state'], tstr, tstr]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -66,7 +66,7 @@ def index_operatinos():
     g.cursor.execute('select id, username, password, state, created_at, updated_at from operations')
     operations = g.cursor.fetchall()
     
-    print operations
+    # print operations
     #operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in g.cursor.fetchall()]
     operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in operations]
     # app.logger.debug(questions)
@@ -77,9 +77,9 @@ def index_operatinos():
 @crossdomain(origin='*')
 def show_operation(operation_id):
     code = 200
-    cur = g.db.execute('select id, username, password, state, created_at, updated_at from operations where id = ?',
+    g.cursor.execute('select id, username, password, state, created_at, updated_at from operations where id = %s',
             [operation_id])
-    operation = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in cur.fetchall()]
+    operation = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in g.cursor.fetchall()]
 
     return jsonify(status_code=code, result=operation)
 
@@ -89,9 +89,9 @@ def edit_operation(operation_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    cur = g.db.execute('update operations set username=?, password=?, state=?, updated_at=? where id = ?',
-            [request.form['username'], request.form['password'], request.form['state'], tstr, operation_id])
-    g.db.commit()
+    g.cursor.execute('update operations set username = %s, password = %s, state = %s, updated_at = %s where id = %s',
+            ([request.form['username'], request.form['password'], request.form['state'], tstr, operation_id]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -99,9 +99,9 @@ def edit_operation(operation_id):
 @crossdomain(origin='*')
 def delete_operation(operation_id):
     code = 204
-    cur = g.db.execute('delete from operations where id = ?',
-    [operation_id])
-    g.db.commit()
+    g.cursor.execute('delete from operations where id = %s',
+    ([operation_id]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -110,8 +110,8 @@ def delete_operation(operation_id):
 @crossdomain(origin='*')
 def index_questions():
     code = 200
-    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions')
-    questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
+    g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions')
+    questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
     # app.logger.debug(questions)
     return jsonify(status_code=code, result=questions)
 
@@ -121,9 +121,9 @@ def add_question():
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    g.db.execute('insert into questions (content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
-            [request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr])
-    g.db.commit()
+    g.cursor.execute('insert into questions (content, state, created_by, updated_by, created_at, updated_at) values (%s, %s, %s, %s, %s, %s)',
+            ([request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -131,9 +131,9 @@ def add_question():
 @crossdomain(origin='*')
 def show_question(question_id):
     code = 200
-    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions where id = ?',
-            [question_id])
-    question = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
+    g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions where id = %s',
+            ([question_id]))
+    question = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
 
     return jsonify(status_code=code, result=question)
 
@@ -143,10 +143,10 @@ def edit_question(question_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    app.logger.debug(request.form)
-    cur = g.db.execute('update questions set content=?, state=?, updated_by=?, updated_at=? where id = ?',
-            [request.form['content'], request.form['state'], request.form['updated_by'], tstr, question_id])
-    g.db.commit()
+    # app.logger.debug(request.form)
+    g.cursor.execute('update questions set content = %s, state = %s, updated_by = %s, updated_at = %s where id = %s',
+            ([request.form['content'], request.form['state'], request.form['updated_by'], tstr, question_id]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -154,9 +154,9 @@ def edit_question(question_id):
 @crossdomain(origin='*')
 def delete_question(question_id):
     code = 204
-    cur = g.db.execute('delete from questions where id = ?',
+    g.cursor.execute('delete from questions where id = %s',
     [question_id])
-    g.db.commit()
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -168,51 +168,51 @@ def add_answer(question_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    g.db.execute('insert into answers (question_id, content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?,?)',
-            [question_id, request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr])
-    g.db.commit()
+    g.cursor.execute('insert into answers (question_id, content, state, created_by, updated_by, created_at, updated_at) values (%s, %s, %s, %s, %s, %s, %s)',
+            ([question_id, request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
-@app.route('/answers/<question_id>', methods=['GET'])
+@app.route('/questions/<question_id>/answers', methods=['GET'])
 @crossdomain(origin='*')
 def index_answers(question_id):
     code = 200
-    cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from answers where question_id = ?',
+    g.cursor.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from answers where question_id = %s',
             question_id)
-    answers = [dict(id=row[0], question_id=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
+    answers = [dict(id=row[0], question_id=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in g.cursor.fetchall()]
 
     return jsonify(status_code=code, result=answers)
 
-@app.route('/answers/<question_id>/<answer_id>', methods=['GET'])
+@app.route('/answers/<answer_id>', methods=['GET'])
 @crossdomain(origin='*')
-def show_answer(question_id, answer_id):
+def show_answer(answer_id):
     code = 200
-    cur = g.db.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from answers where id = ?',
+    g.cursor.execute('select id, question_id, content, state, created_by, updated_by, created_at, updated_at from answers where id = %s',
             [answer_id])
-    question = [dict(id=row[0], question_id=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
+    question = [dict(id=row[0], question_id=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in g.cursor.fetchall()]
 
     return jsonify(status_code=code, result=question)
 
-@app.route('/answers/<question_id>/<answer_id>', methods=['PUT'])
+@app.route('/answers/<answer_id>', methods=['PUT'])
 @crossdomain(origin='*')
-def edit_answer(question_id, answer_id):
+def edit_answer(answer_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    cur = g.db.execute('update answers set content=?, state=?, updated_by=?, updated_at=? where id = ?',
-            [request.form['content'], request.form['state'], request.form['updated_by'], tstr, answer_id])
-    g.db.commit()
+    g.cursor.execute('update answers set content = %s, state = %s, updated_by = %s, updated_at = %s where id = %s',
+            ([request.form['content'], request.form['state'], request.form['updated_by'], tstr, answer_id]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
-@app.route('/answers/<question_id>/<answer_id>', methods=['DELETE'])
+@app.route('/answers/<answer_id>', methods=['DELETE'])
 @crossdomain(origin='*')
-def delete_answer(question_id, answer_id):
+def delete_answer(answer_id):
     code = 204
-    cur = g.db.execute('delete from answers where question_id = ? and id = ?',
-    [question_id, answer_id])
-    g.db.commit()
+    g.cursor.execute('delete from answers where id = %s',
+    [answer_id])
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -223,9 +223,9 @@ def add_information():
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    g.db.execute('insert into informations (content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?)',
+    g.cursor.execute('insert into informations (content, state, created_by, updated_by, created_at, updated_at) values (%s, %s, %s, %s, %s, %s)',
             [request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr])
-    g.db.commit()
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -233,8 +233,8 @@ def add_information():
 @crossdomain(origin='*')
 def index_informations():
     code = 200
-    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations')
-    informations = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
+    g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations')
+    informations = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
     # app.logger.debug(questions)
     return jsonify(status_code=code, result=informations)
 
@@ -242,9 +242,9 @@ def index_informations():
 @crossdomain(origin='*')
 def show_information(information_id):
     code = 200
-    cur = g.db.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations where id = ?',
+    g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from informations where id = %s',
             [information_id])
-    information = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
+    information = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
 
     return jsonify(status_code=code, result=information)
 
@@ -254,9 +254,9 @@ def edit_information(information_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    cur = g.db.execute('update informations set content=?, state=?, updated_by=?, updated_at=? where id = ?',
-            [request.form['content'], request.form['state'], request.form['updated_by'], tstr, information_id])
-    g.db.commit()
+    g.cursor.execute('update informations set content = %s, state = %s, updated_by = %s, updated_at = %s where id = %s',
+            ([request.form['content'], request.form['state'], request.form['updated_by'], tstr, information_id]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -264,9 +264,9 @@ def edit_information(information_id):
 @crossdomain(origin='*')
 def delete_information(information_id):
     code = 204
-    cur = g.db.execute('delete from informations where id = ?',
+    g.cursor.execute('delete from informations where id = %s',
     [information_id])
-    g.db.commit()
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -279,8 +279,8 @@ def index_tweets():
     #g.db.commit()
 
     code = 200
-    cur = g.db.execute('select id, tweet_id, type, content, created_by, updated_by, created_at, updated_at from tweets')
-    tweets = [dict(id=row[0], tweet_id=row[1], type=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in cur.fetchall()]
+    g.cursor.execute('select id, tweet_id, type, content, created_by, updated_by, created_at, updated_at from tweets')
+    tweets = [dict(id=row[0], tweet_id=row[1], type=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
     # app.logger.debug(questions)
     return jsonify(status_code=code, result=tweets)
 
@@ -291,9 +291,9 @@ def add_response():
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    g.db.execute('insert into responses (type, content, state, created_by, updated_by, created_at, updated_at) values (?,?,?,?,?,?,?)',
-            [request.form['type'], request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr])
-    g.db.commit()
+    g.cursor.execute('insert into responses (type, content, state, created_by, updated_by, created_at, updated_at) values (%s, %s, %s, %s, %s, %s, %s)',
+            ([request.form['type'], request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -301,8 +301,8 @@ def add_response():
 @crossdomain(origin='*')
 def index_responses():
     code = 200
-    cur = g.db.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses')
-    responses = [dict(id=row[0], type=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
+    g.cursor.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses')
+    responses = [dict(id=row[0], type=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in g.cursor.fetchall()]
     # app.logger.debug(questions)
     return jsonify(status_code=code, result=responses)
 
@@ -310,9 +310,9 @@ def index_responses():
 @crossdomain(origin='*')
 def show_response(response_id):
     code = 200
-    cur = g.db.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses where id = ?',
+    g.cursor.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses where id = %s',
             [response_id])
-    response = [dict(id=row[0], type=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in cur.fetchall()]
+    response = [dict(id=row[0], type=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in g.cursor.fetchall()]
 
     return jsonify(status_code=code, result=response)
 
@@ -322,9 +322,9 @@ def edit_response(response_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    cur = g.db.execute('update responses set type=?, content=?, state=?, updated_by=?, updated_at=? where id = ?',
-            [request.form['type'], request.form['content'], request.form['state'], request.form['updated_by'], tstr, response_id])
-    g.db.commit()
+    g.cursor.execute('update responses set type = %s, content = %s, state = %s, updated_by = %s, updated_at = %s where id = %s',
+            ([request.form['type'], request.form['content'], request.form['state'], request.form['updated_by'], tstr, response_id]))
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
@@ -332,9 +332,9 @@ def edit_response(response_id):
 @crossdomain(origin='*')
 def delete_response(response_id):
     code = 204
-    cur = g.db.execute('delete from responses where id = ?',
+    g.cursor.execute('delete from responses where id = %s',
     [response_id])
-    g.db.commit()
+    g.connection.commit()
 
     return jsonify(status_code=code)
 
