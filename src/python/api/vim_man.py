@@ -40,7 +40,17 @@ def teardown_request(exception):
 @crossdomain(origin='*')
 def test():
     res = {1: 2}
-    return jsonify(res)
+    print session
+    if 'username' in session:
+        return 'Logged in as %s' % escape(session['username'])
+    return '''
+        <form action="/login" method="post">
+            <p><input type=text name=username></p>
+            <p><input type=password name=password></p>
+            <p><input type=submit value=Login></p>
+        </form>
+    '''
+    #return jsonify(res)
 
 # /operations
 
