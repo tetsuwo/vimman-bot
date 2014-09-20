@@ -4,6 +4,7 @@ from flask import Flask, jsonify, Response, request, session, g, redirect, url_f
 from datetime import datetime as dt
 from helpers.crossdomain import *
 from helpers.database import *
+import MySQLdb
 
 # for Settings
 DATABASE = 'vim_man.db'
@@ -18,13 +19,22 @@ app.config.from_envvar('FLASKR_SETTING', silent=True)
 
 @app.before_request
 def before_request():
-    g.db = connect_db(database=DATABASE)
+#    g.db = connect_db(database=DATABASE)
+    g.connection = MySQLdb.connect(host='localhost',db='myapp',user='root',passwd='root', port=33061,unix_socket="/Applications/MAMP/tmp/mysql/mysql.sock")
+    g.cursor = g.connection.cursor()
+    #g.cursor.execute("select * from tweets")
+    #result = g.cursor.fetchall()
+    #print result
 
 @app.teardown_request
 def teardown_request(exception):
-    db = getattr(g, 'db', None)
-    if db is not None:
-        db.close()
+    cursor = getattr(g, 'cursor', None)
+    if cursor is not None:
+        cursor.close()
+
+    connection = getattr(g, 'connection', None)
+    if connection is not None:
+        connection.close()
 
 @app.route('/')
 @crossdomain(origin='*')
@@ -52,9 +62,15 @@ def add_operation():
 def index_operatinos():
     code = 200
     # TODO passwordを外す
-    cur = g.db.execute('select id, username, password, state, created_at, updated_at from operations')
-    operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in cur.fetchall()]
+    # cur = g.db.execute('select id, username, password, state, created_at, updated_at from operations')
+    g.cursor.execute('select id, username, password, state, created_at, updated_at from operations')
+    operations = g.cursor.fetchall()
+    
+    print operations
+    #operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in g.cursor.fetchall()]
+    operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in operations]
     # app.logger.debug(questions)
+    # operations = 200
     return jsonify(status_code=code, result=operations)
 
 @app.route('/operations/<operation_id>', methods=['GET'])
