@@ -30,6 +30,9 @@
 #### 0. Setting MySQL
    $ mysql -u root -p myapp < /vim_man_bot_project/src/python/api/mysql_schema.sql
 
+   -> change user and password for mysql
+   $ vim /vim_man_bot_project/src/python/api/vim_man.py
+
 #### 1. Execute to command of below.
 
    $ cd /vim_man_bot_project/src/python/api
