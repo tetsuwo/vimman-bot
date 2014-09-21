@@ -30,19 +30,20 @@
 
 1) Setting MySQL
 
-   $ mysql -u root < data/sql/mysql_createdb.sql
-   $ mysql -u root vim_man_bot < data/sql/mysql_schema.sql
-   -> change user and password for mysql
-   $ vim src/python/api/vim_man.py
+    $ mysql -u root < data/sql/mysql_createdb.sql
+    $ mysql -u root vim_man_bot < data/sql/mysql_schema.sql
+    -> change user and password for mysql
+
+    $ vim src/python/api/vim_man.py
 
 2) Execute to command of below.
 
-   $ pip install mypackage
-   $ pip install -r requirements.txt
-   -> 今は Flask のみ
+    $ pip install mypackage
+    $ pip install -r requirements.txt
+    -> 今は Flask のみ
 
-   $ cd src/python/api
-   $ python vim_man.py
+    $ cd src/python/api
+    $ python vim_man.py
 
 3) Access to `localhost:5000`. ex) `localhost:5000/questions`
    
