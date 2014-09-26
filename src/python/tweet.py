@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import twitter
+from requests_oauthlib import OAuth1Session
 import secret
 import random
 
@@ -11,14 +11,18 @@ def tweet_list():
         'Vim のチュートリアルを開くには？',
     ]
 
+url = "https://api.twitter.com/1.1/statuses/update.json"
+
 lists = tweet_list()
 post_tweet = random.choice(lists) 
 
-customer_key    = secret.dict['customer_key']
-customer_secret = secret.dict['customer_secret']
-access_token_key    = secret.dict['access_token_key']
-access_token_secret = secret.dict['access_token_secret']
+params = {"status": post_tweet}
 
+twitter = OAuth1Session(c_k, c_s, a_k, a_s)
+req = twitter.post(url, params = params)
 
-api = twitter.Api(customer_key,customer_secret,access_token_key,access_token_secret)
-api.PostUpdates(post_tweet.decode('utf-8'))
+if req.status_code == 200:
+    print ("OK")
+else:
+    print ("Error: %d" % req.status_code)
+
