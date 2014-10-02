@@ -10,8 +10,8 @@ import MySQLdb
 DATABASE = 'vim_man.db'
 DEBUG = True
 SECRET_KEY = 'development key'
-USERNAME = 'admin'
-PASSWORD = 'default'
+USERNAME = 'root'
+PASSWORD = 'x7e29hwsy3'
 
 app = Flask(__name__)
 app.config.from_object(__name__)
