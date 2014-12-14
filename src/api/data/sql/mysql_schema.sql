@@ -1,3 +1,6 @@
+-- Vimmanbot MySQL Schema
+-- 
+
 DROP TABLE IF EXISTS operations;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS answers;

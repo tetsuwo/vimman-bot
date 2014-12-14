@@ -30,11 +30,8 @@
 
 1) Setting MySQL
 
-    $ mysql -u root < data/sql/mysql_createdb.sql
-    $ mysql -u root vim_man_bot < data/sql/mysql_schema.sql
-    -> change user and password for mysql
-
-    $ vim src/python/api/vim_man.py
+    $ mysql -u {MYSQL_USER_NAME} < data/sql/mysql_createdb.sql
+    $ mysql -u {MYSQL_USER_NAME} vimmanbot < data/sql/mysql_schema.sql
 
 2) Execute to command of below.
 
@@ -55,3 +52,4 @@
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
 5. Create new Pull Request
+
