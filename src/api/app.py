@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, jsonify, Response, request, session, g, redirect, url_for, abort, render_template, flash
+from flask import Flask, jsonify, Response, request, \
+     session, g, redirect, url_for, abort, render_template, flash
 from datetime import datetime as dt
 from helpers.crossdomain import *
 from helpers.database import *
+from config.databases import *
 import MySQLdb
-
-# for Settings
-DATABASE = 'vim_man.db'
-DEBUG = True
-SECRET_KEY = 'development key'
-USERNAME = 'root'
-PASSWORD = 'x7e29hwsy3'
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -19,12 +14,15 @@ app.config.from_envvar('FLASKR_SETTING', silent=True)
 
 @app.before_request
 def before_request():
-#    g.db = connect_db(database=DATABASE)
-    g.connection = MySQLdb.connect(host='localhost',db='myapp',user='root',passwd='root', port=33061,unix_socket="/Applications/MAMP/tmp/mysql/mysql.sock")
+    g.connection = MySQLdb.connect(
+        host=db_config["host"],
+        db=db_config["db"],
+        user=db_config["user"],
+        passwd=db_config["passwd"],
+        port=db_config["port"],
+        unix_socket=db_config["unix_socket"]
+    )
     g.cursor = g.connection.cursor()
-    #g.cursor.execute("select * from tweets")
-    #result = g.cursor.fetchall()
-    #print result
 
 @app.teardown_request
 def teardown_request(exception):
@@ -75,7 +73,7 @@ def index_operatinos():
     # cur = g.db.execute('select id, username, password, state, created_at, updated_at from operations')
     g.cursor.execute('select id, username, password, state, created_at, updated_at from operations')
     operations = g.cursor.fetchall()
-    
+
     # print operations
     #operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in g.cursor.fetchall()]
     operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in operations]
