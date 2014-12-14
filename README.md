@@ -35,8 +35,8 @@
 
 2) Execute to command of below.
 
-    $ pip install mypackage
     $ pip install -r src/api/requirements.txt
+    $ cp config/databases.py.sample config/databases.py
     $ python src/api/app.py
 
 3) Access to `localhost:5000`. ex) `localhost:5000/questions`
