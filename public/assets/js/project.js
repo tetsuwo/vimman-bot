@@ -170,7 +170,7 @@ function getPresetListComponent(componentName) {
 
                 var that        = this;
                 //var requestUri  = 'assets/js/app/components/' + componentName + '/dummy.json';
-                var requestUri  = 'http://localhost:5000/' + componentName;
+                var requestUri  = 'http://www.vimmanbot.local/api/' + componentName;
                 var queryString = Utils.buildQueryString(conditions);
                 var page        = conditions.page;
                 //console.log('queryString', queryString);
