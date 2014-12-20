@@ -154,6 +154,12 @@ function getPresetListComponent(componentName) {
             if (!this.search()) {
                 this.fetch(this.$parent.conditions);
             }
+            // TODO loginページを別の固定ページで設ける？？？
+            if (componentName == 'login') {
+                $('.navbar-nav').css({'visibility': 'hidden'});
+            } else {
+                $('.navbar-nav').css({'visibility': 'visible'});
+            }
         },
 
         beforeDestroy: function() {
