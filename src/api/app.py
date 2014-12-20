@@ -7,13 +7,20 @@ from helpers.crossdomain import *
 from helpers.database import *
 from config.databases import *
 import MySQLdb
+import logging
+
+LOG_FILENAME = 'example.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Flask(__name__)
+app.secret_key = 'my secret key'
+
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 
 @app.before_request
 def before_request():
+    #user_check()
     g.connection = MySQLdb.connect(
         host=db_config["host"],
         db=db_config["db"],
@@ -34,11 +41,14 @@ def teardown_request(exception):
     if connection is not None:
         connection.close()
 
+def clear_session():
+    session.clear()
+    pass
+
 @app.route('/')
 @crossdomain(origin='*')
 def test():
     res = {1: 2}
-    print session
     if 'username' in session:
         return 'Logged in as %s' % escape(session['username'])
     return '''
@@ -352,22 +362,46 @@ def delete_response(response_id):
 def login():
     code = 200
     error = None
+    #logging.debug(request.form)
+
     if request.method == 'POST':
-        if request.form['username'] == app.config['USERNAME'] and request.form['password'] == app.config['PASSWORD']:
-            session['logged_in'] = True
-            return jsonify(status_code=code)
+        #if request.form['username'] == app.config['USERNAME'] and request.form['password'] == app.config['PASSWORD']:
+        if request.form['username'] == 'test' and request.form['password'] == 'pass':
+            #session['logged_in'] = True
+            set_username(request.form['username'])
+            return redirect('/#/questions')
+            #return jsonify(status_code=code)
         else:
             error = 'wrong'
+            return redirect('/#/login')
+            #return jsonify(error=error)
 
     return jsonify(status_code=code)
 
+def set_username(username):
+    session['username'] = username
+
+def get_username():
+    return session.get('username')
+
+def is_login():
+    return not not get_username()
+
+def user_check():
+    #logging.debug(is_login())
+    if not is_login():
+        logging.debug(is_login())
+        abort(401)
+        #return redirect('/#/login')
+
 # /logout
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 @crossdomain(origin='*')
 def logout():
     code = 200
-    session.pop('logged_in', None)
-    return jsonify(status_code=code)
+    clear_session()
+    return redirect('/#/login')
+    #return jsonify(status_code=code)
 
 if __name__ == '__main__':
     app.run()
