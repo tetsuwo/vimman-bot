@@ -6,6 +6,10 @@ from datetime import datetime as dt
 from helpers.crossdomain import *
 from helpers.database import *
 from config.databases import *
+
+from sqlalchemy import *
+from sqlalchemy.orm import *
+from sqlalchemy.ext.declarative import declarative_base
 import MySQLdb
 import logging
 
@@ -21,26 +25,30 @@ app.config.from_envvar('FLASKR_SETTING', silent=True)
 
 @app.before_request
 def before_request():
+    g.engine = create_engine("mysql://root:@localhost:3306/vimmanbot",echo=True)
+    g.connection = g.engine.connect()
     #user_check()
-    g.connection = MySQLdb.connect(
-        host=db_config["host"],
-        db=db_config["db"],
-        user=db_config["user"],
-        passwd=db_config["passwd"],
-        port=db_config["port"],
-        unix_socket=db_config["unix_socket"]
-    )
-    g.cursor = g.connection.cursor()
+    
+    #g.connection = MySQLdb.connect(
+    #    host=db_config["host"],
+    #    db=db_config["db"],
+    #    user=db_config["user"],
+    #    passwd=db_config["passwd"],
+    #    port=db_config["port"],
+    #    unix_socket=db_config["unix_socket"]
+    #)
+    #g.cursor = g.connection.cursor()
 
 @app.teardown_request
 def teardown_request(exception):
-    cursor = getattr(g, 'cursor', None)
-    if cursor is not None:
-        cursor.close()
+    pass
+    #cursor = getattr(g, 'cursor', None)
+    #if cursor is not None:
+    #    cursor.close()
 
-    connection = getattr(g, 'connection', None)
-    if connection is not None:
-        connection.close()
+    #connection = getattr(g, 'connection', None)
+    #if connection is not None:
+    #    connection.close()
 
 def clear_session():
     session.clear()
@@ -50,16 +58,16 @@ def clear_session():
 @crossdomain(origin='*')
 def test():
     res = {1: 2}
-    if 'username' in session:
-        return 'Logged in as %s' % escape(session['username'])
-    return '''
-        <form action="/login" method="post">
-            <p><input type=text name=username></p>
-            <p><input type=password name=password></p>
-            <p><input type=submit value=Login></p>
-        </form>
-    '''
-    #return jsonify(res)
+    #if 'username' in session:
+    #    return 'Logged in as %s' % escape(session['username'])
+    #return '''
+    #    <form action="/login" method="post">
+    #        <p><input type=text name=username></p>
+    #        <p><input type=password name=password></p>
+    #        <p><input type=submit value=Login></p>
+    #    </form>
+    #'''
+    return jsonify(res)
 
 # /operations
 
@@ -129,12 +137,15 @@ def delete_operation(operation_id):
 @crossdomain(origin='*')
 def index_questions():
     #logging.debug(request.headers)
-    if request.headers['Api-Key'] != API_ACCESS_KEY:
-        abort(401)
+    #if request.headers['Api-Key'] != API_ACCESS_KEY:
+    #    abort(401)
 
     code = 200
-    g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions')
-    questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
+    query = text("select id, content, state, created_by, updated_by, created_at, updated_at from questions")
+
+    #g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions')
+    #questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
+    questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.connection.execute(query)]
     # app.logger.debug(questions)
     return jsonify(status_code=code, result=questions)
 
