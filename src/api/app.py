@@ -9,6 +9,7 @@ from config.databases import *
 import MySQLdb
 import logging
 
+API_ACCESS_KEY = 'himejimaspecial'
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
@@ -127,6 +128,10 @@ def delete_operation(operation_id):
 @app.route('/questions', methods=['GET'])
 @crossdomain(origin='*')
 def index_questions():
+    #logging.debug(request.headers)
+    if request.headers['Api-Key'] != API_ACCESS_KEY:
+        abort(401)
+
     code = 200
     g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions')
     questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]

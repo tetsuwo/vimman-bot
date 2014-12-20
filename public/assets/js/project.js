@@ -184,6 +184,9 @@ function getPresetListComponent(componentName) {
                 window.setTimeout(function() {
                     $.ajax({
                             url      : requestUri + '?' + queryString,
+                            headers  : {
+                                'api-key': 'himejimaspecial'
+                            },
                             dataType : 'json'
                         })
                         .done(function (response) {
@@ -193,7 +196,8 @@ function getPresetListComponent(componentName) {
                         .fail(function (response) {
                             console.log('failure', response);
                             that.notFound();
-                        });
+                        })
+                        ;
 
                         var pushStateUrl = window.location.href.replace(/\?.*/, '');
                         console.log(pushStateUrl);
