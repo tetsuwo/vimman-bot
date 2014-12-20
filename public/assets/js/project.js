@@ -309,6 +309,8 @@ function mergeComponent(component) {
 }
 
 
+Vue.component('login', getPresetListComponent('login'));
+
 Vue.component('questions', getPresetListComponent('questions'));
 
 Vue.component('questions-create', mergeComponent({
@@ -478,6 +480,9 @@ Vue.component('pagination', Vue.extend({
     };
     routes['/operators/:id/update'] = function() {
         app.currentView = 'operators-update';
+    };
+    routes['/login'] = function() {
+        app.currentView = 'login'
     };
     var router = new Router(routes);
     router.init();
