@@ -76,9 +76,10 @@ class Operation(Base):
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
 
-    def __init__(self, id, username, salt, state, created_at, updated_at):
+    def __init__(self, id, username, password, salt, state, created_at, updated_at):
         self.id = id
         self.username = username
+        self.password = password
         self.salt = salt
         self.state = state
         self.created_at = created_at
@@ -194,6 +195,7 @@ class Response(Base):
 ## Mapper For Operation
 class OperationMapper(Mapper):
     id = RawField()
+    username = RawField()
     state = RawField()
     created_at = RawField()
     updated_at = RawField()
@@ -266,65 +268,122 @@ def test():
     res = {1: 2}
     return jsonify(res)
 
-# /operations
 @app.route('/operations', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
 def add_operation():
+    """ 管理者を追加します
+    """
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    # TODO saltのセット方法
-    g.cursor.execute('insert into operations (username, password, salt, state, created_at, updated_at) values (%s,%s,%s,%s,%s,%s)',
-            ([request.form['username'], request.form['password'], "salt1", request.form['state'], tstr, tstr]))
-    g.connection.commit()
+    req = request.form
+    # TODO saltのセット方法 + パスワードを暗号化する
+    try:
+        operation = Operation(
+                              id=None,
+                              username=req['operations[username]'],
+                              password=req['operations[password]'],
+                              salt='salt1',
+                              state=req['operations[state]'],
+                              created_at=tstr,
+                              updated_at=tstr
+        )
+        db_session.add(operation)
+        db_session.commit()
+    except:
+        # 登録失敗
+        pass
+    finally:
+        pass
 
     return jsonify(status_code=code)
 
-@app.route('/operations', methods=['GET'])
+#@app.route('/operations', methods=['GET'])
+@app.route('/operators', methods=['GET'])
 @crossdomain(origin='*')
 def index_operatinos():
     code = 200
-    # TODO passwordを外す
-    # cur = g.db.execute('select id, username, password, state, created_at, updated_at from operations')
-    g.cursor.execute('select id, username, password, state, created_at, updated_at from operations')
-    operations = g.cursor.fetchall()
+    try:
+        operations = get_operations()
+        operations_dict = ListOperationMapper({'result': operations}).as_dict()
+    except:
+        pass
 
-    # print operations
-    #operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in g.cursor.fetchall()]
-    operations = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in operations]
-    # app.logger.debug(questions)
-    # operations = 200
-    return jsonify(status_code=code, result=operations)
+    result = operations_dict['result']
 
-@app.route('/operations/<operation_id>', methods=['GET'])
+    return jsonify(status_code=code, result=result)
+
+#@app.route('/operations/<operation_id>', methods=['GET'])
+@app.route('/operators/<operation_id>', methods=['GET'])
 @crossdomain(origin='*')
 def show_operation(operation_id):
     code = 200
-    g.cursor.execute('select id, username, password, state, created_at, updated_at from operations where id = %s',
-            [operation_id])
-    operation = [dict(id=row[0], username=row[1], password=row[2], state=row[3], created_at=row[4], updated_at=row[5]) for row in g.cursor.fetchall()]
+    operation_dict = {}
+    try:
+        operation = get_operation(operation_id)
+        operation_dict = OperationMapper(operation).as_dict()
+    except:
+        # 取得に失敗
+        pass
+    
+    return jsonify(status_code=code, result=operation_dict)
 
-    return jsonify(status_code=code, result=operation)
+def get_operation(operation_id):
+    operation = []
+    res = Operation.query.filter("id = :operation_id").params(operation_id=operation_id).first()
+    operation = Operation(id=operation_id,
+                          username=res.username,
+                          state=res.state,
+                          created_at=res.created_at,
+                          updated_at=res.updated_at
+    )
 
-@app.route('/operations/<operation_id>', methods=['PUT'])
+    return operation
+
+def get_operations():
+    operations = []
+    res = Operation.query.all()
+    for row in res:
+        operations.append(row)
+
+    return operations
+
+#@app.route('/operations/<operation_id>', methods=['PUT'])
+@app.route('/operators/<operation_id>', methods=['PUT'])
 @crossdomain(origin='*')
 def edit_operation(operation_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    g.cursor.execute('update operations set username = %s, password = %s, state = %s, updated_at = %s where id = %s',
-            ([request.form['username'], request.form['password'], request.form['state'], tstr, operation_id]))
-    g.connection.commit()
+    req = request.form
+    try:
+        row = db_session.query(Operation).get(operation_id)
+        row.username = req['operations[username]']
+        row.password = req['operations[password]']
+        row.state = req['operations[state]']
+        row.updated_at = tstr
+        db_session.flush()
+    except:
+        pass
+    finally:
+        pass
 
     return jsonify(status_code=code)
 
 @app.route('/operations/<operation_id>', methods=['DELETE'])
 @crossdomain(origin='*')
 def delete_operation(operation_id):
+    """ 管理者を削除します
+    """
     code = 204
-    g.cursor.execute('delete from operations where id = %s',
-    ([operation_id]))
-    g.connection.commit()
+    try:
+        row = Operation.query.get(operation_id)
+        db_session.delete(row)
+        db_session.flush()
+    except:
+        pass
+    finally:
+        pass
 
     return jsonify(status_code=code)
 
@@ -530,7 +589,6 @@ def delete_answer(answer_id):
 
     return jsonify(status_code=code)
 
-# /informations
 @app.route('/informations', methods=['POST'])
 @crossdomain(origin='*')
 def add_information():
@@ -639,7 +697,6 @@ def edit_information(information_id):
     finally:
         pass
 
-
     return jsonify(status_code=code)
 
 @app.route('/informations/<information_id>', methods=['DELETE'])
@@ -746,10 +803,11 @@ def delete_response(response_id):
 
     return jsonify(status_code=code)
 
-# /login
 @app.route('/login', methods=['GET', 'POST'])
 @crossdomain(origin='*')
 def login():
+    """ ログインします
+    """
     code = 200
     error = None
     #logging.debug(request.form)
@@ -784,10 +842,11 @@ def user_check():
         abort(401)
         #return redirect('/#/login')
 
-# /logout
 @app.route('/logout', methods=['GET'])
 @crossdomain(origin='*')
 def logout():
+    """ ログアウトします
+    """
     code = 200
     clear_session()
     return redirect('/#/login')
