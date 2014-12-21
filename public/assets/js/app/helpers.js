@@ -64,7 +64,7 @@ function getPresetListComponent(componentName) {
 
                 var that        = this;
                 //var requestUri  = 'assets/js/app/components/' + componentName + '/dummy.json';
-                var requestUri  = 'http://localhost:5000/' + componentName;
+                var requestUri  = 'http://' + window.location.host + '/api/' + componentName;
                 var queryString = Utils.buildQueryString(conditions);
                 var page        = conditions.page;
                 //console.log('queryString', queryString);
@@ -83,13 +83,14 @@ function getPresetListComponent(componentName) {
                             that.notFound();
                         });
 
-                        var pushStateUrl = window.location.href.replace(/\?.*/, '');
-                        console.log(pushStateUrl);
-                        console.log(conditions);
-                        pushStateUrl += conditions ? '?' + queryString : '';
-                        console.log('pushStateUrl', window.location.href, ' => ', pushStateUrl);
-
-                        window.location.href = pushStateUrl;
+                        if (window.location.hash != '') {
+                            var pushStateUrl = window.location.href.replace(/\?.*/, '');
+                            //console.log(pushStateUrl);
+                            //console.log(conditions);
+                            pushStateUrl += conditions ? '?' + queryString : '';
+                            console.log('pushStateUrl', window.location.href, ' => ', pushStateUrl);
+                            window.location.href = pushStateUrl;
+                        }
                 }, 800);
             },
 
@@ -173,6 +174,8 @@ function getPresetListComponent(componentName) {
                     this.$parent.conditions.search = formValues;
                 }
                 this.fetch(this.$parent.conditions);
+
+                return true;
             },
 
             assignSearchForm: function(queries) {
