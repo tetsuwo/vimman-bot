@@ -570,19 +570,37 @@ def delete_information(information_id):
 
     return jsonify(status_code=code)
 
-# /tweets
 @app.route('/tweets', methods=['GET'])
 @crossdomain(origin='*')
 def index_tweets():
-    # create dummy data
-    #g.db.execute('insert into tweets (tweet_id, type, content, created_by, updated_by, created_at, updated_at) values (1,"ok","rers","himejima","update_himejima","2013/11/11 11:11:32", "2014/12/11 10:50:22")')
-    #g.db.commit()
-
+    """ツイート一覧を返します
+    """
     code = 200
-    g.cursor.execute('select id, tweet_id, type, content, created_by, updated_by, created_at, updated_at from tweets')
-    tweets = [dict(id=row[0], tweet_id=row[1], type=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
-    # app.logger.debug(questions)
-    return jsonify(status_code=code, result=tweets)
+    tweets = []
+
+    try:
+        tweets = get_tweets()
+        tweets_dict = ListTweetMapper({'result': tweets}).as_dict()
+    except:
+        pass
+
+    result = tweets_dict['result']
+
+    return jsonify(status_code=code, result=result)
+
+# TODO pagingを実装する
+def get_tweets():
+    """dbからツイートを全件取得します
+    """
+    tweets = []
+    res = Tweet.query.all()
+    for row in res:
+        tweets.append(row)
+
+    return tweets
+
+# TODO tweetを追加するapiの実装
+# TODO filterの実装
 
 # /responses
 @app.route('/responses', methods=['POST'])
