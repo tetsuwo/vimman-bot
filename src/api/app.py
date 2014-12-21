@@ -25,11 +25,64 @@ app.secret_key = 'my secret key'
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 
+# create base
+engine = create_engine("mysql://root:@localhost:3306/vimmanbot",echo=True)
+db_session = scoped_session(sessionmaker(autocommit=False,
+                            autoflush=False,
+                            bind=engine))
+Base = declarative_base()
+Base.query = db_session.query_property()
+
+@app.before_request
+def before_request():
+    pass
+    #g.engine = create_engine("mysql://root:@localhost:3306/vimmanbot",echo=True)
+    #g.connection = g.engine.connect()
+
+
+    #user_check()
+    
+    #g.connection = MySQLdb.connect(
+    #    host=db_config["host"],
+    #    db=db_config["db"],
+    #    user=db_config["user"],
+    #    passwd=db_config["passwd"],
+    #    port=db_config["port"],
+    #    unix_socket=db_config["unix_socket"]
+    #)
+    #g.cursor = g.connection.cursor()
+
+
+@app.teardown_request
+def teardown_request(exception):
+    pass
+    #cursor = getattr(g, 'cursor', None)
+    #if cursor is not None:
+    #    cursor.close()
+
+    #connection = getattr(g, 'connection', None)
+    #if connection is not None:
+    #    connection.close()
+
 # モデルクラス TODO 外部に出す
 # operationsクラス
 
 # questionsテーブルのmodel
-class Question(object):
+#class Question(object):
+#    def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
+#        self.id = id
+#        self.content = content
+#        self.state = state
+#        self.created_by = created_by
+#        self.updated_by = updated_by
+#        self.created_at = created_at
+#        self.updated_at = updated_at
+
+class Question(Base):
+    __tablename__ = 'questions'
+    id = Column(Integer, primary_key=True)
+    content = Column(String)
+
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.content = content
@@ -55,33 +108,6 @@ class ListQuestionMapper(Mapper):
     #question_list = ListDelegateField(QuestionMapper)
     result = ListDelegateField(QuestionMapper)
 
-@app.before_request
-def before_request():
-    g.engine = create_engine("mysql://root:@localhost:3306/vimmanbot",echo=True)
-    g.connection = g.engine.connect()
-    #user_check()
-    
-    #g.connection = MySQLdb.connect(
-    #    host=db_config["host"],
-    #    db=db_config["db"],
-    #    user=db_config["user"],
-    #    passwd=db_config["passwd"],
-    #    port=db_config["port"],
-    #    unix_socket=db_config["unix_socket"]
-    #)
-    #g.cursor = g.connection.cursor()
-
-
-@app.teardown_request
-def teardown_request(exception):
-    pass
-    #cursor = getattr(g, 'cursor', None)
-    #if cursor is not None:
-    #    cursor.close()
-
-    #connection = getattr(g, 'connection', None)
-    #if connection is not None:
-    #    connection.close()
 
 def clear_session():
     session.clear()
@@ -218,6 +244,7 @@ def show_question(question_id):
 
 def get_question(question_id):
     # dbから取得する
+    logging.debug(Question.query.first().id)
     question = Question(id=question_id,
                         content='content',
                         state=1,
