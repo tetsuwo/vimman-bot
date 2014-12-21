@@ -12,6 +12,8 @@ from sqlalchemy.orm import *
 from sqlalchemy.ext.declarative import declarative_base
 import MySQLdb
 import logging
+#import json
+from bpmappers import Mapper, RawField, DelegateField, ListDelegateField
 
 API_ACCESS_KEY = 'himejimaspecial'
 LOG_FILENAME = 'example.log'
@@ -22,6 +24,36 @@ app.secret_key = 'my secret key'
 
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
+
+# モデルクラス TODO 外部に出す
+# operationsクラス
+
+# questionsテーブルのmodel
+class Question(object):
+    def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
+        self.id = id
+        self.content = content
+        self.state = state
+        self.created_by = created_by
+        self.updated_by = updated_by
+        self.created_at = created_at
+        self.updated_at = updated_at
+
+# answersクラス
+
+# informationsクラス
+
+# tweetsクラス
+
+# responsesクラス
+
+# マッパークラス TODO 外に出すこと
+class QuestionMapper(Mapper):
+    id = RawField()
+
+class ListQuestionMapper(Mapper):
+    #question_list = ListDelegateField(QuestionMapper)
+    result = ListDelegateField(QuestionMapper)
 
 @app.before_request
 def before_request():
@@ -38,6 +70,7 @@ def before_request():
     #    unix_socket=db_config["unix_socket"]
     #)
     #g.cursor = g.connection.cursor()
+
 
 @app.teardown_request
 def teardown_request(exception):
@@ -141,13 +174,20 @@ def index_questions():
     #    abort(401)
 
     code = 200
-    query = text("select id, content, state, created_by, updated_by, created_at, updated_at from questions")
+    #query = text("select id, content, state, created_by, updated_by, created_at, updated_at from questions")
 
-    #g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions')
-    #questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
-    questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.connection.execute(query)]
-    # app.logger.debug(questions)
-    return jsonify(status_code=code, result=questions)
+    #questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.connection.execute(query)]
+    #app.logger.debug(questions)
+    #return jsonify(status_code=code, result=questions)
+    #test = [{'content': 'content1', 'state': 1L, 'updated_by': 'poster2', 'created_by': 'himejima2', 'id': 1L}]
+    #return json.dumps(test)
+
+    questions = get_questions()
+    #question_dict = mapping_question(question)
+    #questions_dict = ListQuestionMapper({'question_list' : questions}).as_dict()
+    questions_dict = ListQuestionMapper({'result': questions}).as_dict()
+    test = questions_dict['result']
+    return jsonify(status_code=code, result=test)
 
 @app.route('/questions', methods=['POST'])
 @crossdomain(origin='*')
@@ -165,11 +205,63 @@ def add_question():
 @crossdomain(origin='*')
 def show_question(question_id):
     code = 200
-    g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions where id = %s',
-            ([question_id]))
-    question = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
+    #query = text("select id, content, state, created_by, updated_by, created_at, updated_at from questions where id = %s", ([question_id))
+    #g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions where id = %s',
+    #        ([question_id]))
+    #question = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
 
-    return jsonify(status_code=code, result=question)
+    question = get_question(question_id)
+    #question_dict = mapping_question(question)
+    question_dict = QuestionMapper(question).as_dict()
+
+    return jsonify(status_code=code, result=question_dict)
+
+def get_question(question_id):
+    # dbから取得する
+    question = Question(id=question_id,
+                        content='content',
+                        state=1,
+                        created_by="create",
+                        updated_by="udpted",
+                        created_at="2014-12-11",
+                        updated_at="2015-13-11"
+    )
+
+    return question
+
+def get_questions():
+    # dbから取得 全件取得 
+    question1 = Question(id=777,
+                        content='content',
+                        state=1,
+                        created_by="create",
+                        updated_by="udpted",
+                        created_at="2014-12-11",
+                        updated_at="2015-13-11"
+    )
+    question2 = Question(id=888,
+                        content='content',
+                        state=1,
+                        created_by="create",
+                        updated_by="udpted",
+                        created_at="2014-12-11",
+                        updated_at="2015-13-11"
+    )
+    questions = []
+    questions.append(question1)
+    questions.append(question2)
+
+    return questions
+
+def mapping_question(question):
+    return {
+            'id' : question.id,
+            'content' : question.content,
+            'state' : question.state,
+            'created_by' : question.created_by,
+            'updated_by' : question.updated_by,
+            'created_at' : question.created_at,
+            'updated_at' : question.updated_at}
 
 @app.route('/questions/<question_id>', methods=['PUT'])
 @crossdomain(origin='*')
