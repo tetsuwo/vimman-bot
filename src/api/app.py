@@ -68,21 +68,16 @@ def teardown_request(exception):
 # operationsクラス
 
 # questionsテーブルのmodel
-#class Question(object):
-#    def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
-#        self.id = id
-#        self.content = content
-#        self.state = state
-#        self.created_by = created_by
-#        self.updated_by = updated_by
-#        self.created_at = created_at
-#        self.updated_at = updated_at
-
 class Question(Base):
     __tablename__ = 'questions'
     id = Column(Integer, primary_key=True)
     content = Column(String)
-
+    state = Column(Integer)
+    created_by = Column(String)
+    updated_by = Column(String)
+    created_at = Column(DateTime, default=dt.now)
+    updated_at = Column(DateTime, default=dt.now)
+    
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.content = content
@@ -101,13 +96,19 @@ class Question(Base):
 # responsesクラス
 
 # マッパークラス TODO 外に出すこと
+## Mapper For Question
 class QuestionMapper(Mapper):
     id = RawField()
+    content = RawField()
+    state = RawField()
+    created_by = RawField()
+    updated_by = RawField()
+    created_at = RawField()
+    updated_at = RawField()
 
 class ListQuestionMapper(Mapper):
     #question_list = ListDelegateField(QuestionMapper)
     result = ListDelegateField(QuestionMapper)
-
 
 def clear_session():
     session.clear()
@@ -117,19 +118,9 @@ def clear_session():
 @crossdomain(origin='*')
 def test():
     res = {1: 2}
-    #if 'username' in session:
-    #    return 'Logged in as %s' % escape(session['username'])
-    #return '''
-    #    <form action="/login" method="post">
-    #        <p><input type=text name=username></p>
-    #        <p><input type=password name=password></p>
-    #        <p><input type=submit value=Login></p>
-    #    </form>
-    #'''
     return jsonify(res)
 
 # /operations
-
 @app.route('/operations', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
 def add_operation():
@@ -195,25 +186,21 @@ def delete_operation(operation_id):
 @app.route('/questions', methods=['GET'])
 @crossdomain(origin='*')
 def index_questions():
+    code = 200
     #logging.debug(request.headers)
+    # TODO 公開時にコメントイン
     #if request.headers['Api-Key'] != API_ACCESS_KEY:
     #    abort(401)
 
-    code = 200
-    #query = text("select id, content, state, created_by, updated_by, created_at, updated_at from questions")
+    try:
+        questions = get_questions()
+        questions_dict = ListQuestionMapper({'result': questions}).as_dict()
+    except:
+        pass
 
-    #questions = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.connection.execute(query)]
-    #app.logger.debug(questions)
-    #return jsonify(status_code=code, result=questions)
-    #test = [{'content': 'content1', 'state': 1L, 'updated_by': 'poster2', 'created_by': 'himejima2', 'id': 1L}]
-    #return json.dumps(test)
+    result = questions_dict['result']
 
-    questions = get_questions()
-    #question_dict = mapping_question(question)
-    #questions_dict = ListQuestionMapper({'question_list' : questions}).as_dict()
-    questions_dict = ListQuestionMapper({'result': questions}).as_dict()
-    test = questions_dict['result']
-    return jsonify(status_code=code, result=test)
+    return jsonify(status_code=code, result=result)
 
 @app.route('/questions', methods=['POST'])
 @crossdomain(origin='*')
@@ -221,9 +208,28 @@ def add_question():
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    g.cursor.execute('insert into questions (content, state, created_by, updated_by, created_at, updated_at) values (%s, %s, %s, %s, %s, %s)',
-            ([request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr]))
-    g.connection.commit()
+    req = request.form
+    #logging.debug(req['content'])
+    #logging.debug(req['state'])
+    #logging.debug(req['created_by'])
+    #logging.debug(req['updated_by'])
+    try:
+        question = Question(
+                            id=None,
+                            content=req['content'],
+                            state=req['state'],
+                            created_by=req['created_by'],
+                            updated_by=req['updated_by'],
+                            created_at=tstr,
+                            updated_at=tstr
+        )
+        db_session.add(question)
+        db_session.commit()
+    except:
+        # 登録失敗
+        db_session.rollback()
+    finally:
+        db_session.close()
 
     return jsonify(status_code=code)
 
@@ -231,64 +237,41 @@ def add_question():
 @crossdomain(origin='*')
 def show_question(question_id):
     code = 200
-    #query = text("select id, content, state, created_by, updated_by, created_at, updated_at from questions where id = %s", ([question_id))
-    #g.cursor.execute('select id, content, state, created_by, updated_by, created_at, updated_at from questions where id = %s',
-    #        ([question_id]))
-    #question = [dict(id=row[0], content=row[1], state=row[2], created_by=row[3], updated_by=row[4], created_at=row[5], updated_at=row[6]) for row in g.cursor.fetchall()]
+    question_dict = {}
 
-    question = get_question(question_id)
-    #question_dict = mapping_question(question)
-    question_dict = QuestionMapper(question).as_dict()
+    try:
+        question = get_question(question_id)
+        question_dict = QuestionMapper(question).as_dict()
+    except:
+        # 取得に失敗
+        pass
 
     return jsonify(status_code=code, result=question_dict)
 
 def get_question(question_id):
-    # dbから取得する
-    logging.debug(Question.query.first().id)
+    #logging.debug(Question.query.first().id)
+    question = []
+    res = Question.query.filter("id = :question_id").params(question_id=question_id).first()
+    #logging.debug(res)
     question = Question(id=question_id,
-                        content='content',
-                        state=1,
-                        created_by="create",
-                        updated_by="udpted",
-                        created_at="2014-12-11",
-                        updated_at="2015-13-11"
+                        content=res.content,
+                        state=res.state,
+                        created_by=res.created_by,
+                        updated_by=res.updated_by,
+                        created_at=res.created_at,
+                        updated_at=res.updated_at
     )
 
     return question
 
 def get_questions():
-    # dbから取得 全件取得 
-    question1 = Question(id=777,
-                        content='content',
-                        state=1,
-                        created_by="create",
-                        updated_by="udpted",
-                        created_at="2014-12-11",
-                        updated_at="2015-13-11"
-    )
-    question2 = Question(id=888,
-                        content='content',
-                        state=1,
-                        created_by="create",
-                        updated_by="udpted",
-                        created_at="2014-12-11",
-                        updated_at="2015-13-11"
-    )
     questions = []
-    questions.append(question1)
-    questions.append(question2)
+    res = Question.query.all()
+    for row in res:
+        # get_question(row["id"])でmodelをセットしていく？
+        questions.append(row)
 
     return questions
-
-def mapping_question(question):
-    return {
-            'id' : question.id,
-            'content' : question.content,
-            'state' : question.state,
-            'created_by' : question.created_by,
-            'updated_by' : question.updated_by,
-            'created_at' : question.created_at,
-            'updated_at' : question.updated_at}
 
 @app.route('/questions/<question_id>', methods=['PUT'])
 @crossdomain(origin='*')
@@ -296,20 +279,38 @@ def edit_question(question_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    # app.logger.debug(request.form)
-    g.cursor.execute('update questions set content = %s, state = %s, updated_by = %s, updated_at = %s where id = %s',
-            ([request.form['content'], request.form['state'], request.form['updated_by'], tstr, question_id]))
-    g.connection.commit()
+    req = request.form
+    try:
+        row = db_session.query(Question).get(question_id)
+        row.content = req['content']
+        row.state = req['state']
+        row.created_by = req['created_by']
+        row.updated_by = req['updated_by']
+        row.updated_at = tstr
+        db_session.flush()
+        #db_session.commit()
+    except:
+        pass
+    finally:
+        pass
 
+    # app.logger.debug(request.form)
     return jsonify(status_code=code)
 
 @app.route('/questions/<question_id>', methods=['DELETE'])
 @crossdomain(origin='*')
 def delete_question(question_id):
     code = 204
-    g.cursor.execute('delete from questions where id = %s',
-    [question_id])
-    g.connection.commit()
+    try:
+        row = Question.query.get(question_id)
+        db_session.delete(row)
+        db_session.flush()
+    except:
+        pass
+    finally:
+        pass
+
+    #logging.debug(row.created_by)
 
     return jsonify(status_code=code)
 
