@@ -191,6 +191,16 @@ class Response(Base):
         self.updated_at = updated_at
 
 # マッパークラス TODO 外に出すこと
+## Mapper For Operation
+class OperationMapper(Mapper):
+    id = RawField()
+    state = RawField()
+    created_at = RawField()
+    updated_at = RawField()
+
+class ListOperationMapper(Mapper):
+    result = ListDelegateField(OperationMapper)
+
 ## Mapper For Question
 class QuestionMapper(Mapper):
     id = RawField()
@@ -204,6 +214,47 @@ class QuestionMapper(Mapper):
 class ListQuestionMapper(Mapper):
     #question_list = ListDelegateField(QuestionMapper)
     result = ListDelegateField(QuestionMapper)
+
+## Mapper For Answer
+class AnswerMapper(Mapper):
+    pass
+
+class ListAnswerMapper(Mapper):
+    pass
+
+## Mapper For Inofrmation
+class InformationMapper(Mapper):
+    id = RawField()
+    content = RawField()
+    state = RawField()
+    created_by = RawField()
+    updated_by = RawField()
+    created_at = RawField()
+    updated_at = RawField()
+
+class ListInformationMapper(Mapper):
+    result = ListDelegateField(InformationMapper)
+
+## Mapper For Tweet
+class TweetMapper(Mapper):
+    id = RawField()
+    type = RawField()
+    tweet_id = RawField()
+    content = RawField()
+    created_by = RawField()
+    updated_by = RawField()
+    created_at = RawField()
+    updated_at = RawField()
+
+class ListTweetMapper(Mapper):
+    result = ListDelegateField(TweetMapper)
+
+## Mapper For Response
+class ResponseMapper(Mapper):
+    pass
+
+class ListResponseMapper(Mapper):
+    pass
 
 def clear_session():
     session.clear()
