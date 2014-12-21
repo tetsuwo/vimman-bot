@@ -95,6 +95,8 @@ class Question(Base):
     updated_by = Column(String)
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
+
+    answers = relationship('Answer')
     
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
@@ -109,7 +111,7 @@ class Question(Base):
 class Answer(Base):
     __tablename__ = 'answers'
     id = Column(Integer, primary_key=True)
-    question_id = Column(Integer)
+    question_id = Column(Integer, ForeignKey('questions.id'))
     content = Column(String)
     state = Column(Integer)
     created_by = Column(String(50))
@@ -203,6 +205,20 @@ class OperationMapper(Mapper):
 class ListOperationMapper(Mapper):
     result = ListDelegateField(OperationMapper)
 
+## Mapper For Answer
+class AnswerMapper(Mapper):
+    id = RawField()
+    question_id = RawField()
+    content = RawField()
+    state = RawField()
+    created_by = RawField()
+    updated_by = RawField()
+    created_at = RawField()
+    updated_at = RawField()
+
+class ListAnswerMapper(Mapper):
+    pass
+
 ## Mapper For Question
 class QuestionMapper(Mapper):
     id = RawField()
@@ -213,16 +229,12 @@ class QuestionMapper(Mapper):
     created_at = RawField()
     updated_at = RawField()
 
+    answers = ListDelegateField(AnswerMapper)
+
 class ListQuestionMapper(Mapper):
     #question_list = ListDelegateField(QuestionMapper)
     result = ListDelegateField(QuestionMapper)
 
-## Mapper For Answer
-class AnswerMapper(Mapper):
-    pass
-
-class ListAnswerMapper(Mapper):
-    pass
 
 ## Mapper For Inofrmation
 class InformationMapper(Mapper):
@@ -756,7 +768,6 @@ def get_tweets():
 # TODO tweetを追加するapiの実装
 # TODO filterの実装
 
-# /responses
 @app.route('/responses', methods=['POST'])
 @crossdomain(origin='*')
 def add_response():
