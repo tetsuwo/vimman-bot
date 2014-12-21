@@ -253,10 +253,17 @@ class ListTweetMapper(Mapper):
 
 ## Mapper For Response
 class ResponseMapper(Mapper):
-    pass
+    id = RawField()
+    type = RawField()
+    content = RawField()
+    state = RawField()
+    created_by = RawField()
+    updated_by = RawField()
+    created_at = RawField()
+    updated_at = RawField()
 
 class ListResponseMapper(Mapper):
-    pass
+    result = ListDelegateField(ResponseMapper)
 
 def clear_session():
     session.clear()
@@ -756,9 +763,26 @@ def add_response():
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    g.cursor.execute('insert into responses (type, content, state, created_by, updated_by, created_at, updated_at) values (%s, %s, %s, %s, %s, %s, %s)',
-            ([request.form['type'], request.form['content'], request.form['state'], request.form['created_by'], request.form['updated_by'], tstr, tstr]))
-    g.connection.commit()
+    req = request.form
+    creator = "creator111"
+
+    try:
+        response = Response(
+                            id=None,
+                            type=req["responses[type]"],
+                            content=req["responses[content]"],
+                            state=req["responses[state]"],
+                            created_by=creator,
+                            updated_by=creator,
+                            created_at=tstr,
+                            updated_at=tstr
+        )
+        db_session.add(response)
+        db_session.commit()
+    except:
+        pass
+    finally:
+        pass
 
     return jsonify(status_code=code)
 
@@ -766,20 +790,52 @@ def add_response():
 @crossdomain(origin='*')
 def index_responses():
     code = 200
-    g.cursor.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses')
-    responses = [dict(id=row[0], type=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in g.cursor.fetchall()]
-    # app.logger.debug(questions)
-    return jsonify(status_code=code, result=responses)
+    try:
+        responses = get_responses()
+        responses_dict = ListResponseMapper({'result': responses}).as_dict()
+    except:
+        pass
+
+    result = responses_dict['result']
+
+    return jsonify(status_code=code, result=result)
 
 @app.route('/responses/<response_id>', methods=['GET'])
 @crossdomain(origin='*')
 def show_response(response_id):
     code = 200
-    g.cursor.execute('select id, type, content, state, created_by, updated_by, created_at, updated_at from responses where id = %s',
-            [response_id])
-    response = [dict(id=row[0], type=row[1], content=row[2], state=row[3], created_by=row[4], updated_by=row[5], created_at=row[6], updated_at=row[7]) for row in g.cursor.fetchall()]
+    response_dict = {}
 
-    return jsonify(status_code=code, result=response)
+    try:
+        response = get_response(response_id)
+        response_dict = ResponseMapper(response).as_dict()
+    except:
+        pass
+
+    return jsonify(status_code=code, result=response_dict)
+
+def get_response(response_id):
+    response = []
+    res = Response.query.filter("id = :response_id").params(response_id=response_id).first()
+    response = Response(id=response_id,
+                        type=res.type,
+                        content=res.content,
+                        state=res.state,
+                        created_by=res.created_by,
+                        updated_by=res.updated_by,
+                        created_at=res.created_at,
+                        updated_at=res.updated_at
+    )
+
+    return response
+
+def get_responses():
+    responses = []
+    res = Response.query.all()
+    for row in res:
+        responses.append(row)
+
+    return responses
 
 @app.route('/responses/<response_id>', methods=['PUT'])
 @crossdomain(origin='*')
@@ -787,9 +843,22 @@ def edit_response(response_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    g.cursor.execute('update responses set type = %s, content = %s, state = %s, updated_by = %s, updated_at = %s where id = %s',
-            ([request.form['type'], request.form['content'], request.form['state'], request.form['updated_by'], tstr, response_id]))
-    g.connection.commit()
+    req = request.form
+    updater = "updater"
+
+    try:
+        row = db_session.query(Response).get(response_id)
+        row.type = req["responses[type]"]
+        row.content = req["responses[content]"]
+        row.state = req["responses[state]"]
+        row.updated_by = updater
+        row.updated_at = tstr
+
+        db_session.flush()
+    except:
+        pass
+    finally:
+        pass
 
     return jsonify(status_code=code)
 
@@ -797,9 +866,14 @@ def edit_response(response_id):
 @crossdomain(origin='*')
 def delete_response(response_id):
     code = 204
-    g.cursor.execute('delete from responses where id = %s',
-    [response_id])
-    g.connection.commit()
+    try:
+        row = Response.query.get(response_id)
+        db_session.delete(row)
+        db_session.flush()
+    except:
+        pass
+    finally:
+        pass
 
     return jsonify(status_code=code)
 
