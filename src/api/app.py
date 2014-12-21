@@ -328,10 +328,11 @@ def delete_operation(operation_id):
 
     return jsonify(status_code=code)
 
-# /questions
 @app.route('/questions', methods=['GET'])
 @crossdomain(origin='*')
 def index_questions():
+    """質問一覧を返却します
+    """
     code = 200
     #logging.debug(request.headers)
     # TODO 公開時にコメントイン
@@ -348,9 +349,12 @@ def index_questions():
 
     return jsonify(status_code=code, result=result)
 
+# TODO answerも同時に登録するように修正すること
 @app.route('/questions', methods=['POST'])
 @crossdomain(origin='*')
 def add_question():
+    """リクエストを元に質問を登録します
+    """
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
@@ -382,6 +386,8 @@ def add_question():
 @app.route('/questions/<question_id>', methods=['GET'])
 @crossdomain(origin='*')
 def show_question(question_id):
+    """idを元に質問データを取得します
+    """
     code = 200
     question_dict = {}
 
@@ -395,6 +401,8 @@ def show_question(question_id):
     return jsonify(status_code=code, result=question_dict)
 
 def get_question(question_id):
+    """質問idを元にQuestionモデルを返却する
+    """
     #logging.debug(Question.query.first().id)
     question = []
     res = Question.query.filter("id = :question_id").params(question_id=question_id).first()
@@ -411,6 +419,8 @@ def get_question(question_id):
     return question
 
 def get_questions():
+    """質問一覧のリストを返却する
+    """
     questions = []
     res = Question.query.all()
     for row in res:
@@ -422,6 +432,8 @@ def get_questions():
 @app.route('/questions/<question_id>', methods=['PUT'])
 @crossdomain(origin='*')
 def edit_question(question_id):
+    """質問を更新します
+    """
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
@@ -446,6 +458,8 @@ def edit_question(question_id):
 @app.route('/questions/<question_id>', methods=['DELETE'])
 @crossdomain(origin='*')
 def delete_question(question_id):
+    """質問を削除します
+    """
     code = 204
     try:
         row = Question.query.get(question_id)
