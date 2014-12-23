@@ -5,6 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from datetime import datetime as dt
 from mappers.mapper import *
+
 # create base
 engine = create_engine("mysql://root:@localhost:3306/vimmanbot",echo=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
@@ -134,5 +135,3 @@ class Response(Base):
         self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
-
-

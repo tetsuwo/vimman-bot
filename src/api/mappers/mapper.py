@@ -38,7 +38,6 @@ class ListQuestionMapper(Mapper):
     #question_list = ListDelegateField(QuestionMapper)
     result = ListDelegateField(QuestionMapper)
 
-
 class InformationMapper(Mapper):
     id = RawField()
     content = RawField()
