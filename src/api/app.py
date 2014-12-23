@@ -43,12 +43,15 @@ def before_request():
 def teardown_request(exception):
     pass
 
-
 def clear_session():
     session.clear()
     pass
+
 from questions import questions
 app.register_blueprint(questions.app, url_prefix="/questions")
+
+from operations import operations
+app.register_blueprint(operations.app, url_prefix="/operations")
 
 #@app.route('/')
 #@crossdomain(origin='*')
@@ -56,116 +59,144 @@ app.register_blueprint(questions.app, url_prefix="/questions")
 #    res = {1: 2}
 #    return jsonify(res)
 
-@app.route('/operations', methods=['POST', 'OPTIONS'])
+
+@app.route('/questions', methods=['GET'])
 @crossdomain(origin='*')
-def add_operation():
-    """ 管理者を追加します
+def index_questions():
+    """質問一覧を返却します
     """
-    code = 201
-    tdatetime = dt.now()
-    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
-    # TODO saltのセット方法 + パスワードを暗号化する
-    try:
-        operation = Operation(
-                              id=None,
-                              username=req['operations[username]'],
-                              password=req['operations[password]'],
-                              salt='salt1',
-                              state=req['operations[state]'],
-                              created_at=tstr,
-                              updated_at=tstr
-        )
-        db_session.add(operation)
-        db_session.commit()
-    except:
-        # 登録失敗
-        pass
-    finally:
-        pass
-
-    return jsonify(status_code=code)
-
-#@app.route('/operations', methods=['GET'])
-@app.route('/operators', methods=['GET'])
-@crossdomain(origin='*')
-def index_operatinos():
     code = 200
+    #logging.debug(request.headers)
+    # TODO 公開時にコメントイン
+    #if request.headers['Api-Key'] != API_ACCESS_KEY:
+    #    abort(401)
+
+    questions_dict = {}
     try:
-        operations = get_operations()
-        operations_dict = ListOperationMapper({'result': operations}).as_dict()
+        questions = get_questions()
+        logging.debug(questions)
+        questions_dict = ListQuestionMapper({'result': questions}).as_dict()
     except:
         pass
-
-    result = operations_dict['result']
+    logging.debug(questions_dict)
+    result = questions_dict['result']
 
     return jsonify(status_code=code, result=result)
 
-#@app.route('/operations/<operation_id>', methods=['GET'])
-@app.route('/operators/<operation_id>', methods=['GET'])
+# TODO answerも同時に登録するように修正すること
+@app.route('/questions', methods=['POST'])
 @crossdomain(origin='*')
-def show_operation(operation_id):
-    code = 200
-    operation_dict = {}
+def add_question():
+    """リクエストを元に質問を登録します
+    """
+    code = 201
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    req = request.form
+    #logging.debug(req['content'])
+    #logging.debug(req['state'])
+    #logging.debug(req['created_by'])
+    #logging.debug(req['updated_by'])
     try:
-        operation = get_operation(operation_id)
-        operation_dict = OperationMapper(operation).as_dict()
+        question = Question(
+                            id=None,
+                            content=req['content'],
+                            state=req['state'],
+                            created_by=req['created_by'],
+                            updated_by=req['updated_by'],
+                            created_at=tstr,
+                            updated_at=tstr
+        )
+        db_session.add(question)
+        db_session.commit()
+    except:
+        # 登録失敗
+        db_session.rollback()
+    finally:
+        db_session.close()
+
+    return jsonify(status_code=code)
+
+@app.route('/questions/<question_id>', methods=['GET'])
+@crossdomain(origin='*')
+def show_question(question_id):
+    """idを元に質問データを取得します
+    """
+    code = 200
+    question_dict = {}
+
+    try:
+        question = get_question(question_id)
+        question_dict = QuestionMapper(question).as_dict()
     except:
         # 取得に失敗
         pass
-    
-    return jsonify(status_code=code, result=operation_dict)
 
-def get_operation(operation_id):
-    operation = []
-    res = Operation.query.filter("id = :operation_id").params(operation_id=operation_id).first()
-    operation = Operation(id=operation_id,
-                          username=res.username,
-                          state=res.state,
-                          created_at=res.created_at,
-                          updated_at=res.updated_at
+    return jsonify(status_code=code, result=question_dict)
+
+def get_question(question_id):
+    """質問idを元にQuestionモデルを返却する
+    """
+    #logging.debug(Question.query.first().id)
+    question = []
+    res = Question.query.filter("id = :question_id").params(question_id=question_id).first()
+    #logging.debug(res)
+    question = Question(id=question_id,
+                        content=res.content,
+                        state=res.state,
+                        created_by=res.created_by,
+                        updated_by=res.updated_by,
+                        created_at=res.created_at,
+                        updated_at=res.updated_at
     )
 
-    return operation
+    return question
 
-def get_operations():
-    operations = []
-    res = Operation.query.all()
+def get_questions():
+    """質問一覧のリストを返却する
+    """
+    questions = []
+    res = Question.query.all()
     for row in res:
-        operations.append(row)
+        # get_question(row["id"])でmodelをセットしていく？
+        questions.append(row)
 
-    return operations
+    return questions
 
-#@app.route('/operations/<operation_id>', methods=['PUT'])
-@app.route('/operators/<operation_id>', methods=['PUT'])
+@app.route('/questions/<question_id>', methods=['PUT'])
 @crossdomain(origin='*')
-def edit_operation(operation_id):
+def edit_question(question_id):
+    """質問を更新します
+    """
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
     try:
-        row = db_session.query(Operation).get(operation_id)
-        row.username = req['operations[username]']
-        row.password = req['operations[password]']
-        row.state = req['operations[state]']
+        row = db_session.query(Question).get(question_id)
+        row.content = req['content']
+        row.state = req['state']
+        row.created_by = req['created_by']
+        row.updated_by = req['updated_by']
         row.updated_at = tstr
         db_session.flush()
+        #db_session.commit()
     except:
         pass
     finally:
         pass
 
+    # app.logger.debug(request.form)
     return jsonify(status_code=code)
 
-@app.route('/operations/<operation_id>', methods=['DELETE'])
+@app.route('/questions/<question_id>', methods=['DELETE'])
 @crossdomain(origin='*')
-def delete_operation(operation_id):
-    """ 管理者を削除します
+def delete_question(question_id):
+    """質問を削除します
     """
     code = 204
     try:
-        row = Operation.query.get(operation_id)
+        row = Question.query.get(question_id)
         db_session.delete(row)
         db_session.flush()
     except:
@@ -173,155 +204,9 @@ def delete_operation(operation_id):
     finally:
         pass
 
-    return jsonify(status_code=code)
+    #logging.debug(row.created_by)
 
-#@app.route('/questions', methods=['GET'])
-#@crossdomain(origin='*')
-#def index_questions():
-#    """質問一覧を返却します
-#    """
-#    code = 200
-#    #logging.debug(request.headers)
-#    # TODO 公開時にコメントイン
-#    #if request.headers['Api-Key'] != API_ACCESS_KEY:
-#    #    abort(401)
-#
-#    questions_dict = {}
-#    try:
-#        questions = get_questions()
-#        logging.debug(questions)
-#        questions_dict = ListQuestionMapper({'result': questions}).as_dict()
-#    except:
-#        pass
-#    logging.debug(questions_dict)
-#    result = questions_dict['result']
-#
-#    return jsonify(status_code=code, result=result)
-#
-## TODO answerも同時に登録するように修正すること
-#@app.route('/questions', methods=['POST'])
-#@crossdomain(origin='*')
-#def add_question():
-#    """リクエストを元に質問を登録します
-#    """
-#    code = 201
-#    tdatetime = dt.now()
-#    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-#    req = request.form
-#    #logging.debug(req['content'])
-#    #logging.debug(req['state'])
-#    #logging.debug(req['created_by'])
-#    #logging.debug(req['updated_by'])
-#    try:
-#        question = Question(
-#                            id=None,
-#                            content=req['content'],
-#                            state=req['state'],
-#                            created_by=req['created_by'],
-#                            updated_by=req['updated_by'],
-#                            created_at=tstr,
-#                            updated_at=tstr
-#        )
-#        db_session.add(question)
-#        db_session.commit()
-#    except:
-#        # 登録失敗
-#        db_session.rollback()
-#    finally:
-#        db_session.close()
-#
-#    return jsonify(status_code=code)
-#
-#@app.route('/questions/<question_id>', methods=['GET'])
-#@crossdomain(origin='*')
-#def show_question(question_id):
-#    """idを元に質問データを取得します
-#    """
-#    code = 200
-#    question_dict = {}
-#
-#    try:
-#        question = get_question(question_id)
-#        question_dict = QuestionMapper(question).as_dict()
-#    except:
-#        # 取得に失敗
-#        pass
-#
-#    return jsonify(status_code=code, result=question_dict)
-#
-#def get_question(question_id):
-#    """質問idを元にQuestionモデルを返却する
-#    """
-#    #logging.debug(Question.query.first().id)
-#    question = []
-#    res = Question.query.filter("id = :question_id").params(question_id=question_id).first()
-#    #logging.debug(res)
-#    question = Question(id=question_id,
-#                        content=res.content,
-#                        state=res.state,
-#                        created_by=res.created_by,
-#                        updated_by=res.updated_by,
-#                        created_at=res.created_at,
-#                        updated_at=res.updated_at
-#    )
-#
-#    return question
-#
-#def get_questions():
-#    """質問一覧のリストを返却する
-#    """
-#    questions = []
-#    res = Question.query.all()
-#    for row in res:
-#        # get_question(row["id"])でmodelをセットしていく？
-#        questions.append(row)
-#
-#    return questions
-#
-#@app.route('/questions/<question_id>', methods=['PUT'])
-#@crossdomain(origin='*')
-#def edit_question(question_id):
-#    """質問を更新します
-#    """
-#    code = 201
-#    tdatetime = dt.now()
-#    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-#    req = request.form
-#    try:
-#        row = db_session.query(Question).get(question_id)
-#        row.content = req['content']
-#        row.state = req['state']
-#        row.created_by = req['created_by']
-#        row.updated_by = req['updated_by']
-#        row.updated_at = tstr
-#        db_session.flush()
-#        #db_session.commit()
-#    except:
-#        pass
-#    finally:
-#        pass
-#
-#    # app.logger.debug(request.form)
-#    return jsonify(status_code=code)
-#
-#@app.route('/questions/<question_id>', methods=['DELETE'])
-#@crossdomain(origin='*')
-#def delete_question(question_id):
-#    """質問を削除します
-#    """
-#    code = 204
-#    try:
-#        row = Question.query.get(question_id)
-#        db_session.delete(row)
-#        db_session.flush()
-#    except:
-#        pass
-#    finally:
-#        pass
-#
-#    #logging.debug(row.created_by)
-#
-#    return jsonify(status_code=code)
+    return jsonify(status_code=code)
 
 
 # /answers

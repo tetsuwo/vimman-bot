@@ -9,7 +9,7 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Blueprint(__name__, "questions")
 
-@app.route('/questions', methods=['GET'])
+@app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index_questions():
     """質問一覧を返却します
@@ -33,7 +33,7 @@ def index_questions():
     return jsonify(status_code=code, result=result)
 
 # TODO answerも同時に登録するように修正すること
-@app.route('/questions', methods=['POST'])
+@app.route('/', methods=['POST'])
 @crossdomain(origin='*')
 def add_question():
     """リクエストを元に質問を登録します
@@ -66,7 +66,7 @@ def add_question():
 
     return jsonify(status_code=code)
 
-@app.route('/questions/<question_id>', methods=['GET'])
+@app.route('/<question_id>', methods=['GET'])
 @crossdomain(origin='*')
 def show_question(question_id):
     """idを元に質問データを取得します
