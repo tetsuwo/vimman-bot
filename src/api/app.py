@@ -33,165 +33,15 @@ db_session = scoped_session(sessionmaker(autocommit=False,
 Base = declarative_base()
 Base.query = db_session.query_property()
 
+from models.model import *
+
 @app.before_request
 def before_request():
     pass
-    #g.engine = create_engine("mysql://root:@localhost:3306/vimmanbot",echo=True)
-    #g.connection = g.engine.connect()
-
-
-    #user_check()
-    
-    #g.connection = MySQLdb.connect(
-    #    host=db_config["host"],
-    #    db=db_config["db"],
-    #    user=db_config["user"],
-    #    passwd=db_config["passwd"],
-    #    port=db_config["port"],
-    #    unix_socket=db_config["unix_socket"]
-    #)
-    #g.cursor = g.connection.cursor()
-
 
 @app.teardown_request
 def teardown_request(exception):
     pass
-    #cursor = getattr(g, 'cursor', None)
-    #if cursor is not None:
-    #    cursor.close()
-
-    #connection = getattr(g, 'connection', None)
-    #if connection is not None:
-    #    connection.close()
-
-# モデルクラス TODO 外部に出す
-# operationsクラス
-class Operation(Base):
-    __tablename__ = 'operations'
-    id = Column(Integer, primary_key=True)
-    username = Column(String(50))
-    password = Column(String(50))
-    salt = Column(String(50))
-    state = Column(Integer)
-    created_at = Column(DateTime, default=dt.now)
-    updated_at = Column(DateTime, default=dt.now)
-
-    def __init__(self, id, username, password, salt, state, created_at, updated_at):
-        self.id = id
-        self.username = username
-        self.password = password
-        self.salt = salt
-        self.state = state
-        self.created_at = created_at
-        self.updated_at = updated_at
-
-# questionsテーブルのmodel
-class Question(Base):
-    __tablename__ = 'questions'
-    id = Column(Integer, primary_key=True)
-    content = Column(String)
-    state = Column(Integer)
-    created_by = Column(String)
-    updated_by = Column(String)
-    created_at = Column(DateTime, default=dt.now)
-    updated_at = Column(DateTime, default=dt.now)
-
-    answers = relationship('Answer')
-    
-    def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
-        self.id = id
-        self.content = content
-        self.state = state
-        self.created_by = created_by
-        self.updated_by = updated_by
-        self.created_at = created_at
-        self.updated_at = updated_at
-
-# answersクラス
-class Answer(Base):
-    __tablename__ = 'answers'
-    id = Column(Integer, primary_key=True)
-    question_id = Column(Integer, ForeignKey('questions.id'))
-    content = Column(String)
-    state = Column(Integer)
-    created_by = Column(String(50))
-    updated_by = Column(String(50))
-    created_at = Column(DateTime, default=dt.now)
-    updated_at = Column(DateTime, default=dt.now)
-
-    def __init__(self, id, question_id, content, state, created_by, updated_by, created_at, updated_at):
-        self.id = id
-        self.question_id = question_id
-        self.content = content
-        self.state = state
-        self.created_by = created_by
-        self.updated_by = updated_by
-        self.created_at = created_at
-        self.updated_at = updated_at
-
-# informationsクラス
-class Information(Base):
-    __tablename__ = 'informations'
-    id = Column(Integer, primary_key=True)
-    content = Column(String)
-    state = Column(Integer)
-    created_by = Column(String(50))
-    updated_by = Column(String(50))
-    created_at = Column(DateTime, default=dt.now)
-    updated_at = Column(DateTime, default=dt.now)
-
-    def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
-        self.id = id
-        self.content = content
-        self.state = state
-        self.created_by = created_by
-        self.updated_by = updated_by
-        self.created_at = created_at
-        self.updated_at = updated_at
-
-# tweetsクラス
-class Tweet(Base):
-    __tablename__ = 'tweets' 
-    id = Column(Integer, primary_key=True)
-    type = Column(String(10))
-    tweet_id = Column(Integer)
-    content = Column(String)
-    created_by = Column(String(50))
-    updated_by = Column(String(50))
-    created_at = Column(DateTime, default=dt.now)
-    updated_at = Column(DateTime, default=dt.now)
-
-    def __init__(self, id, type, tweet_id, content, created_by, updated_by, created_at, updated_at):
-        self.id = id
-        self.type = type
-        self.tweet_id = tweet_id
-        self.content = content
-        self.created_by = created_by
-        self.updated_by = updated_by
-        self.created_at = created_at
-        self.updated_at = updated_at
-
-# responsesクラス
-class Response(Base):
-    __tablename__ = 'responses' 
-    id = Column(Integer, primary_key=True)
-    type = Column(String(10))
-    content = Column(String)
-    state = Column(Integer)
-    created_by = Column(String(50))
-    updated_by = Column(String(50))
-    created_at = Column(DateTime, default=dt.now)
-    updated_at = Column(DateTime, default=dt.now)
-
-    def __init__(self, id, type, content, state, created_by, updated_by, crated_at, updated_at):
-        self.id = id
-        self.type = type
-        self.content = content
-        self.state = state
-        self.created_by = created_by
-        self.updated_by = updated_by
-        self.created_at = created_at
-        self.updated_at = updated_at
 
 # マッパークラス TODO 外に出すこと
 ## Mapper For Operation
@@ -417,12 +267,14 @@ def index_questions():
     #if request.headers['Api-Key'] != API_ACCESS_KEY:
     #    abort(401)
 
+    questions_dict = {}
     try:
         questions = get_questions()
+        logging.debug(questions)
         questions_dict = ListQuestionMapper({'result': questions}).as_dict()
     except:
         pass
-
+    logging.debug(questions_dict)
     result = questions_dict['result']
 
     return jsonify(status_code=code, result=result)
