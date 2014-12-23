@@ -5,9 +5,18 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from datetime import datetime as dt
 from mappers.mapper import *
+from config.databases import *
 
 # create base
-engine = create_engine("mysql://root:@localhost:3306/vimmanbot",echo=True)
+db_string = "{type}://{user}:{passwd}@{host}:{port}/{db}".format(
+            type=db_config['type'],
+            user=db_config['user'],
+            passwd=db_config['passwd'],
+            host=db_config['host'],
+            port=db_config['port'],
+            db=db_config['db']
+)
+engine = create_engine(db_string, echo=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                             autoflush=False,
                             bind=engine))
