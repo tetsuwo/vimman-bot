@@ -52,11 +52,6 @@ app.register_blueprint(tweets.app, url_prefix="/tweets")
 
 from users import users
 app.register_blueprint(users.app, url_prefix="/users")
-#@app.route('/')
-#@crossdomain(origin='*')
-#def test():
-#    res = {1: 2}
-#    return jsonify(res)
 
 if __name__ == '__main__':
     app.run()

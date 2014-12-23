@@ -4,8 +4,7 @@ from sqlalchemy.orm import *
 from sqlalchemy.ext.declarative import declarative_base
 
 from datetime import datetime as dt
-
-from bpmappers import Mapper, RawField, DelegateField, ListDelegateField
+from mappers.mapper import *
 # create base
 engine = create_engine("mysql://root:@localhost:3306/vimmanbot",echo=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
@@ -137,79 +136,3 @@ class Response(Base):
         self.updated_at = updated_at
 
 
-class OperationMapper(Mapper):
-    id = RawField()
-    username = RawField()
-    state = RawField()
-    created_at = RawField()
-    updated_at = RawField()
-
-class ListOperationMapper(Mapper):
-    result = ListDelegateField(OperationMapper)
-
-class AnswerMapper(Mapper):
-    id = RawField()
-    question_id = RawField()
-    content = RawField()
-    state = RawField()
-    created_by = RawField()
-    updated_by = RawField()
-    created_at = RawField()
-    updated_at = RawField()
-
-class ListAnswerMapper(Mapper):
-    pass
-
-class QuestionMapper(Mapper):
-    id = RawField()
-    content = RawField()
-    state = RawField()
-    created_by = RawField()
-    updated_by = RawField()
-    created_at = RawField()
-    updated_at = RawField()
-
-    answers = ListDelegateField(AnswerMapper)
-
-class ListQuestionMapper(Mapper):
-    #question_list = ListDelegateField(QuestionMapper)
-    result = ListDelegateField(QuestionMapper)
-
-
-class InformationMapper(Mapper):
-    id = RawField()
-    content = RawField()
-    state = RawField()
-    created_by = RawField()
-    updated_by = RawField()
-    created_at = RawField()
-    updated_at = RawField()
-
-class ListInformationMapper(Mapper):
-    result = ListDelegateField(InformationMapper)
-
-class TweetMapper(Mapper):
-    id = RawField()
-    type = RawField()
-    tweet_id = RawField()
-    content = RawField()
-    created_by = RawField()
-    updated_by = RawField()
-    created_at = RawField()
-    updated_at = RawField()
-
-class ListTweetMapper(Mapper):
-    result = ListDelegateField(TweetMapper)
-
-class ResponseMapper(Mapper):
-    id = RawField()
-    type = RawField()
-    content = RawField()
-    state = RawField()
-    created_by = RawField()
-    updated_by = RawField()
-    created_at = RawField()
-    updated_at = RawField()
-
-class ListResponseMapper(Mapper):
-    result = ListDelegateField(ResponseMapper)
