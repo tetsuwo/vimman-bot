@@ -77,15 +77,7 @@ def show_information(information_id):
 
 def get_information(information_id):
     information = []
-    res = Information.query.filter("id = :information_id").params(information_id=information_id).first()
-    information = Information(id=information_id,
-                              content=res.content,
-                              state=res.state,
-                              created_by=res.created_by,
-                              updated_by=res.updated_by,
-                              created_at=res.created_at,
-                              updated_at=res.updated_at
-    )
+    information = Information.query.filter("id = :information_id").params(information_id=information_id).first()
 
     return information
 

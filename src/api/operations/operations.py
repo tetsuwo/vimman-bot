@@ -39,7 +39,6 @@ def add_operation():
 
     return jsonify(status_code=code)
 
-#@app.route('/operations', methods=['GET'])
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index_operatinos():
@@ -54,7 +53,6 @@ def index_operatinos():
 
     return jsonify(status_code=code, result=result)
 
-#@app.route('/operations/<operation_id>', methods=['GET'])
 @app.route('/<operation_id>', methods=['GET'])
 @crossdomain(origin='*')
 def show_operation(operation_id):
@@ -70,10 +68,10 @@ def show_operation(operation_id):
     return jsonify(status_code=code, result=operation_dict)
 
 def get_operation(operation_id):
-    res = None
-    res = Operation.query.filter("id = :operation_id").params(operation_id=operation_id).first()
+    operation = None
+    operation = Operation.query.filter("id = :operation_id").params(operation_id=operation_id).first()
 
-    return res
+    return operation
 
 def get_operations():
     operations = []

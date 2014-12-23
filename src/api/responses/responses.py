@@ -9,7 +9,6 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Blueprint(__name__, "operations")
 
-
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
 def add_response():
@@ -69,16 +68,7 @@ def show_response(response_id):
 
 def get_response(response_id):
     response = []
-    res = Response.query.filter("id = :response_id").params(response_id=response_id).first()
-    response = Response(id=response_id,
-                        type=res.type,
-                        content=res.content,
-                        state=res.state,
-                        created_by=res.created_by,
-                        updated_by=res.updated_by,
-                        created_at=res.created_at,
-                        updated_at=res.updated_at
-    )
+    response = Response.query.filter("id = :response_id").params(response_id=response_id).first()
 
     return response
 

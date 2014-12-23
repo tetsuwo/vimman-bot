@@ -9,7 +9,6 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Blueprint(__name__, "tweets")
 
-
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index_tweets():

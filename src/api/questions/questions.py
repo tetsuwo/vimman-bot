@@ -23,7 +23,7 @@ def index_questions():
     questions_dict = {}
     try:
         questions = get_questions()
-        logging.debug(questions)
+        #logging.debug(questions)
         questions_dict = ListQuestionMapper({'result': questions}).as_dict()
     except:
         pass
@@ -88,19 +88,8 @@ def get_question(question_id):
     """
     #logging.debug(Question.query.first().id)
     question = []
-    res = Question.query.filter("id = :question_id").params(question_id=question_id).first()
-    #logging.debug(res)
-    logging.debug(res.answers)
-    question = Question(id=question_id,
-                        content=res.content,
-                        state=res.state,
-                        created_by=res.created_by,
-                        updated_by=res.updated_by,
-                        created_at=res.created_at,
-                        updated_at=res.updated_at
-    )
+    question = Question.query.filter("id = :question_id").params(question_id=question_id).first()
 
-    question.answers = res.answers 
     return question
 
 def get_questions():
@@ -109,7 +98,6 @@ def get_questions():
     questions = []
     res = Question.query.all()
     for row in res:
-        # get_question(row["id"])でmodelをセットしていく？
         questions.append(row)
 
     return questions
