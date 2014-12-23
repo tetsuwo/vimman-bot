@@ -1,23 +1,9 @@
 # -*- coding: utf-8 -*-
+from flask import Flask
 
-from flask import Flask, jsonify, Response, request, \
-     session, g, redirect, url_for, abort, render_template, flash
-from datetime import datetime as dt
-from helpers.crossdomain import *
-from helpers.database import *
-from config.databases import *
-
-from sqlalchemy import *
-from sqlalchemy.orm import *
-from sqlalchemy.ext.declarative import declarative_base
-import MySQLdb
-import logging
-#import json
-from bpmappers import Mapper, RawField, DelegateField, ListDelegateField
-
-API_ACCESS_KEY = 'himejimaspecial'
-LOG_FILENAME = 'example.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+#API_ACCESS_KEY = 'himejimaspecial'
+#LOG_FILENAME = 'example.log'
+#logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Flask(__name__)
 app.secret_key = 'my secret key'
@@ -25,7 +11,6 @@ app.secret_key = 'my secret key'
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 
-from models.model import *
 
 @app.before_request
 def before_request():
