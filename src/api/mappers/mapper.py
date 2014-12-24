@@ -55,6 +55,7 @@ class TweetMapper(Mapper):
     type = RawField()
     tweet_id = RawField()
     content = RawField()
+    post_url = RawField()
     created_by = RawField()
     updated_by = RawField()
     created_at = RawField()

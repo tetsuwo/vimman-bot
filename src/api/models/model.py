@@ -109,16 +109,18 @@ class Tweet(Base):
     type = Column(String(10))
     tweet_id = Column(Integer)
     content = Column(String)
+    post_url = Column(String)
     created_by = Column(String(50))
     updated_by = Column(String(50))
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
 
-    def __init__(self, id, type, tweet_id, content, created_by, updated_by, created_at, updated_at):
+    def __init__(self, id, type, tweet_id, content, post_url, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.type = type
         self.tweet_id = tweet_id
         self.content = content
+        self.post_url = post_url
         self.created_by = created_by
         self.updated_by = updated_by
         self.created_at = created_at
