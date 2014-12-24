@@ -20,6 +20,9 @@ class AnswerMapper(Mapper):
     created_at = RawField()
     updated_at = RawField()
 
+    creator = ListDelegateField(OperatorMapper)
+    updater = ListDelegateField(OperatorMapper)
+
 class ListAnswerMapper(Mapper):
     pass
 
@@ -49,6 +52,9 @@ class InformationMapper(Mapper):
     created_at = RawField()
     updated_at = RawField()
 
+    creator = ListDelegateField(OperatorMapper)
+    updater = ListDelegateField(OperatorMapper)
+
 class ListInformationMapper(Mapper):
     result = ListDelegateField(InformationMapper)
 
@@ -63,6 +69,9 @@ class TweetMapper(Mapper):
     created_at = RawField()
     updated_at = RawField()
 
+    creator = ListDelegateField(OperatorMapper)
+    updater = ListDelegateField(OperatorMapper)
+
 class ListTweetMapper(Mapper):
     result = ListDelegateField(TweetMapper)
 
@@ -75,6 +84,9 @@ class ResponseMapper(Mapper):
     updated_by = RawField()
     created_at = RawField()
     updated_at = RawField()
+
+    creator = ListDelegateField(OperatorMapper)
+    updater = ListDelegateField(OperatorMapper)
 
 class ListResponseMapper(Mapper):
     result = ListDelegateField(ResponseMapper)
