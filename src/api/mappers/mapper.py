@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from bpmappers import Mapper, RawField, DelegateField, ListDelegateField
-class OperationMapper(Mapper):
+class OperatorMapper(Mapper):
     id = RawField()
     username = RawField()
     state = RawField()
     created_at = RawField()
     updated_at = RawField()
 
-class ListOperationMapper(Mapper):
-    result = ListDelegateField(OperationMapper)
+class ListOperatorMapper(Mapper):
+    result = ListDelegateField(OperatorMapper)
 
 class AnswerMapper(Mapper):
     id = RawField()

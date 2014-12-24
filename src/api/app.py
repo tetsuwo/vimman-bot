@@ -24,8 +24,8 @@ def teardown_request(exception):
 from questions import questions
 app.register_blueprint(questions.app, url_prefix="/questions")
 
-from operations import operations
-app.register_blueprint(operations.app, url_prefix="/operations")
+from operators import operators
+app.register_blueprint(operators.app, url_prefix="/operators")
 
 from informations import informations
 app.register_blueprint(informations.app, url_prefix="/informations")

@@ -7,7 +7,7 @@ import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
-app = Blueprint(__name__, "operations")
+app = Blueprint(__name__, "informations")
 
 
 @app.route('/', methods=['POST'])
