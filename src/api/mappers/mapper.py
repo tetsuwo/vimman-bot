@@ -33,6 +33,8 @@ class QuestionMapper(Mapper):
     updated_at = RawField()
 
     answers = ListDelegateField(AnswerMapper)
+    creator = ListDelegateField(OperatorMapper)
+    updater = ListDelegateField(OperatorMapper)
 
 class ListQuestionMapper(Mapper):
     #question_list = ListDelegateField(QuestionMapper)

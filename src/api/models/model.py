@@ -53,6 +53,12 @@ class Question(Base):
     updated_at = Column(DateTime, default=dt.now)
 
     answers = relationship('Answer')
+    creator = relationship('Operator',
+            primaryjoin="Question.created_by==Operator.id",
+            foreign_keys="Operator.id")
+    updater = relationship('Operator',
+            primaryjoin="Question.updated_by==Operator.id",
+            foreign_keys="Operator.id")
     
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
