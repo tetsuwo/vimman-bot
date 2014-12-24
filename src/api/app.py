@@ -21,22 +21,22 @@ def before_request():
 def teardown_request(exception):
     pass
 
-from questions import questions
+from controllers.questions import questions 
 app.register_blueprint(questions.app, url_prefix="/questions")
 
-from operators import operators
+from controllers.operators import operators
 app.register_blueprint(operators.app, url_prefix="/operators")
 
-from informations import informations
+from controllers.informations import informations
 app.register_blueprint(informations.app, url_prefix="/informations")
 
-from responses import responses
+from controllers.responses import responses
 app.register_blueprint(responses.app, url_prefix="/responses")
 
-from tweets import tweets
+from controllers.tweets import tweets
 app.register_blueprint(tweets.app, url_prefix="/tweets")
 
-from users import users
+from controllers.users import users
 app.register_blueprint(users.app, url_prefix="/users")
 
 if __name__ == '__main__':
