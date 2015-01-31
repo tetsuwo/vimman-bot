@@ -19,15 +19,16 @@ def add_operator():
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
     # TODO saltのセット方法 + パスワードを暗号化する
+    #
     try:
         operator = Operator(
-                              id=None,
-                              username=req['operators[username]'],
-                              password=req['operators[password]'],
-                              salt='salt1',
-                              state=req['operators[state]'],
-                              created_at=tstr,
-                              updated_at=tstr
+            id=None,
+            username=req['operators[username]'],
+            password=req['operators[password]'],
+            salt='salt1',
+            state=req['operators[state]'],
+            created_at=tstr,
+            updated_at=tstr
         )
         db_session.add(operator)
         db_session.commit()
@@ -39,6 +40,8 @@ def add_operator():
 
     return jsonify(status_code=code)
 
+# TODO pagingの実装
+# TODO 検索の実装
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index_operators():

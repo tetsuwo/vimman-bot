@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, session, request, redirect
 from helpers.crossdomain import *
 from models.model import *
 
@@ -9,6 +9,8 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Blueprint(__name__, "users")
 
+#TODO ログイン方法 dbから検索して照合
+#TODO ログイン成功時に 取得データをセッションに入れる
 @app.route('/login', methods=['GET', 'POST'])
 @crossdomain(origin='*')
 def login():
@@ -23,6 +25,7 @@ def login():
         if request.form['username'] == 'test' and request.form['password'] == 'pass':
             #session['logged_in'] = True
             set_username(request.form['username'])
+            session['user_id'] = 777
             return redirect('/#/questions')
             #return jsonify(status_code=code)
         else:

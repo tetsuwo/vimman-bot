@@ -6,7 +6,8 @@ from flask import Flask
 #logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Flask(__name__)
-#app.secret_key = 'my secret key'
+# TODO sessionを利用するために必要
+app.secret_key = 'my secret key'
 
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
