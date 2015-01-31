@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from helpers.crossdomain import *
 from models.model import *
+
+from datetime import datetime as dt
+from config.databases import *
 
 import logging
 LOG_FILENAME = 'example.log'
@@ -18,8 +21,8 @@ def add_operator():
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
+    #logging.debug(req)
     # TODO saltのセット方法 + パスワードを暗号化する
-    #
     try:
         operator = Operator(
             id=None,
@@ -30,6 +33,15 @@ def add_operator():
             created_at=tstr,
             updated_at=tstr
         )
+        #operator = Operator(
+        #    id=None,
+        #    username=req['username'],
+        #    password=req['password'],
+        #    salt='salt1',
+        #    state=req['state'],
+        #    created_at=tstr,
+        #    updated_at=tstr
+        #)
         db_session.add(operator)
         db_session.commit()
     except:
@@ -40,8 +52,6 @@ def add_operator():
 
     return jsonify(status_code=code)
 
-# TODO pagingの実装
-# TODO 検索の実装
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index_operators():

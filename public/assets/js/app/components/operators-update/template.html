@@ -3,7 +3,7 @@
     <h1 id="pageid">オペレーターの編集</h1>
 </div>
 
-<form class="form-horizontal" role="form" action="./operators.html" method="post">
+<form class="form-horizontal" role="form" action="/api/operators/2" method="post">
     <div class="form-group">
         <label class="col-lg-2 control-label">
             状態
@@ -11,13 +11,13 @@
         <div class="col-lg-10">
             <div class="radio">
                 <label>
-                    <input type="radio" name="status" id="optionsRadios1" value="option1" checked>
+                    <input type="radio" name="operators[state]" id="optionsRadios1" value="option1" checked>
                     通常
                 </label>
             </div>
             <div class="radio">
                 <label>
-                    <input type="radio" name="status" id="optionsRadios2" value="option2">
+                    <input type="radio" name="operators[state]" id="optionsRadios2" value="option2">
                     停止
                 </label>
             </div>
@@ -26,14 +26,14 @@
     <div class="form-group">
         <label for="content" class="col-lg-2 control-label">ユーザー名</label>
         <div class="col-lg-10">
-            <input type="text" class="form-control" id="username" name="question[username]" placeholder="">
+            <input type="text" class="form-control" id="username" name="operators[username]" placeholder="">
             <p class="help-block">例）aganoyot</p>
         </div>
     </div>
     <div class="form-group">
         <label for="content" class="col-lg-2 control-label">パスワード</label>
         <div class="col-lg-10">
-            <input type="password" class="form-control" id="password" name="question[password]" placeholder="">
+            <input type="password" class="form-control" id="password" name="operators[password]" placeholder="">
             <p class="help-block">例）hogehogehoge</p>
         </div>
     </div>
