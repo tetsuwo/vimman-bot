@@ -118,7 +118,7 @@ def edit_operator(operator_id):
         row = db_session.query(Operator).get(operator_id)
         row.username = req['operators[username]']
         row.password = req['operators[password]']
-        #row.state = req['operators[state]']
+        row.state = req['operators[state]']
         row.updated_at = tstr
         db_session.flush()
         # なぜ必要？ 調査

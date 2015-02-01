@@ -25,7 +25,7 @@ def login():
         if request.form['username'] == 'test' and request.form['password'] == 'pass':
             #session['logged_in'] = True
             set_username(request.form['username'])
-            session['user_id'] = 777
+            session['user_id'] = 1
             return redirect('/#/questions')
             #return jsonify(status_code=code)
         else:

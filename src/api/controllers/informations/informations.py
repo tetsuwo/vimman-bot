@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request, session
 from helpers.crossdomain import *
 from models.model import *
+
+from datetime import datetime as dt
 
 import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Blueprint(__name__, "informations")
-
 
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
@@ -18,18 +19,18 @@ def add_information():
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
     # TODO SESSIONからloginユーザーをセットする
-    creator = "creator"
+    creator_id = session.get('user_id') 
     logging.debug(req['informations[content]'])
 
     try:
         information = Information(
-                                  id=None,
-                                  content=req['informations[content]'],
-                                  state=req['informations[state]'],
-                                  created_by=creator,
-                                  updated_by=creator,
-                                  created_at=tstr,
-                                  updated_at=tstr
+            id=None,
+            content=req['informations[content]'].encode('utf-8'),
+            state=req['informations[state]'],
+            created_by=creator_id,
+            updated_by=creator_id,
+            created_at=tstr,
+            updated_at=tstr
         )
         db_session.add(information)
         db_session.flush()
@@ -89,7 +90,8 @@ def get_informations():
 
     return informations
 
-@app.route('/<information_id>', methods=['PUT'])
+#@app.route('/<information_id>', methods=['PUT'])
+@app.route('/<information_id>', methods=['POST'])
 @crossdomain(origin='*')
 def edit_information(information_id):
     code = 201
@@ -97,14 +99,15 @@ def edit_information(information_id):
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
     # TODO sessionから取得する
-    updater = "updater"
+    updater_id = session.get('user_id') 
     try:
         row = db_session.query(Information).get(information_id)
         row.content = req['informations[content]']
         row.state = req['informations[state]']
-        row.updated_by = updater
+        row.updated_by = updater_id
         row.updated_at = tstr
         db_session.flush()
+        db_session.commit()
     except:
         pass
     finally:

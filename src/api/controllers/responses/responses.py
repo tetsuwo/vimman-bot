@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, session, request
 from helpers.crossdomain import *
 from models.model import *
+
+from datetime import datetime as dt
 
 import logging
 LOG_FILENAME = 'example.log'
@@ -16,25 +18,25 @@ def add_response():
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
-    creator = "creator111"
+    creator_id = session.get('user_id')
 
-    try:
-        response = Response(
-                            id=None,
-                            type=req["responses[type]"],
-                            content=req["responses[content]"],
-                            state=req["responses[state]"],
-                            created_by=creator,
-                            updated_by=creator,
-                            created_at=tstr,
-                            updated_at=tstr
-        )
-        db_session.add(response)
-        db_session.commit()
-    except:
-        pass
-    finally:
-        pass
+    #try:
+    response = Response(
+        id=None,
+        type=req["responses[type]"],
+        content=req["responses[content]"],
+        state=req["responses[state]"],
+        created_by=creator_id,
+        updated_by=creator_id,
+        created_at=tstr,
+        updated_at=tstr
+    )
+    db_session.add(response)
+    db_session.commit()
+    #except:
+    #    pass
+    #finally:
+    #    pass
 
     return jsonify(status_code=code)
 

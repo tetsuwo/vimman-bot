@@ -171,7 +171,7 @@ class Response(Base):
             primaryjoin="Response.updated_by==Operator.id",
             foreign_keys="Operator.id")
 
-    def __init__(self, id, type, content, state, created_by, updated_by, crated_at, updated_at):
+    def __init__(self, id, type, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.type = type
         self.content = content
