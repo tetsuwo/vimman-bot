@@ -20,23 +20,23 @@ def add_response():
     req = request.form
     creator_id = session.get('user_id')
 
-    #try:
-    response = Response(
-        id=None,
-        type=req["responses[type]"],
-        content=req["responses[content]"],
-        state=req["responses[state]"],
-        created_by=creator_id,
-        updated_by=creator_id,
-        created_at=tstr,
-        updated_at=tstr
-    )
-    db_session.add(response)
-    db_session.commit()
-    #except:
-    #    pass
-    #finally:
-    #    pass
+    try:
+        response = Response(
+            id=None,
+            type=req["responses[type]"],
+            content=req["responses[content]"],
+            state=req["responses[state]"],
+            created_by=creator_id,
+            updated_by=creator_id,
+            created_at=tstr,
+            updated_at=tstr
+        )
+        db_session.add(response)
+        db_session.commit()
+    except:
+        pass
+    finally:
+        pass
 
     return jsonify(status_code=code)
 
@@ -82,24 +82,26 @@ def get_responses():
 
     return responses
 
-@app.route('/<response_id>', methods=['PUT'])
+#@app.route('/<response_id>', methods=['PUT'])
+@app.route('/<response_id>', methods=['POST'])
 @crossdomain(origin='*')
 def edit_response(response_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
-    updater = "updater"
+    updater_id = session.get('user_id') 
 
     try:
         row = db_session.query(Response).get(response_id)
         row.type = req["responses[type]"]
         row.content = req["responses[content]"]
         row.state = req["responses[state]"]
-        row.updated_by = updater
+        row.updated_by = updater_id
         row.updated_at = tstr
 
         db_session.flush()
+        db_session.commit()
     except:
         pass
     finally:
