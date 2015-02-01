@@ -498,3 +498,11 @@ Vue.component('pagination', Vue.extend({
     router.init();
 
 })(window);
+
+
+$(function() {
+    $('body').on('click', '.dialog', function(e) {
+        // modalを動的取得 ajax
+        console.log(777);
+    });
+});
