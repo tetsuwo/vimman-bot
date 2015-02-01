@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, _request_ctx_stack
 from helpers.crossdomain import *
 from models.model import *
 
@@ -11,6 +11,16 @@ LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Blueprint(__name__, "operators")
+
+@app.before_request
+def before_request():
+    method = request.form.get('_method', '').upper()
+    logging.debug(method)
+    if method:
+        request.environ['REQUEST_METHOD'] = method
+        ctx = _request_ctx_stack.top
+        ctx.url_adapter.default_method = method
+        assert request.method == method
 
 @app.route('/', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
@@ -94,8 +104,10 @@ def get_operators():
 
     return operators
 
+#TODO PUTリクエストする方法を考える
 #@app.route('/operators/<operator_id>', methods=['PUT'])
-@app.route('/<operator_id>', methods=['PUT'])
+#@app.route('/<operator_id>', methods=['PUT'])
+@app.route('/<operator_id>', methods=['POST'])
 @crossdomain(origin='*')
 def edit_operator(operator_id):
     code = 201
@@ -106,9 +118,11 @@ def edit_operator(operator_id):
         row = db_session.query(Operator).get(operator_id)
         row.username = req['operators[username]']
         row.password = req['operators[password]']
-        row.state = req['operators[state]']
+        #row.state = req['operators[state]']
         row.updated_at = tstr
         db_session.flush()
+        # なぜ必要？ 調査
+        db_session.commit()
     except:
         pass
     finally:
