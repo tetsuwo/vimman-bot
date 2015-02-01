@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request, session
 from helpers.crossdomain import *
 from models.model import *
+
+from datetime import datetime as dt
 
 import logging
 LOG_FILENAME = 'example.log'
@@ -42,27 +44,48 @@ def add_question():
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
+    creator_id = session.get('user_id')
     #logging.debug(req['content'])
     #logging.debug(req['state'])
     #logging.debug(req['created_by'])
     #logging.debug(req['updated_by'])
-    try:
-        question = Question(
-                            id=None,
-                            content=req['content'],
-                            state=req['state'],
-                            created_by=req['created_by'],
-                            updated_by=req['updated_by'],
-                            created_at=tstr,
-                            updated_at=tstr
+    #try:
+    # question
+    question = Question(
+        id=None,
+        content=req['questions[content]'],
+        state=req['questions[state]'],
+        created_by=creator_id,
+        updated_by=creator_id,
+        created_at=tstr,
+        updated_at=tstr
+    )
+    db_session.add(question)
+    db_session.commit()
+
+    # req['questions[answer]']を分解する
+    answers = req['questions[answer]'].split('\r\n')
+    for row in answers:
+        #TODO 空だったら continueする
+        # answer
+        answer = Answer(
+            id=None,
+            question_id=question.id,
+            content=row,
+            state=1,
+            created_by=creator_id,
+            updated_by=creator_id,
+            created_at=tstr,
+            updated_at=tstr
         )
-        db_session.add(question)
-        db_session.commit()
-    except:
-        # 登録失敗
-        db_session.rollback()
-    finally:
-        db_session.close()
+        db_session.add(answer)
+ 
+    db_session.commit()
+    #except:
+    #    # 登録失敗
+    #    db_session.rollback()
+    #finally:
+    #    db_session.close()
 
     return jsonify(status_code=code)
 
