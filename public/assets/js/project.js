@@ -179,7 +179,7 @@ function getPresetListComponent(componentName) {
                 var requestUri  = 'http://www.vimmanbot.local/api/' + componentName;
                 var queryString = Utils.buildQueryString(conditions);
                 var page        = conditions.page;
-                //console.log('queryString', queryString);
+                // console.log('queryString', queryString);
 
                 window.setTimeout(function() {
                     $.ajax({

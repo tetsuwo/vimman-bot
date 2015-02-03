@@ -12,15 +12,15 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Blueprint(__name__, "operators")
 
-@app.before_request
-def before_request():
-    method = request.form.get('_method', '').upper()
-    logging.debug(method)
-    if method:
-        request.environ['REQUEST_METHOD'] = method
-        ctx = _request_ctx_stack.top
-        ctx.url_adapter.default_method = method
-        assert request.method == method
+#@app.before_request
+#def before_request():
+#    method = request.form.get('_method', '').upper()
+#    logging.debug(method)
+#    if method:
+#        request.environ['REQUEST_METHOD'] = method
+#        ctx = _request_ctx_stack.top
+#        ctx.url_adapter.default_method = method
+#        assert request.method == method
 
 @app.route('/', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
@@ -106,8 +106,8 @@ def get_operators():
 
 #TODO PUTリクエストする方法を考える
 #@app.route('/operators/<operator_id>', methods=['PUT'])
-#@app.route('/<operator_id>', methods=['PUT'])
-@app.route('/<operator_id>', methods=['POST'])
+@app.route('/<operator_id>', methods=['PUT'])
+#@app.route('/<operator_id>', methods=['POST'])
 @crossdomain(origin='*')
 def edit_operator(operator_id):
     code = 201
@@ -140,6 +140,7 @@ def delete_operator(operator_id):
         row = Operator.query.get(operator_id)
         db_session.delete(row)
         db_session.flush()
+        db_session.commit()
     except:
         pass
     finally:
