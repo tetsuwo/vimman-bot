@@ -69,7 +69,7 @@ def show_response(response_id):
     except:
         pass
 
-    return jsonify(status_code=code, result=response_dict, test=creator_id)
+    return jsonify(status_code=code, result=response_dict)
 
 def get_response(response_id):
     response = []

@@ -16,6 +16,18 @@ $ curl http://www.vimmanbot.local/api/operators/5 -X DELETE
 
 
 # questions
+## GET
+$ curl http://www.vimmanbot.local/api/questions/
+
+## GET
+$ curl http://www.vimmanbot.local/api/responses/1
+
+## POST
+
+## PUT
+
+## DELETE
+
 
 # responses
 ## GET
