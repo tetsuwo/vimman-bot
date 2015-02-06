@@ -34,12 +34,21 @@ $ curl http://www.vimmanbot.local/api/responses/3 -X PUT -F "responses[type]=0" 
 $ curl http://www.vimmanbot.local/api/responses/3 -X DELETE
 
 # tweets
-
-# responses
+## GET
+$ curl http://www.vimmanbot.local/api/tweets/
 
 # informations
+## GET
+$ curl http://www.vimmanbot.local/api/informations/
+
+## GET
+$ curl http://www.vimmanbot.local/api/informations/1
+
 ## POST
+$ curl http://www.vimmanbot.local/api/informations/ -F "informations[content]=情報" -F "informations[state]=0"
 
 ## PUT
+$ curl http://www.vimmanbot.local/api/informations/8 -X PUT -F "informations[content]=infoinfo" -F "informations[state]=1"
 
 ## DELETE
+$ curl http://www.vimmanbot.local/api/informations/7 -X DELETE

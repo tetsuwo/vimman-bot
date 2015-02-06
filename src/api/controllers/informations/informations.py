@@ -18,8 +18,10 @@ def add_information():
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
-    # TODO SESSIONからloginユーザーをセットする
-    creator_id = session.get('user_id') 
+    # 下記 三項演算子で記述する
+    creator_id = 0
+    if session.get('user_id') is not None:
+        creator_id = session.get('user_id')
     logging.debug(req['informations[content]'])
 
     try:
@@ -90,16 +92,18 @@ def get_informations():
 
     return informations
 
-#@app.route('/<information_id>', methods=['PUT'])
-@app.route('/<information_id>', methods=['POST'])
+@app.route('/<information_id>', methods=['PUT'])
+#@app.route('/<information_id>', methods=['POST'])
 @crossdomain(origin='*')
 def edit_information(information_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
-    # TODO sessionから取得する
-    updater_id = session.get('user_id') 
+    # 下記 三項演算子で記述する
+    updater_id = 0
+    if session.get('user_id') is not None:
+        updater_id = session.get('user_id')
     try:
         row = db_session.query(Information).get(information_id)
         row.content = req['informations[content]']
@@ -126,6 +130,7 @@ def delete_information(information_id):
         row = Information.query.get(information_id)
         db_session.delete(row)
         db_session.flush()
+        db_session.commit()
     except:
         pass
     finally:
