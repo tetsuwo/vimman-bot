@@ -20,14 +20,16 @@ $ curl http://www.vimmanbot.local/api/operators/5 -X DELETE
 $ curl http://www.vimmanbot.local/api/questions/
 
 ## GET
-$ curl http://www.vimmanbot.local/api/responses/1
+$ curl http://www.vimmanbot.local/api/questions/1
 
 ## POST
+$ curl http://www.vimmanbot.local/api/questions/ -F "questions[content]=question11111" -F "questions[state]=1" -F "questions[answer]=answer1"
 
 ## PUT
+$ curl http://www.vimmanbot.local/api/questions/14 -X PUT -F "questions[content]=question_updater" -F "questions[state]=0" -F "questions[answer]=456"
 
 ## DELETE
-
+$ curl http://www.vimmanbot.local/api/questions/1 -X DELETE
 
 # responses
 ## GET

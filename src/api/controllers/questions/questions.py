@@ -44,7 +44,11 @@ def add_question():
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
-    creator_id = session.get('user_id')
+    # 下記 三項演算子で記述する
+    creator_id = 0
+    if session.get('user_id') is not None:
+        creator_id = session.get('user_id')
+
     #logging.debug(req['content'])
     #logging.debug(req['state'])
     #logging.debug(req['created_by'])
@@ -124,4 +128,83 @@ def get_questions():
         questions.append(row)
 
     return questions
+
+@app.route('/<question_id>', methods=['PUT'])
+@crossdomain(origin='*')
+def edit_question(question_id):
+    code = 201
+    tdatetime = dt.now()
+    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    req = request.form
+
+    # 下記 三項演算子で記述する
+    updater_id = 0
+    if session.get('user_id') is not None:
+        updater_id = session.get('user_id')
+
+    try:
+        # Question
+        row = db_session.query(Question).get(question_id)
+        row.content = req["questions[content]"]
+        row.state = req["questions[state]"]
+        row.updated_by = updater_id
+        row.updated_at = tstr
+
+        # Answer delete -> insert
+        answers = req['questions[answer]'].split('\r\n')
+        # answerもdeleteする
+        row_a = Answer.query.filter(Answer.question_id == question_id).all()
+        for row in row_a:
+            db_session.delete(row)
+
+        db_session.flush()
+        db_session.commit()
+
+        for row in answers:
+            answer = Answer(
+                    id = None,
+                    question_id=question_id,
+                    content=row,
+                    state=1,
+                    created_by=updater_id,
+                    updated_by=updater_id,
+                    created_at=tstr,
+                    updated_at=tstr
+            )
+            db_session.add(answer)
+        
+        db_session.commit()
+
+    except:
+        pass
+    finally:
+        pass
+
+    return jsonify(status_code=code)
+
+@app.route('/<question_id>', methods=['DELETE'])
+@crossdomain(origin='*')
+def delete_question(question_id):
+    code = 204
+    try:
+        # answerもdeleteする
+        row_a = Answer.query.filter(Answer.question_id == question_id).all()
+        #logging.debug(row_a)
+        #db_session.delete(row_a)
+        for row in row_a:
+            db_session.delete(row)
+
+
+        row = Question.query.get(question_id)
+        db_session.delete(row)
+
+        db_session.flush()
+        db_session.commit()
+    except:
+        pass
+    finally:
+        pass
+
+    return jsonify(status_code=code)
+
 
