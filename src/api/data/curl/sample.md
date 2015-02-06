@@ -51,6 +51,9 @@ $ curl http://www.vimmanbot.local/api/responses/3 -X DELETE
 ## GET
 $ curl http://www.vimmanbot.local/api/tweets/
 
+## POST
+$ curl http://www.vimmanbot.local/api/tweets/ -F "tweets[type]=question11111" -F "tweets[tweet_id]=1" -F "tweets[content]=answer1" -F "tweets[post_url]=http://google.com"
+
 # informations
 ## GET
 $ curl http://www.vimmanbot.local/api/informations/
