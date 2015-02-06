@@ -18,7 +18,10 @@ def add_response():
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
-    creator_id = session.get('user_id')
+    # 下記 三項演算子で記述する
+    creator_id = 0
+    if session.get('user_id') is not None:
+        creator_id = session.get('user_id')
 
     try:
         response = Response(
@@ -66,7 +69,7 @@ def show_response(response_id):
     except:
         pass
 
-    return jsonify(status_code=code, result=response_dict)
+    return jsonify(status_code=code, result=response_dict, test=creator_id)
 
 def get_response(response_id):
     response = []
@@ -82,15 +85,19 @@ def get_responses():
 
     return responses
 
-#@app.route('/<response_id>', methods=['PUT'])
-@app.route('/<response_id>', methods=['POST'])
+@app.route('/<response_id>', methods=['PUT'])
+#@app.route('/<response_id>', methods=['POST'])
 @crossdomain(origin='*')
 def edit_response(response_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
-    updater_id = session.get('user_id') 
+
+    # 下記 三項演算子で記述する
+    updater_id = 0
+    if session.get('user_id') is not None:
+        updater_id = session.get('user_id')
 
     try:
         row = db_session.query(Response).get(response_id)
@@ -117,6 +124,7 @@ def delete_response(response_id):
         row = Response.query.get(response_id)
         db_session.delete(row)
         db_session.flush()
+        db_session.commit()
     except:
         pass
     finally:
