@@ -154,6 +154,12 @@ function getPresetListComponent(componentName) {
             if (!this.search()) {
                 this.fetch(this.$parent.conditions);
             }
+            // TODO loginページを別の固定ページで設ける？？？
+            if (componentName == 'login') {
+                $('.navbar-nav').css({'visibility': 'hidden'});
+            } else {
+                $('.navbar-nav').css({'visibility': 'visible'});
+            }
         },
 
         beforeDestroy: function() {
@@ -173,11 +179,14 @@ function getPresetListComponent(componentName) {
                 var requestUri  = 'http://' + window.location.host + '/api/' + componentName;
                 var queryString = Utils.buildQueryString(conditions);
                 var page        = conditions.page;
-                //console.log('queryString', queryString);
+                // console.log('queryString', queryString);
 
                 window.setTimeout(function() {
                     $.ajax({
                             url      : requestUri + '?' + queryString,
+                            headers  : {
+                                'api-key': 'himejimaspecial'
+                            },
                             dataType : 'json'
                         })
                         .done(function (response) {
@@ -187,7 +196,8 @@ function getPresetListComponent(componentName) {
                         .fail(function (response) {
                             console.log('failure', response);
                             that.notFound();
-                        });
+                        })
+                        ;
 
                         if (window.location.hash != '') {
                             var pushStateUrl = window.location.href.replace(/\?.*/, '');
@@ -311,6 +321,8 @@ function mergeComponent(component) {
     );
 }
 
+
+Vue.component('login', getPresetListComponent('login'));
 
 Vue.component('questions', getPresetListComponent('questions'));
 
@@ -482,7 +494,18 @@ Vue.component('pagination', Vue.extend({
     routes['/operators/:id/update'] = function() {
         app.currentView = 'operators-update';
     };
+    routes['/login'] = function() {
+        app.currentView = 'login'
+    };
     var router = new Router(routes);
     router.init();
 
 })(window);
+
+
+$(function() {
+    $('body').on('click', '.dialog', function(e) {
+        // modalを動的取得 ajax
+        console.log(777);
+    });
+});

@@ -45,15 +45,15 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-repeat="result.list">
-            <td>{{ id }}</td>
-            <td>{{ state }}</td>
-            <td>{{ type }}</td>
-            <td>{{ content }}</td>
-            <td>{{ created_by }}</td>
-            <td>{{ updated_by }}</td>
-            <td>{{ created_at | formatDate }}</td>
-            <td>{{ updated_at | formatDate }}</td>
+        <tr v-repeat="response: result.list">
+            <td>{{ response.id }}</td>
+            <td>{{ response.state }}</td>
+            <td>{{ response.type }}</td>
+            <td>{{ response.content }}</td>
+            <td v-repeat="response.creator">{{ username }}</td>
+            <td v-repeat="response.updater">{{ username }}</td>
+            <td>{{ response.created_at | formatDate }}</td>
+            <td>{{ response.updated_at | formatDate }}</td>
             <td>
                 <a href="#/responses/{{ id }}/update" class="btn btn-default btn-xs">編集</a>
                 <a href="javascript:void(0)" v-on="click: remove(id)" class="btn btn-danger btn-xs">削除</a>

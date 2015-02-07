@@ -1,14 +1,14 @@
 -- Vimmanbot MySQL Schema
 -- 
 
-DROP TABLE IF EXISTS operations;
+DROP TABLE IF EXISTS operators;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS answers;
 DROP TABLE IF EXISTS informations;
 DROP TABLE IF EXISTS tweets;
 DROP TABLE IF EXISTS responses;
 
-CREATE TABLE operations (
+CREATE TABLE operators (
     id INTEGER NOT NULL AUTO_INCREMENT,
     username VARCHAR(50),
     password VARCHAR(50),
@@ -58,6 +58,7 @@ CREATE TABLE tweets (
     type VARCHAR(10),
     tweet_id INTEGER,
     content TEXT,
+    post_url TEXT,
     created_by VARCHAR(50),
     updated_by VARCHAR(50),
     created_at datetime NOT NULL,
