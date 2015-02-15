@@ -191,6 +191,97 @@ function getPresetListComponent(componentName) {
 }
 
 /**
+ * Get Preset Object for Create Component
+ *
+ * @return {Object}
+ */
+function getPresetCreateComponent(componentName, options) {
+    return {
+
+        template: Utils.getHTML('assets/js/app/components/' + componentName + '/template.html'),
+
+        created: function() {
+            console.log(componentName, 'component.created', 'getPresetCreateComponent');
+        },
+
+        beforeDestroy: function() {
+            console.log(componentName, 'component.beforeDestroy');
+            this.$dispatch('content-beforeDestroy', this);
+            this.loading(true);
+        },
+
+        methods: {
+            fetch: function(conditions) {
+                console.log('fetch', conditions);
+                this.loading(true);
+            },
+
+            loading: function(flag) {
+                this.$parent.isLoading = flag;
+            },
+
+            makeRequest: function(params) {
+                var data = {};
+                _.forEach(params, function(formName, key) {
+                    console.log('options.sendData', key, formName);
+                    var $input = $('[name="' + formName + '"]');
+                    var value = null;
+                    switch ($input.attr('type')) {
+                        case 'text':
+                        case 'number':
+                            value = $input.val();
+                            break;
+
+                        case 'radio':
+                            value = $input.filter(':checked').val();
+                            break;
+
+                        default:
+                            value = $input.val();
+                            break;
+                    }
+                    data[key] = value;
+                });
+                return data;
+            },
+
+            submit: function(event) {
+                console.log('submit');
+
+                // リクエスト作成
+                var sendData = this.makeRequest(options.sendData);
+
+                // TODO: オペレータIDを入れる予定
+                sendData.created_by = '1';
+                sendData.updated_by = '2';
+
+                $.ajax({
+                    type: 'post',
+                    url: options.sendTo,
+                    dataType: 'json',
+                    data: sendData
+                }).done(function(response) {
+                    console.log('done', response);
+                    window.location.href = options.afterDone;
+                }).fail(function(response) {
+                    console.log('fail', response);
+                    alert('登録に失敗しました。\n入力内容を確認の上、再度登録してください。');
+                });
+            },
+
+            assignSearchForm: function(queries) {
+                for (var i in queries) {
+                    var query = queries[i];
+                    var formName = decodeURIComponent(i);
+                    console.log('assignSearchForm', formName, query);
+                    $('[name="' + formName + '"]').val(query);
+                }
+            }
+        }
+    };
+}
+
+/**
  * Merge component
  *
  * @param  {string} url

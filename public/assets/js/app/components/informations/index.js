@@ -1,1 +1,4 @@
-Vue.component('informations', getPresetListComponent('informations'));
+Vue.component(
+    'informations',
+    getPresetListComponent('informations')
+);
