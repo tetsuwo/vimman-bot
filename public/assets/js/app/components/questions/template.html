@@ -46,18 +46,18 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-repeat="question: result.list">
-            <td>{{ question.id }}</td>
-            <td>{{ question.state }}</td>
-            <td>{{ question.content }}</td>
-            <td v-repeat="question.creator">{{ username }}</td>
-            <td v-repeat="question.updater">{{ username }}</td>
-            <td>{{ question.created_at | formatDate }}</td>
-            <td>{{ question.updated_at | formatDate }}</td>
+        <tr v-repeat="result.list">
+            <td>{{ id }}</td>
+            <td>{{ state }}</td>
+            <td>{{ content }}</td>
+            <td>{{ created_by }}</td>
+            <td>{{ updated_by }}</td>
+            <td>{{ created_at | formatDate }}</td>
+            <td>{{ updated_at | formatDate }}</td>
             <td>
-                <a href="#" class="dialog btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
-                <a href="#/questions/{{ question.id }}/update" class="btn btn-default btn-xs">編集</a>
-                <a href="javascript:void(0)" v-on="click: remove(question.id)" class="btn btn-danger btn-xs">削除</a>
+                <a href="javascript:void(0)" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm">正答一覧</a>
+                <a href="#/questions/{{ id }}/update" class="btn btn-default btn-xs">編集</a>
+                <a href="javascript:void(0)" v-on="click: remove(id)" class="btn btn-danger btn-xs">削除</a>
             </td>
         </tr>
     </tbody>
@@ -86,3 +86,4 @@
 <div class="nowloading">
     <div class="nowloading-image"></div>
 </div>
+

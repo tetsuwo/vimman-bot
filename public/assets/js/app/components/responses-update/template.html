@@ -3,7 +3,7 @@
     <h1 id="pageid">応答内容の編集</h1>
 </div>
 
-<form class="form-horizontal" role="form" action="/api/responses/2" method="post">
+<form class="form-horizontal" role="form" action="./responses.html" method="post">
     <div class="form-group">
         <label class="col-lg-2 control-label">
             応答内容の状態
@@ -11,13 +11,13 @@
         <div class="col-lg-10">
             <div class="radio">
                 <label>
-                    <input type="radio" name="responses[state]" id="optionsRadios1" value="0" checked>
+                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
                     未公開（作りかけのとき用）
                 </label>
             </div>
             <div class="radio">
                 <label>
-                    <input type="radio" name="responses[state]" id="optionsRadios2" value="1">
+                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
                     公開
                 </label>
             </div>
@@ -30,13 +30,13 @@
         <div class="col-lg-10">
             <div class="radio">
                 <label>
-                    <input type="radio" name="responses[type]" id="optionsRadios1" value="option1" checked>
+                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
                     正答
                 </label>
             </div>
             <div class="radio">
                 <label>
-                    <input type="radio" name="responses[type]" id="optionsRadios2" value="option2">
+                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
                     誤答
                 </label>
             </div>
@@ -45,7 +45,7 @@
     <div class="form-group">
         <label for="content" class="col-lg-2 control-label">応答内容</label>
         <div class="col-lg-10">
-            <textarea class="form-control" id="content" name="responses[content]" placeholder="" rows="3">( ´∀｀)bｸﾞｯ!</textarea>
+            <textarea class="form-control" id="content" name="question[content]" placeholder="" rows="3">( ´∀｀)bｸﾞｯ!</textarea>
             <p class="help-block">例）(´ﾟдﾟ｀)ｴｰ</p>
         </div>
     </div>

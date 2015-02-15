@@ -19,14 +19,14 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-repeat="info: result.list">
-            <td>{{ info.id }}</td>
-            <td>{{ info.state }}</td>
-            <td>{{ info.content }}</td>
-            <td v-repeat="info.creator">{{ username }}</td>
-            <td v-repeat="info.updater">{{ username }}</td>
-            <td>{{ info.created_at | formatDate }}</td>
-            <td>{{ info.updated_at | formatDate }}</td>
+        <tr v-repeat="result.list">
+            <td>{{ id }}</td>
+            <td>{{ state }}</td>
+            <td>{{ content }}</td>
+            <td>{{ created_by }}</td>
+            <td>{{ updated_by }}</td>
+            <td>{{ created_at | formatDate }}</td>
+            <td>{{ updated_at | formatDate }}</td>
             <td>
                 <a href="#/informations/{{ id }}/update" class="btn btn-default btn-xs">編集</a>
                 <a href="javascript:void(0)" v-on="click: remove(id)" class="btn btn-danger btn-xs">削除</a>

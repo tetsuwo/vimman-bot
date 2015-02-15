@@ -154,12 +154,6 @@ function getPresetListComponent(componentName) {
             if (!this.search()) {
                 this.fetch(this.$parent.conditions);
             }
-            // TODO loginページを別の固定ページで設ける？？？
-            if (componentName == 'login') {
-                $('.navbar-nav').css({'visibility': 'hidden'});
-            } else {
-                $('.navbar-nav').css({'visibility': 'visible'});
-            }
         },
 
         beforeDestroy: function() {
@@ -179,14 +173,11 @@ function getPresetListComponent(componentName) {
                 var requestUri  = 'http://' + window.location.host + '/api/' + componentName;
                 var queryString = Utils.buildQueryString(conditions);
                 var page        = conditions.page;
-                // console.log('queryString', queryString);
+                //console.log('queryString', queryString);
 
                 window.setTimeout(function() {
                     $.ajax({
                             url      : requestUri + '?' + queryString,
-                            headers  : {
-                                'api-key': 'himejimaspecial'
-                            },
                             dataType : 'json'
                         })
                         .done(function (response) {
@@ -196,8 +187,7 @@ function getPresetListComponent(componentName) {
                         .fail(function (response) {
                             console.log('failure', response);
                             that.notFound();
-                        })
-                        ;
+                        });
 
                         if (window.location.hash != '') {
                             var pushStateUrl = window.location.href.replace(/\?.*/, '');
@@ -307,6 +297,97 @@ function getPresetListComponent(componentName) {
 }
 
 /**
+ * Get Preset Object for Create Component
+ *
+ * @return {Object}
+ */
+function getPresetCreateComponent(componentName, options) {
+    return {
+
+        template: Utils.getHTML('assets/js/app/components/' + componentName + '/template.html'),
+
+        created: function() {
+            console.log(componentName, 'component.created', 'getPresetCreateComponent');
+        },
+
+        beforeDestroy: function() {
+            console.log(componentName, 'component.beforeDestroy');
+            this.$dispatch('content-beforeDestroy', this);
+            this.loading(true);
+        },
+
+        methods: {
+            fetch: function(conditions) {
+                console.log('fetch', conditions);
+                this.loading(true);
+            },
+
+            loading: function(flag) {
+                this.$parent.isLoading = flag;
+            },
+
+            makeRequest: function(params) {
+                var data = {};
+                _.forEach(params, function(formName, key) {
+                    console.log('options.sendData', key, formName);
+                    var $input = $('[name="' + formName + '"]');
+                    var value = null;
+                    switch ($input.attr('type')) {
+                        case 'text':
+                        case 'number':
+                            value = $input.val();
+                            break;
+
+                        case 'radio':
+                            value = $input.filter(':checked').val();
+                            break;
+
+                        default:
+                            value = $input.val();
+                            break;
+                    }
+                    data[key] = value;
+                });
+                return data;
+            },
+
+            submit: function(event) {
+                console.log('submit');
+
+                // リクエスト作成
+                var sendData = this.makeRequest(options.sendData);
+
+                // TODO: オペレータIDを入れる予定
+                sendData.created_by = '1';
+                sendData.updated_by = '2';
+
+                $.ajax({
+                    type: 'post',
+                    url: options.sendTo,
+                    dataType: 'json',
+                    data: sendData
+                }).done(function(response) {
+                    console.log('done', response);
+                    window.location.href = options.afterDone;
+                }).fail(function(response) {
+                    console.log('fail', response);
+                    alert('登録に失敗しました。\n入力内容を確認の上、再度登録してください。');
+                });
+            },
+
+            assignSearchForm: function(queries) {
+                for (var i in queries) {
+                    var query = queries[i];
+                    var formName = decodeURIComponent(i);
+                    console.log('assignSearchForm', formName, query);
+                    $('[name="' + formName + '"]').val(query);
+                }
+            }
+        }
+    };
+}
+
+/**
  * Merge component
  *
  * @param  {string} url
@@ -321,8 +402,6 @@ function mergeComponent(component) {
     );
 }
 
-
-Vue.component('login', getPresetListComponent('login'));
 
 Vue.component('questions', getPresetListComponent('questions'));
 
@@ -344,11 +423,26 @@ Vue.component('operators-update', mergeComponent({
     template: Utils.getHTML('assets/js/app/components/operators-update/template.html')
 }));
 
-Vue.component('informations', getPresetListComponent('informations'));
+Vue.component(
+    'informations',
+    getPresetListComponent('informations')
+);
 
-Vue.component('informations-create', mergeComponent({
-    template: Utils.getHTML('assets/js/app/components/informations-create/template.html')
-}));
+Vue.component(
+    'informations-create',
+    getPresetCreateComponent(
+        'informations-create',
+        {
+            sendTo   : '/api/informations',
+            afterDone: '#/informations',
+            afterFail: null,
+            sendData : {
+                state   : 'information[state]',
+                content : 'information[content]'
+            }
+        }
+    )
+);
 
 Vue.component('informations-update', mergeComponent({
     template: Utils.getHTML('assets/js/app/components/informations-update/template.html')
@@ -494,18 +588,7 @@ Vue.component('pagination', Vue.extend({
     routes['/operators/:id/update'] = function() {
         app.currentView = 'operators-update';
     };
-    routes['/login'] = function() {
-        app.currentView = 'login'
-    };
     var router = new Router(routes);
     router.init();
 
 })(window);
-
-
-$(function() {
-    $('body').on('click', '.dialog', function(e) {
-        // modalを動的取得 ajax
-        console.log(777);
-    });
-});

@@ -1,3 +1,15 @@
-Vue.component('informations-create', mergeComponent({
-    template: Utils.getHTML('assets/js/app/components/informations-create/template.html')
-}));
+Vue.component(
+    'informations-create',
+    getPresetCreateComponent(
+        'informations-create',
+        {
+            sendTo   : '/api/informations',
+            afterDone: '#/informations',
+            afterFail: null,
+            sendData : {
+                state   : 'information[state]',
+                content : 'information[content]'
+            }
+        }
+    )
+);
