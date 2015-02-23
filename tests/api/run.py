@@ -5,15 +5,14 @@ import app
 class ApiTestCase(unittest.TestCase):
     def setUp(self):
         self.app = app.app.test_client()
-        print 'completed setup'
 
     def test_get1(self):
-        print 'testing...'
         response = self.app.get('/questions/')
         print response.status_code
         #assert response.status_code == 200
         #assert response.data == 'Hello, World!'
         print response.data
+        print "\n\n"
 
     def test_get2(self):
         response = self.app.get('/questions')
@@ -21,6 +20,7 @@ class ApiTestCase(unittest.TestCase):
         #assert response.status_code == 200
         #assert response.data == 'Hello, World!'
         print response.data
+        print "\n\n"
 
     def test_get3(self):
         response = self.app.get('/api/questions')
@@ -28,6 +28,7 @@ class ApiTestCase(unittest.TestCase):
         #assert response.status_code == 200
         #assert response.data == 'Hello, World!'
         print response.data
+        print "\n\n"
 
     def test_get4(self):
         response = self.app.get('/questions?hoge')
@@ -35,6 +36,7 @@ class ApiTestCase(unittest.TestCase):
         #assert response.status_code == 200
         #assert response.data == 'Hello, World!'
         print response.data
+        print "\n\n"
 
 if __name__ == '__main__':
     unittest.main()
