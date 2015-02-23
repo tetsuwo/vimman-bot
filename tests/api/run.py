@@ -11,8 +11,8 @@ class ApiTestCase(unittest.TestCase):
         assert raw_response.status_code == 200
         assert raw_response.headers['Content-Type'] == 'application/json'
         response = json.loads(raw_response.data)
-        assert response.status_code == 200
-        assert len(response.result) == 0
+        assert response['status_code'] == 200
+        assert len(response['result']) == 0
 
 if __name__ == '__main__':
     unittest.main()
