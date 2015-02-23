@@ -3,10 +3,10 @@ language: python
 php:
   - 2.7
 
-before_script: 
+before_script:
   - pip install -r src/api/requirements.txt
 
-script: 
+script:
   - python tests/api/run.py
 
 notifications:
