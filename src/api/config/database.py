@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 db_config = {
+    'type': 'mysql',
     'host': 'localhost',
     'db': 'vimmanbot',
     'user': 'root',
