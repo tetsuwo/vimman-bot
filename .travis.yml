@@ -6,8 +6,8 @@ php:
 before_script:
   - pip install -r src/api/requirements.txt
   - cp src/api/config/databases.py.sample src/api/config/databases.py
-  - mysql -u root < src/api/data/mysql_createdb.sql
-  - mysql -u root vimmanbot < src/api/data/mysql_schema.sql
+  - mysql -u root < src/api/data/sql/mysql_createdb.sql
+  - mysql -u root vimmanbot < src/api/data/sql/mysql_schema.sql
 
 script:
   - python tests/api/run.py
