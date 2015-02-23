@@ -5,6 +5,7 @@ php:
 
 before_script:
   - pip install -r src/api/requirements.txt
+  - cp src/api/config/databases.py.sample src/api/config/databases.py
 
 script:
   - python tests/api/run.py
