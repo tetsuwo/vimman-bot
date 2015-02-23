@@ -9,7 +9,9 @@ class ApiTestCase(unittest.TestCase):
         self.app = app.app.test_client()
 
     def test_get(self):
+        print 'testing...'
         response = self.app.get('/questions/')
+        print response.status_code
         #assert response.status_code == 200
         #assert response.data == 'Hello, World!'
         print response.data
