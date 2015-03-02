@@ -16,7 +16,7 @@ db_string = "{type}://{user}:{passwd}@{host}:{port}/{db}".format(
             port=db_config['port'],
             db=db_config['db']
 )
-engine = create_engine(db_string, echo=True)
+engine = create_engine(db_string, echo=False)
 db_session = scoped_session(sessionmaker(autocommit=False,
                             autoflush=False,
                             bind=engine))
@@ -59,7 +59,7 @@ class Question(Base):
     updater = relationship('Operator',
             primaryjoin="Question.updated_by==Operator.id",
             foreign_keys="Operator.id")
-    
+
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.content = content
@@ -124,7 +124,7 @@ class Information(Base):
         self.updated_at = updated_at
 
 class Tweet(Base):
-    __tablename__ = 'tweets' 
+    __tablename__ = 'tweets'
     id = Column(Integer, primary_key=True)
     type = Column(String(10))
     tweet_id = Column(Integer)
@@ -154,7 +154,7 @@ class Tweet(Base):
         self.updated_at = updated_at
 
 class Response(Base):
-    __tablename__ = 'responses' 
+    __tablename__ = 'responses'
     id = Column(Integer, primary_key=True)
     type = Column(String(10))
     content = Column(String)
