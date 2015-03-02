@@ -15,7 +15,7 @@ app = Blueprint(__name__, 'operators')
 
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
-def add_operator():
+def create():
     if request.headers['Content-Type'] != 'application/json':
         print(request.headers['Content-Type'])
         return jsonify(message='error'), 400
@@ -41,28 +41,27 @@ def add_operator():
         result['state'] = operator.state
     except:
         logging.error(req)
+        return '', 404
         pass
     finally:
         pass
-
     return jsonify(result=result), 201
 
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
-def index_operators():
+def read():
     code = 200
     try:
         operators = get_operators()
         operators_dict = ListOperatorMapper({'result': operators}).as_dict()
     except:
         pass
-
     result = operators_dict['result']
     return jsonify(status_code=code, result=result)
 
 @app.route('/<operator_id>', methods=['GET'])
 @crossdomain(origin='*')
-def show_operator(operator_id):
+def readone(operator_id):
     operator_dict = {}
     try:
         operator = get_operator(operator_id)
@@ -70,13 +69,11 @@ def show_operator(operator_id):
     except:
         return '', 404
         pass
-
     return jsonify(result=operator_dict), 200
 
 def get_operator(operator_id):
     operator = None
     operator = Operator.query.filter("id = :operator_id").params(operator_id=operator_id).first()
-
     return operator
 
 def get_operators():
@@ -84,12 +81,11 @@ def get_operators():
     res = Operator.query.all()
     for row in res:
         operators.append(row)
-
     return operators
 
 @app.route('/<operator_id>', methods=['PUT'])
 @crossdomain(origin='*')
-def edit_operator(operator_id):
+def update(operator_id):
     if request.headers['Content-Type'] != 'application/json':
         print(request.headers['Content-Type'])
         return jsonify(message='error'), 400
@@ -115,12 +111,11 @@ def edit_operator(operator_id):
         pass
     finally:
         pass
-
     return jsonify(result=result), 201
 
 @app.route('/<operator_id>', methods=['DELETE'])
 @crossdomain(origin='*')
-def delete_operator(operator_id):
+def delete(operator_id):
     try:
         row = Operator.query.get(operator_id)
         db_session.delete(row)
@@ -132,5 +127,4 @@ def delete_operator(operator_id):
         pass
     finally:
         pass
-
     return '', 204
