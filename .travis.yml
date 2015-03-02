@@ -10,7 +10,7 @@ before_script:
   - mysql -u root vimmanbot < src/api/data/sql/mysql_schema.sql
 
 script:
-  - python tests/api/run.py
+  - python -m unittest discover -s tests/api/ -p '*_test.py'
 
 notifications:
   email:
