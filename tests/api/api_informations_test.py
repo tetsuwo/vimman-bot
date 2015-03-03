@@ -24,7 +24,29 @@ class ApiInformationsTestCase(unittest.TestCase):
         assert response['result']['state'] == 2
         assert response['result']['content'] == 'content-1'
 
-    def test_readone(self):
+    def test_invalid_create(self):
+        content_body = {
+            'state'    : '2'
+        }
+        raw_response = self.app.post(
+            '/informations/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
+    def test_index(self):
+        raw_response = self.app.get(
+            '/informations/'
+        )
+        assert raw_response.status_code == 200
+        response = json.loads(raw_response.data)
+        assert response['result'] != ''
+        assert response['result'][0]['id'] is not None
+        assert response['result'][0]['state'] is not None
+        assert response['result'][0]['content'] is not None
+
+    def test_read(self):
         content_body = {
             'content'  : 'content-2',
             'state'    : '1'
@@ -44,7 +66,7 @@ class ApiInformationsTestCase(unittest.TestCase):
         assert response['result']['state'] == created['result']['state']
         assert response['result']['content'] == created['result']['content']
 
-    def test_unknown_readone(self):
+    def test_unknown_read(self):
         raw_response = self.app.get(
             '/informations/%d' % 1000000
         )

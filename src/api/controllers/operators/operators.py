@@ -9,7 +9,7 @@ import json
 
 import logging
 LOG_FILENAME = 'example.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO)
 
 app = Blueprint(__name__, 'operators')
 
@@ -17,12 +17,10 @@ app = Blueprint(__name__, 'operators')
 @crossdomain(origin='*')
 def create():
     if request.headers['Content-Type'] != 'application/json':
-        print(request.headers['Content-Type'])
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = json.loads(request.data)
-    result = {}
     try:
         # TODO: saltのセット方法 + パスワードを暗号化する
         operator = Operator(
@@ -36,40 +34,38 @@ def create():
         )
         db_session.add(operator)
         db_session.commit()
+        result = {}
         result['id'] = operator.id
         result['username'] = operator.username
         result['state'] = operator.state
+        return jsonify(result=result), 201
     except:
         logging.error(req)
-        return '', 404
-        pass
-    finally:
-        pass
-    return jsonify(result=result), 201
+    return '', 400
 
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
-def read():
-    code = 200
+def index():
     try:
         operators = get_operators()
         operators_dict = ListOperatorMapper({'result': operators}).as_dict()
+        result = operators_dict['result']
+        return jsonify(result=result), 200
     except:
-        pass
-    result = operators_dict['result']
-    return jsonify(status_code=code, result=result)
+        logging.error(request)
+    return '', 404
 
 @app.route('/<operator_id>', methods=['GET'])
 @crossdomain(origin='*')
-def readone(operator_id):
+def read(operator_id):
     operator_dict = {}
     try:
         operator = get_operator(operator_id)
         operator_dict = OperatorMapper(operator).as_dict()
+        return jsonify(result=operator_dict), 200
     except:
-        return '', 404
-        pass
-    return jsonify(result=operator_dict), 200
+        logging.error(request)
+    return '', 404
 
 def get_operator(operator_id):
     operator = None
@@ -87,7 +83,6 @@ def get_operators():
 @crossdomain(origin='*')
 def update(operator_id):
     if request.headers['Content-Type'] != 'application/json':
-        print(request.headers['Content-Type'])
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
@@ -105,13 +100,10 @@ def update(operator_id):
         result['id'] = row.id
         result['username'] = row.username
         result['state'] = row.state
+        return jsonify(result=result), 201
     except:
         logging.error(req)
-        return '', 404
-        pass
-    finally:
-        pass
-    return jsonify(result=result), 201
+    return '', 404
 
 @app.route('/<operator_id>', methods=['DELETE'])
 @crossdomain(origin='*')
@@ -121,10 +113,13 @@ def delete(operator_id):
         db_session.delete(row)
         db_session.flush()
         db_session.commit()
+        return '', 204
     except:
         logging.error(request)
-        return '', 404
-        pass
-    finally:
-        pass
-    return '', 204
+    return '', 404
+
+def delete_all():
+    try:
+        Operator.query.delete()
+    except:
+        logging.error(request)

@@ -25,7 +25,30 @@ class ApiOperatorsTestCase(unittest.TestCase):
         assert response['result']['state'] == 2
         assert response['result']['username'] == 'tester-1'
 
-    def test_show(self):
+    def test_invalid_create(self):
+        content_body = {
+            'password' : 'hogehoge',
+            'state'    : '2'
+        }
+        raw_response = self.app.post(
+            '/operators/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
+    def test_index(self):
+        raw_response = self.app.get(
+            '/operators/'
+        )
+        assert raw_response.status_code == 200
+        response = json.loads(raw_response.data)
+        assert response['result'] != ''
+        assert response['result'][0]['id'] is not None
+        assert response['result'][0]['state'] is not None
+        assert response['result'][0]['username'] is not None
+
+    def test_read(self):
         content_body = {
             'username' : 'tester-2',
             'password' : 'hogehoge',
@@ -46,7 +69,7 @@ class ApiOperatorsTestCase(unittest.TestCase):
         assert response['result']['state'] == created['result']['state']
         assert response['result']['username'] == created['result']['username']
 
-    def test_unknown_show(self):
+    def test_unknown_read(self):
         raw_response = self.app.get(
             '/operators/%d' % 1000000
         )

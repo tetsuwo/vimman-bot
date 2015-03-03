@@ -17,12 +17,10 @@ app = Blueprint(__name__, "informations")
 @crossdomain(origin='*')
 def create():
     if request.headers['Content-Type'] != 'application/json':
-        print(request.headers['Content-Type'])
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = json.loads(request.data)
-    result = {}
     created_by = 0 # TODO: created user
     try:
         information = Information(
@@ -37,72 +35,58 @@ def create():
         db_session.add(information)
         db_session.flush()
         db_session.commit()
+        result = {}
         result['id'] = information.id
         result['state'] = information.state
         result['content'] = information.content
+        return jsonify(result=result), 201
     except:
         logging.error(req)
-        return '', 404
-        pass
-    finally:
-        pass
+    return '', 400
 
-    return jsonify(result=result), 201
-
-#@app.route('/', methods=['GET'])
-#@crossdomain(origin='*')
-#def read():
-#    """お知らせの一覧を取得します
-#    """
-#    code = 200
-#    informations_dict = {}
-#
-#    try:
-#        informations = get_informations()
-#        informations_dict = ListInformationMapper({'result': informations}).as_dict()
-#    except:
-#        pass
-#
-#    logging.debug(informations_dict)
-#    result = informations_dict['result']
-#
-#    return jsonify(status_code=code, result=result)
+@app.route('/', methods=['GET'])
+@crossdomain(origin='*')
+def index():
+    try:
+        informations = get_informations()
+        informations_dict = ListInformationMapper({'result': informations}).as_dict()
+        result = informations_dict['result']
+        return jsonify(result=result), 200
+    except:
+        logging.error(request)
+    return '', 404
 
 @app.route('/<information_id>', methods=['GET'])
 @crossdomain(origin='*')
-def readone(information_id):
-    information_dict = {}
+def read(information_id):
     try:
         information = get_information(information_id)
         information_dict = InformationMapper(information).as_dict()
+        return jsonify(result=information_dict), 200
     except:
-        return '', 404
-        pass
-    return jsonify(result=information_dict), 200
+        logging.error(request)
+    return '', 404
 
 def get_information(information_id):
     information = None
     information = Information.query.filter("id = :information_id").params(information_id=information_id).first()
     return information
 
-#def get_informations():
-#    informations = []
-#    res = Information.query.all()
-#    for row in res:
-#        informations.append(row)
-#
-#    return informations
+def get_informations():
+    informations = []
+    res = Information.query.all()
+    for row in res:
+        informations.append(row)
+    return informations
 
 @app.route('/<information_id>', methods=['PUT'])
 @crossdomain(origin='*')
 def update(information_id):
     if request.headers['Content-Type'] != 'application/json':
-        print(request.headers['Content-Type'])
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = json.loads(request.data)
-    result = {}
     updated_by = 0
     try:
         row = db_session.query(Information).get(information_id)
@@ -112,16 +96,14 @@ def update(information_id):
         row.updated_at = tstr
         db_session.flush()
         db_session.commit()
+        result = {}
         result['id'] = row.id
         result['state'] = row.state
         result['content'] = row.content
+        return jsonify(result=result), 201
     except:
         logging.error(req)
-        return '', 404
-        pass
-    finally:
-        pass
-    return jsonify(result=result), 201
+    return '', 404
 
 @app.route('/<information_id>', methods=['DELETE'])
 @crossdomain(origin='*')
@@ -131,10 +113,7 @@ def delete(information_id):
         db_session.delete(row)
         db_session.flush()
         db_session.commit()
+        return '', 204
     except:
         logging.error(request)
-        return '', 404
-        pass
-    finally:
-        pass
-    return '', 204
+    return '', 404
