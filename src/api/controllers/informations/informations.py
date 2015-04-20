@@ -9,9 +9,9 @@ import json
 
 import logging
 LOG_FILENAME = 'example.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO)
 
-app = Blueprint(__name__, "informations")
+app = Blueprint(__name__, 'informations')
 
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
@@ -20,8 +20,8 @@ def create():
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = json.loads(request.data)
     created_by = 0 # TODO: created user
+    req = json.loads(request.data)
     try:
         information = Information(
             id=None,

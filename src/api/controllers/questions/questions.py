@@ -4,12 +4,67 @@ from helpers.crossdomain import *
 from models.model import *
 
 from datetime import datetime as dt
+from config.databases import *
+import json
 
 import logging
 LOG_FILENAME = 'example.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+logging.basicConfig(
+    filename=LOG_FILENAME,
+    level=logging.INFO,
+    format='%(asctime)s %(message)s',
+    datefmt='%Y-%m-%d %p %I:%M:%S'
+)
 
-app = Blueprint(__name__, "questions")
+app = Blueprint(__name__, 'questions')
+
+@app.route('/', methods=['POST'])
+@crossdomain(origin='*')
+def create():
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify(message='error'), 400
+    tdatetime = dt.now()
+    created_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    created_by = 0 # TODO: created user
+    req = json.loads(request.data)
+    try:
+        db_session.begin()
+        question = Question(
+            id=None,
+            content=req['content'].encode('utf-8'),
+            state=req['state'],
+            created_by=created_by,
+            updated_by=created_by,
+            created_at=created_at,
+            updated_at=created_at
+        )
+        db_session.add(question)
+        db_session.flush()
+        answers = req['answers'].split('\r\n')
+        logging.error(answers)
+        for answer_text in answers:
+            answer = Answer(
+                id=None,
+                question_id=question.id,
+                content=answer_text,
+                state=1,
+                created_by=created_by,
+                updated_by=created_by,
+                created_at=created_at,
+                updated_at=created_at
+            )
+            db_session.add(answer)
+        db_session.flush()
+        db_session.commit()
+        result = {}
+        result['id'] = question.id
+        result['state'] = question.state
+        result['content'] = question.content
+        return jsonify(result=result), 201
+    except:
+        logging.error(req)
+        db_session.rollback()
+    return '', 400
 
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
@@ -33,65 +88,6 @@ def index_questions():
     result = questions_dict['result']
 
     return jsonify(status_code=code, result=result)
-
-# TODO answerも同時に登録するように修正すること
-@app.route('/', methods=['POST'])
-@crossdomain(origin='*')
-def add_question():
-    """リクエストを元に質問を登録します
-    """
-    code = 201
-    tdatetime = dt.now()
-    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
-    # 下記 三項演算子で記述する
-    creator_id = 0
-    if session.get('user_id') is not None:
-        creator_id = session.get('user_id')
-
-    #logging.debug(req['content'])
-    #logging.debug(req['state'])
-    #logging.debug(req['created_by'])
-    #logging.debug(req['updated_by'])
-    #try:
-    # question
-    question = Question(
-        id=None,
-        content=req['questions[content]'],
-        state=req['questions[state]'],
-        created_by=creator_id,
-        updated_by=creator_id,
-        created_at=tstr,
-        updated_at=tstr
-    )
-    db_session.add(question)
-    db_session.commit()
-
-    # req['questions[answer]']を分解する
-    answers = req['questions[answer]'].split('\r\n')
-    for row in answers:
-        #TODO 空だったら continueする
-        # answer
-        answer = Answer(
-            id=None,
-            question_id=question.id,
-            content=row,
-            state=1,
-            created_by=creator_id,
-            updated_by=creator_id,
-            created_at=tstr,
-            updated_at=tstr
-        )
-        db_session.add(answer)
- 
-    db_session.commit()
-    #except:
-    #    # 登録失敗
-    #    db_session.rollback()
-    #finally:
-    #    db_session.close()
-
-    return jsonify(status_code=code)
 
 @app.route('/<question_id>', methods=['GET'])
 @crossdomain(origin='*')
@@ -172,7 +168,7 @@ def edit_question(question_id):
                     updated_at=tstr
             )
             db_session.add(answer)
-        
+
         db_session.commit()
 
     except:
