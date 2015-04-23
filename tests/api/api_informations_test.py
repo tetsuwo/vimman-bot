@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys, os, json, unittest, urllib
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../../src/api/')
 import app
