@@ -48,7 +48,10 @@ def create():
 @crossdomain(origin='*')
 def index():
     try:
-        informations = get_informations()
+        informations = []
+        res = Information.query.all()
+        for row in res:
+            informations.append(row)
         informations_dict = ListInformationMapper({'result': informations}).as_dict()
         result = informations_dict['result']
         return jsonify(result=result), 200
@@ -60,24 +63,17 @@ def index():
 @crossdomain(origin='*')
 def read(information_id):
     try:
-        information = get_information(information_id)
+        information = (
+                Information.query
+                .filter('id = :information_id')
+                .params(information_id=information_id)
+                .first()
+            )
         information_dict = InformationMapper(information).as_dict()
         return jsonify(result=information_dict), 200
     except:
         logging.error(request)
     return '', 404
-
-def get_information(information_id):
-    information = None
-    information = Information.query.filter("id = :information_id").params(information_id=information_id).first()
-    return information
-
-def get_informations():
-    informations = []
-    res = Information.query.all()
-    for row in res:
-        informations.append(row)
-    return informations
 
 @app.route('/<information_id>', methods=['PUT'])
 @crossdomain(origin='*')
