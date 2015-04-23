@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask
+from flask import Flask, make_response
 
 #API_ACCESS_KEY = 'himejimaspecial'
 #LOG_FILENAME = 'example.log'
@@ -12,7 +12,7 @@ app.secret_key = 'my secret key'
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 
-# delete 
+# delete
 @app.before_request
 def before_request():
     pass
@@ -22,7 +22,12 @@ def before_request():
 def teardown_request(exception):
     pass
 
-from controllers.questions import questions 
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+from controllers.questions import questions
 app.register_blueprint(questions.app, url_prefix="/questions")
 
 from controllers.operators import operators

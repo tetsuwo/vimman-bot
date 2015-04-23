@@ -5,95 +5,71 @@ from models.model import *
 
 from datetime import datetime as dt
 from config.databases import *
+import json
 
 import logging
 LOG_FILENAME = 'example.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO)
 
-app = Blueprint(__name__, "operators")
+app = Blueprint(__name__, 'operators')
 
-#@app.before_request
-#def before_request():
-#    method = request.form.get('_method', '').upper()
-#    logging.debug(method)
-#    if method:
-#        request.environ['REQUEST_METHOD'] = method
-#        ctx = _request_ctx_stack.top
-#        ctx.url_adapter.default_method = method
-#        assert request.method == method
-
-@app.route('/', methods=['POST', 'OPTIONS'])
+@app.route('/', methods=['POST'])
 @crossdomain(origin='*')
-def add_operator():
-    """ 管理者を追加します
-    """
-    code = 201
+def create():
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
-    #logging.debug(req)
-    # TODO saltのセット方法 + パスワードを暗号化する
+    req = json.loads(request.data)
     try:
+        # TODO: saltのセット方法 + パスワードを暗号化する
         operator = Operator(
             id=None,
-            username=req['operators[username]'],
-            password=req['operators[password]'],
+            username=req['username'],
+            password=req['password'],
             salt='salt1',
-            state=req['operators[state]'],
+            state=req['state'],
             created_at=tstr,
             updated_at=tstr
         )
-        #operator = Operator(
-        #    id=None,
-        #    username=req['username'],
-        #    password=req['password'],
-        #    salt='salt1',
-        #    state=req['state'],
-        #    created_at=tstr,
-        #    updated_at=tstr
-        #)
         db_session.add(operator)
         db_session.commit()
+        result = {}
+        result['id'] = operator.id
+        result['username'] = operator.username
+        result['state'] = operator.state
+        return jsonify(result=result), 201
     except:
-        # 登録失敗
-        pass
-    finally:
-        pass
-
-    return jsonify(status_code=code)
+        logging.error(req)
+    return '', 400
 
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
-def index_operators():
-    code = 200
+def index():
     try:
         operators = get_operators()
         operators_dict = ListOperatorMapper({'result': operators}).as_dict()
+        result = operators_dict['result']
+        return jsonify(result=result), 200
     except:
-        pass
-
-    result = operators_dict['result']
-
-    return jsonify(status_code=code, result=result)
+        logging.error(request)
+    return '', 404
 
 @app.route('/<operator_id>', methods=['GET'])
 @crossdomain(origin='*')
-def show_operator(operator_id):
-    code = 200
+def read(operator_id):
     operator_dict = {}
     try:
         operator = get_operator(operator_id)
         operator_dict = OperatorMapper(operator).as_dict()
+        return jsonify(result=operator_dict), 200
     except:
-        # 取得に失敗
-        pass
-    
-    return jsonify(status_code=code, result=operator_dict)
+        logging.error(request)
+    return '', 404
 
 def get_operator(operator_id):
     operator = None
     operator = Operator.query.filter("id = :operator_id").params(operator_id=operator_id).first()
-
     return operator
 
 def get_operators():
@@ -101,49 +77,49 @@ def get_operators():
     res = Operator.query.all()
     for row in res:
         operators.append(row)
-
     return operators
 
-#TODO PUTリクエストする方法を考える
-#@app.route('/operators/<operator_id>', methods=['PUT'])
 @app.route('/<operator_id>', methods=['PUT'])
-#@app.route('/<operator_id>', methods=['POST'])
 @crossdomain(origin='*')
-def edit_operator(operator_id):
-    code = 201
+def update(operator_id):
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
+    req = json.loads(request.data)
+    result = {}
     try:
         row = db_session.query(Operator).get(operator_id)
-        row.username = req['operators[username]']
-        row.password = req['operators[password]']
-        row.state = req['operators[state]']
+        row.username = req['username']
+        row.password = req['password']
+        row.state = req['state']
         row.updated_at = tstr
         db_session.flush()
         # なぜ必要？ 調査
         db_session.commit()
+        result['id'] = row.id
+        result['username'] = row.username
+        result['state'] = row.state
+        return jsonify(result=result), 201
     except:
-        pass
-    finally:
-        pass
-
-    return jsonify(status_code=code)
+        logging.error(req)
+    return '', 404
 
 @app.route('/<operator_id>', methods=['DELETE'])
 @crossdomain(origin='*')
-def delete_operator(operator_id):
-    """ 管理者を削除します
-    """
-    code = 204
+def delete(operator_id):
     try:
         row = Operator.query.get(operator_id)
         db_session.delete(row)
         db_session.flush()
         db_session.commit()
+        return '', 204
     except:
-        pass
-    finally:
-        pass
+        logging.error(request)
+    return '', 404
 
-    return jsonify(status_code=code)
+def delete_all():
+    try:
+        Operator.query.delete()
+    except:
+        logging.error(request)

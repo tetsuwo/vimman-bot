@@ -14,6 +14,7 @@ CREATE TABLE operators (
     password VARCHAR(50),
     salt VARCHAR(50),
     state INTEGER,
+    -- deleted TINYINT NOT NULL DEFAULT 0,
     created_at datetime NOT NULL,
     updated_at datetime NOT NULL,
     PRIMARY KEY (id)

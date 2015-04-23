@@ -1,2 +1,2 @@
-MySQL-python==1.2.5
-oauthlib==0.6.3
+tweepy==3.3.0
+requests
