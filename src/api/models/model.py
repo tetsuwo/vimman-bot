@@ -16,7 +16,7 @@ db_string = "{type}://{user}:{passwd}@{host}:{port}/{db}".format(
             port=db_config['port'],
             db=db_config['db']
 )
-engine = create_engine(db_string, echo=False)
+engine = create_engine(db_string, echo=False, isolation_level='READ UNCOMMITTED')
 db_session = scoped_session(sessionmaker(autocommit=False,
                             autoflush=False,
                             bind=engine))
