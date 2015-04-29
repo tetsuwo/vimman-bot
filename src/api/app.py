@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
+import os
 from flask import Flask, make_response
-
-#API_ACCESS_KEY = 'himejimaspecial'
-#LOG_FILENAME = 'example.log'
-#logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+from config.settings import *
 
 app = Flask(__name__)
-# TODO sessionを利用するために必要
-app.secret_key = 'my secret key'
-
+app.secret_key = Config['secret_key']
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 
