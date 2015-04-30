@@ -1,77 +1,81 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request, session
 from helpers.crossdomain import *
 from models.model import *
 
 from datetime import datetime as dt
+from config.databases import *
+import json
+
 import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
-app = Blueprint(__name__, "tweets")
+app = Blueprint(__name__, 'tweets')
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['POST'])
 @crossdomain(origin='*')
-def index_tweets():
-    """ツイート一覧を返します
-    """
-    code = 200
-    tweets = []
-
-    try:
-        tweets = get_tweets()
-        tweets_dict = ListTweetMapper({'result': tweets}).as_dict()
-    except:
-        pass
-
-    result = tweets_dict['result']
-
-    return jsonify(status_code=code, result=result)
-
-# TODO pagingを実装する
-def get_tweets():
-    """dbからツイートを全件取得します
-    """
-    tweets = []
-    res = Tweet.query.all()
-    for row in res:
-        tweets.append(row)
-
-    return tweets
-
-# TODO created_by updated_byの取り扱いは未定
-@app.route('/', methods=['POST', 'OPTIONS'])
-@crossdomain(origin='*')
-def add_tweet():
-    """ ツイートログを追加します
-    """
-    code = 201
+def create():
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
-
-    #logging.debug(req)
-    
+    created_by = 0 # TODO: created user
+    req = json.loads(request.data)
     try:
         tweet = Tweet(
-                id = None,
-                type = req['tweets[type]'],
-                tweet_id = req['tweets[tweet_id]'],
-                content = req['tweets[content]'],
-                post_url = req['tweets[post_url]'],
-                created_by = 0,
-                updated_by = 0,
-                created_at = tstr,
-                updated_at = tstr
+            id=None,
+            type=req['type'],
+            tweet_id=req['tweet_id'],
+            content=req['content'],
+            state=req['state'],
+            post_url=req['post_url'],
+            created_by=created_by,
+            updated_by=created_by,
+            created_at=tstr,
+            updated_at=tstr
         )
         db_session.add(tweet)
         db_session.flush()
         db_session.commit()
+        result = {}
+        result['id'] = tweet.id
+        result['type'] = tweet.type
+        result['tweet_id'] = tweet.tweet_id
+        result['state'] = tweet.state
+        result['content'] = tweet.content
+        return jsonify(result=result), 201
     except:
-        pass
-    finally:
-        pass
+        logging.error(req)
+    return '', 400
 
-    return jsonify(status_code=code)
+@app.route('/', methods=['GET'])
+@crossdomain(origin='*')
+def index():
+    try:
+        tweets = []
+        res = Tweet.query.all()
+        for row in res:
+            tweets.append(row)
+        tweets_dict = ListTweetMapper({'result': tweets}).as_dict()
+        result = tweets_dict['result']
+        return jsonify(result=result), 200
+    except:
+        logging.error(request)
+    return '', 404
 
-# TODO filterの実装
+@app.route('/<tweet_id>', methods=['GET'])
+@crossdomain(origin='*')
+def read(tweet_id):
+    try:
+        tweet = (
+                Tweet.query
+                .filter('id = :tweet_id')
+                .params(tweet_id=tweet_id)
+                .first()
+            )
+        tweet_dict = TweetMapper(tweet).as_dict()
+        return jsonify(result=tweet_dict), 200
+    except:
+        logging.error(request)
+    return '', 404
