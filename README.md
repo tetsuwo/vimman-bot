@@ -17,7 +17,6 @@
 
 ## Development
 
-a
 
 ### Development of Frontend
 
