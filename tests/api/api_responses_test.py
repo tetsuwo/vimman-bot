@@ -50,32 +50,33 @@ class ApiResponsesTestCase(unittest.TestCase):
         assert response['result'][0]['content'] is not None
         assert response['result'][0]['state'] is not None
 
-    #def test_read(self):
-    #    content_body = {
-    #        'username' : 'tester-2',
-    #        'password' : 'hogehoge',
-    #        'state'    : '1'
-    #    }
-    #    raw_response = self.app.post(
-    #        '/operators/',
-    #        content_type='application/json',
-    #        data=json.dumps(content_body)
-    #    )
-    #    created = json.loads(raw_response.data)
-    #    raw_response = self.app.get(
-    #        '/operators/%d' % created['result']['id']
-    #    )
-    #    assert raw_response.status_code == 200
-    #    response = json.loads(raw_response.data)
-    #    assert response['result']['id'] == created['result']['id']
-    #    assert response['result']['state'] == created['result']['state']
-    #    assert response['result']['username'] == created['result']['username']
+    def test_read(self):
+        content_body = {
+            'type' : 'ng',
+            'content' : 'response',
+            'state'    : '1'
+        }
+        raw_response = self.app.post(
+            '/responses/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+        raw_response = self.app.get(
+            '/responses/%d' % created['result']['id']
+        )
+        assert raw_response.status_code == 200
+        response = json.loads(raw_response.data)
+        assert response['result']['id'] == created['result']['id']
+        assert response['result']['type'] == created['result']['type']
+        assert response['result']['content'] == created['result']['content']
+        assert response['result']['state'] == created['result']['state']
 
-    #def test_unknown_read(self):
-    #    raw_response = self.app.get(
-    #        '/operators/%d' % 1000000
-    #    )
-    #    assert raw_response.status_code == 404
+    def test_unknown_read(self):
+        raw_response = self.app.get(
+            '/tweets/%d' % 1000000
+        )
+        assert raw_response.status_code == 404
 
     #def test_update(self):
     #    content_body = {

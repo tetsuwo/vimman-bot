@@ -65,29 +65,24 @@ def index():
 
 @app.route('/<response_id>', methods=['GET'])
 @crossdomain(origin='*')
-def show_response(response_id):
-    code = 200
-    response_dict = {}
-
+def read(response_id):
     try:
-        response = get_response(response_id)
+    	response = (
+		Response.query
+		.filter("id = :response_id")
+		.params(response_id=response_id)
+		.first()
+	)
         response_dict = ResponseMapper(response).as_dict()
+    	return jsonify(result=response_dict), 200
     except:
-        pass
-
-    return jsonify(status_code=code, result=response_dict)
-
-def get_response(response_id):
-    response = []
-    response = Response.query.filter("id = :response_id").params(response_id=response_id).first()
-
-    return response
-
+	logging.error(request)
+    return '', 404
 
 @app.route('/<response_id>', methods=['PUT'])
 #@app.route('/<response_id>', methods=['POST'])
 @crossdomain(origin='*')
-def edit_response(response_id):
+def update(response_id):
     code = 201
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
