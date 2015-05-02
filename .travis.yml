@@ -14,9 +14,6 @@ script:
 
 notifications:
   email:
-    recipients:
-      - tetsuwo.oishi+travis-ci@gmail.com
-      - himejima.development@gmail.com
-      - masahiiiro01@gmail.com
+    recipients: project.omosan+vimmanbot@gmail.com
     on_success: always # [always|never|change]
     on_failure: always # [always|never|change]
