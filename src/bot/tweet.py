@@ -1,28 +1,43 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from requests_oauthlib import OAuth1Session
-import secret
-import random
+import os, random, sys
 
-def tweet_list():
+consumer_key = os.environ.get('TWITTER_CONSUMER_KEY')
+consumer_secret = os.environ.get('TWITTER_CONSUMER_SECRET')
+access_token = os.environ.get('TWITTER_ACCESS_TOKEN')
+access_token_secret = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
+
+def fetch_questions():
+    return
+
+def get_questions():
     return [
         'Vim を保存しないで強制的に閉じるときは？',
         'Vim で画面を縦に分割するには？',
         'Vim のチュートリアルを開くには？',
     ]
 
-url = "https://api.twitter.com/1.1/statuses/update.json"
+API_ENDPOINT_URL = 'https://api.twitter.com/1.1/statuses/update.json'
 
-lists = tweet_list()
-post_tweet = random.choice(lists) 
+questions = get_questions()
+if len(questions) < 1:
+    print('Not found questions')
+    sys.exit(1)
 
-params = {"status": post_tweet}
+params = {'status': random.choice(questions)}
+twitter = OAuth1Session(
+    consumer_key,
+    consumer_secret,
+    access_token,
+    access_token_secret
+)
 
-twitter = OAuth1Session(c_k, c_s, a_k, a_s)
-req = twitter.post(url, params = params)
-
-if req.status_code == 200:
-    print ("OK")
+raw_response = twitter.post(
+    API_ENDPOINT_URL,
+    params=params
+)
+if raw_response.status_code == 200:
+    print('OK')
 else:
-    print ("Error: %d" % req.status_code)
-
+    print('Error: %d' % raw_response.status_code)
