@@ -78,69 +78,68 @@ class ApiResponsesTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
-    #def test_update(self):
-    #    content_body = {
-    #        'username' : 'tester-3',
-    #        'password' : 'hogehoge',
-    #        'state'    : '2'
-    #    }
-    #    raw_response = self.app.post(
-    #        '/operators/',
-    #        content_type='application/json',
-    #        data=json.dumps(content_body)
-    #    )
-    #    created = json.loads(raw_response.data)
-    #    content_body = {
-    #        'username' : 'tester-33',
-    #        'password' : 'hogehoge',
-    #        'state'    : '3'
-    #    }
-    #    raw_response = self.app.put(
-    #        '/operators/%d' % created['result']['id'],
-    #        content_type='application/json',
-    #        data=json.dumps(content_body)
-    #    )
-    #    assert raw_response.status_code == 201
-    #    response = json.loads(raw_response.data)
-    #    assert response['result']['id'] == created['result']['id']
-    #    assert response['result']['state'] == 3
-    #    assert response['result']['username'] == 'tester-33'
+    def test_update(self):
+        content_body = {
+            'type' : 'ng',
+            'content' : 'response-3',
+            'state'    : '1'
+        }
+        raw_response = self.app.post(
+            '/responses/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+        content_body = {
+            'type' : 'ng',
+            'content' : 'response-33',
+            'state'    : '2'
+        }
+        raw_response = self.app.put(
+            '/responses/%d' % created['result']['id'],
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 201
+        response = json.loads(raw_response.data)
+        assert response['result']['id'] == created['result']['id']
+        assert response['result']['content'] == 'response-33'
+        assert response['result']['state'] == 2
 
-    #def test_unknown_update(self):
-    #    content_body = {
-    #        'username' : 'anything',
-    #        'password' : 'hogehoge',
-    #        'state'    : '3'
-    #    }
-    #    raw_response = self.app.put(
-    #        '/operators/%d' % 1000000,
-    #        content_type='application/json',
-    #        data=json.dumps(content_body)
-    #    )
-    #    assert raw_response.status_code == 404
+    def test_unknown_update(self):
+        content_body = {
+            'type' : 'ng',
+            'state'    : '2'
+        }
+        raw_response = self.app.put(
+            '/responses/%d' % 1000000,
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 404
 
-    #def test_delete(self):
-    #    content_body = {
-    #        'username' : 'tester-4',
-    #        'password' : 'hogehoge',
-    #        'state'    : '3'
-    #    }
-    #    raw_response = self.app.post(
-    #        '/operators/',
-    #        content_type='application/json',
-    #        data=json.dumps(content_body)
-    #    )
-    #    created = json.loads(raw_response.data)
-    #    raw_response = self.app.delete(
-    #        '/operators/%d' % created['result']['id']
-    #    )
-    #    assert raw_response.status_code == 204
+    def test_delete(self):
+        content_body = {
+            'type' : 'ng',
+            'content' : 'response-4',
+            'state'    : '1'
+        }
+        raw_response = self.app.post(
+            '/responses/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+        raw_response = self.app.delete(
+            '/responses/%d' % created['result']['id']
+        )
+        assert raw_response.status_code == 204
 
-    #def test_unknown_delete(self):
-    #    raw_response = self.app.delete(
-    #        '/operators/%d' % 100000
-    #    )
-    #    assert raw_response.status_code == 404
+    def test_unknown_delete(self):
+        raw_response = self.app.delete(
+            '/responses/%d' % 100000
+        )
+        assert raw_response.status_code == 404
 
 if __name__ == '__main__':
     unittest.main()

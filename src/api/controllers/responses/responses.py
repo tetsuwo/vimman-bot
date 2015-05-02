@@ -26,8 +26,8 @@ def create():
     try:
         response = Response(
             id=None,
-            type=req["type"],
-            content=req["content"],
+            type=req['type'],
+            content=req['content'],
             state=req["state"],
             created_by=creator_by,
             updated_by=creator_by,
@@ -83,45 +83,40 @@ def read(response_id):
 #@app.route('/<response_id>', methods=['POST'])
 @crossdomain(origin='*')
 def update(response_id):
-    code = 201
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify(message='error'), 400
     tdatetime = dt.now()
-    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
-
-    # 下記 三項演算子で記述する
-    updater_id = 0
-    if session.get('user_id') is not None:
-        updater_id = session.get('user_id')
-
+    updated_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    req = json.loads(request.data)
+    updated_by = 0
     try:
         row = db_session.query(Response).get(response_id)
-        row.type = req["responses[type]"]
-        row.content = req["responses[content]"]
-        row.state = req["responses[state]"]
-        row.updated_by = updater_id
-        row.updated_at = tstr
-
+        row.type = req["type"]
+        row.content = req["content"]
+        row.state = req["state"]
+        row.updated_by = updated_by
+        row.updated_at = updated_at
         db_session.flush()
         db_session.commit()
+	result = {}
+        result['id'] = row.id
+        result['type'] = row.type
+        result['content'] = row.content
+        result['state'] = row.state
+	return jsonify(result=result), 201
     except:
-        pass
-    finally:
-        pass
-
-    return jsonify(status_code=code)
+        logging.error(req)
+    return '', 404
 
 @app.route('/<response_id>', methods=['DELETE'])
 @crossdomain(origin='*')
-def delete_response(response_id):
-    code = 204
+def delete(response_id):
     try:
         row = Response.query.get(response_id)
         db_session.delete(row)
         db_session.flush()
         db_session.commit()
+	return '', 204
     except:
-        pass
-    finally:
-        pass
-
-    return jsonify(status_code=code)
+        logging.error(request)
+    return '', 404
