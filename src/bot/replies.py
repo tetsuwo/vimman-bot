@@ -23,7 +23,7 @@ if raw_response.status_code == 200:
 
         request_params = {
             'status': res_tweet,
-            'in_reply_to_status_id': tweet['user']['id_str']
+            'in_reply_to_status_id': tweet['id_str']
         }
         tweet_raw_response = twitter.post(UPDATE_API_ENDPOINT, params=request_params)
 
