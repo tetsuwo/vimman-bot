@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from requests_oauthlib import OAuth1Session
-import os, random, sys
-
-consumer_key = os.environ.get('TWITTER_CONSUMER_KEY')
-consumer_secret = os.environ.get('TWITTER_CONSUMER_SECRET')
-access_token = os.environ.get('TWITTER_ACCESS_TOKEN')
-access_token_secret = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
+from config.settings import *
+import random, sys
 
 def fetch_questions():
     return
@@ -18,24 +14,26 @@ def get_questions():
         'Vim のチュートリアルを開くには？',
     ]
 
-API_ENDPOINT_URL = 'https://api.twitter.com/1.1/statuses/update.json'
+UPDATE_API_ENDPOINT = 'https://api.twitter.com/1.1/statuses/update.json'
 
 questions = get_questions()
 if len(questions) < 1:
     print('Not found questions')
     sys.exit(1)
 
-params = {'status': random.choice(questions)}
+request_params = {
+    'status': random.choice(questions)
+}
 twitter = OAuth1Session(
-    consumer_key,
-    consumer_secret,
-    access_token,
-    access_token_secret
+    Config['consumer_key'],
+    Config['consumer_secret'],
+    Config['access_token'],
+    Config['access_token_secret']
 )
 
 raw_response = twitter.post(
-    API_ENDPOINT_URL,
-    params=params
+    UPDATE_API_ENDPOINT,
+    params=request_params
 )
 if raw_response.status_code == 200:
     print('OK')
