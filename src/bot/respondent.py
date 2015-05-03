@@ -19,6 +19,9 @@ raw_response = twitter.get(MENSION_API_ENDPOINT, params={})
 if raw_response.status_code == 200:
     response = json.loads(raw_response.text)
     for tweet in response:
+        if (tweet['user']['name'] == Config['twitter_name']):
+            continue
+
         res_tweet = '@%s wah gwaan' % (tweet['user']['screen_name'])
 
         request_params = {
