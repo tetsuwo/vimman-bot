@@ -4,6 +4,8 @@ from helpers.crossdomain import *
 from models.model import *
 
 from datetime import datetime as dt
+from config.databases import *
+import json
 
 import logging
 LOG_FILENAME = 'example.log'
@@ -13,121 +15,108 @@ app = Blueprint(__name__, "responses")
 
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
-def add_response():
-    code = 201
+def create():
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify(message='error'), 400
     tdatetime = dt.now()
-    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
+    created_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     # 下記 三項演算子で記述する
-    creator_id = 0
-    if session.get('user_id') is not None:
-        creator_id = session.get('user_id')
-
+    creator_by = 0 # TODO: created user
+    req = json.loads(request.data)
     try:
         response = Response(
             id=None,
-            type=req["responses[type]"],
-            content=req["responses[content]"],
-            state=req["responses[state]"],
-            created_by=creator_id,
-            updated_by=creator_id,
-            created_at=tstr,
-            updated_at=tstr
+            type=req['type'],
+            content=req['content'],
+            state=req["state"],
+            created_by=creator_by,
+            updated_by=creator_by,
+            created_at=created_at,
+            updated_at=created_at
         )
         db_session.add(response)
+	db_session.flush()
         db_session.commit()
+	result = {}
+	result['id'] = response.id
+	result['type'] = response.type
+	result['content'] = response.content
+	result['state'] = response.state
+    	return jsonify(result=result), 201
     except:
-        pass
-    finally:
-        pass
-
-    return jsonify(status_code=code)
+	logging.error(req)
+    return '', 400
 
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
-def index_responses():
+def index():
     code = 200
     try:
-        responses = get_responses()
+    	responses = []
+    	res = Response.query.all()
+    	for row in res:
+            responses.append(row)
         responses_dict = ListResponseMapper({'result': responses}).as_dict()
+        result = responses_dict['result']
+        return jsonify(result=result), 200
     except:
-        pass
-
-    result = responses_dict['result']
-
-    return jsonify(status_code=code, result=result)
+	logging.error(request)
+    return '', 404
 
 @app.route('/<response_id>', methods=['GET'])
 @crossdomain(origin='*')
-def show_response(response_id):
-    code = 200
-    response_dict = {}
-
+def read(response_id):
     try:
-        response = get_response(response_id)
+    	response = (
+		Response.query
+		.filter("id = :response_id")
+		.params(response_id=response_id)
+		.first()
+	)
         response_dict = ResponseMapper(response).as_dict()
+    	return jsonify(result=response_dict), 200
     except:
-        pass
-
-    return jsonify(status_code=code, result=response_dict)
-
-def get_response(response_id):
-    response = []
-    response = Response.query.filter("id = :response_id").params(response_id=response_id).first()
-
-    return response
-
-def get_responses():
-    responses = []
-    res = Response.query.all()
-    for row in res:
-        responses.append(row)
-
-    return responses
+	logging.error(request)
+    return '', 404
 
 @app.route('/<response_id>', methods=['PUT'])
 #@app.route('/<response_id>', methods=['POST'])
 @crossdomain(origin='*')
-def edit_response(response_id):
-    code = 201
+def update(response_id):
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify(message='error'), 400
     tdatetime = dt.now()
-    tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
-
-    # 下記 三項演算子で記述する
-    updater_id = 0
-    if session.get('user_id') is not None:
-        updater_id = session.get('user_id')
-
+    updated_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
+    req = json.loads(request.data)
+    updated_by = 0
     try:
         row = db_session.query(Response).get(response_id)
-        row.type = req["responses[type]"]
-        row.content = req["responses[content]"]
-        row.state = req["responses[state]"]
-        row.updated_by = updater_id
-        row.updated_at = tstr
-
+        row.type = req["type"]
+        row.content = req["content"]
+        row.state = req["state"]
+        row.updated_by = updated_by
+        row.updated_at = updated_at
         db_session.flush()
         db_session.commit()
+	result = {}
+        result['id'] = row.id
+        result['type'] = row.type
+        result['content'] = row.content
+        result['state'] = row.state
+	return jsonify(result=result), 201
     except:
-        pass
-    finally:
-        pass
-
-    return jsonify(status_code=code)
+        logging.error(req)
+    return '', 404
 
 @app.route('/<response_id>', methods=['DELETE'])
 @crossdomain(origin='*')
-def delete_response(response_id):
-    code = 204
+def delete(response_id):
     try:
         row = Response.query.get(response_id)
         db_session.delete(row)
         db_session.flush()
         db_session.commit()
+	return '', 204
     except:
-        pass
-    finally:
-        pass
-
-    return jsonify(status_code=code)
+        logging.error(request)
+    return '', 404

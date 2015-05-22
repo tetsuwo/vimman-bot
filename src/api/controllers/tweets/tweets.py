@@ -28,7 +28,7 @@ def create():
             type=req['type'],
             tweet_id=req['tweet_id'],
             content=req['content'],
-            state=req['state'],
+            #state=req['state'],
             post_url=req['post_url'],
             created_by=created_by,
             updated_by=created_by,
@@ -42,8 +42,9 @@ def create():
         result['id'] = tweet.id
         result['type'] = tweet.type
         result['tweet_id'] = tweet.tweet_id
-        result['state'] = tweet.state
+        #result['state'] = tweet.state
         result['content'] = tweet.content
+        result['post_url'] = tweet.post_url
         return jsonify(result=result), 201
     except:
         logging.error(req)
